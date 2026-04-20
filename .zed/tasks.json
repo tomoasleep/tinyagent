@@ -1,0 +1,7 @@
+[
+  {
+    "label": "Update rbs",
+    "command": "bundle exec rake rbs",
+    "reveal": "never"
+  }
+]
