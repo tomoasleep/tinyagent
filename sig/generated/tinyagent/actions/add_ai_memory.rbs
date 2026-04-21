@@ -1,0 +1,12 @@
+# Generated from lib/tinyagent/actions/add_ai_memory.rb with RBS::Inline
+
+module Tinyagent
+  module Actions
+    # AddAiMemory action for Tinyagent
+    class AddAiMemory < Base
+      def call: () -> untyped
+
+      def prompt_param: () -> String
+    end
+  end
+end

@@ -1,0 +1,17 @@
+# Generated from lib/tinyagent/mcp_clients.rb with RBS::Inline
+
+module Tinyagent
+  # Manages multiple MCP (Model Context Protocol) clients
+  class McpClients
+    attr_reader clients: Array[UserMcpClient]
+
+    # @rbs clients: Array[UserMcpClient]
+    def initialize: (Array[UserMcpClient] clients) -> untyped
+
+    # @rbs return: Array[Tool]
+    def available_tools: () -> Array[Tool]
+
+    # @rbs return: bool
+    def any?: () -> bool
+  end
+end

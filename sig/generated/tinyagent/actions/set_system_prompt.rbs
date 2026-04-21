@@ -1,0 +1,14 @@
+# Generated from lib/tinyagent/actions/set_system_prompt.rb with RBS::Inline
+
+module Tinyagent
+  module Actions
+    # SetSystemPrompt action for Tinyagent
+    class SetSystemPrompt < Base
+      def call: () -> untyped
+
+      def prompt_param: () -> String
+
+      def scope_param: () -> String
+    end
+  end
+end

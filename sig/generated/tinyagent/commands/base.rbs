@@ -1,0 +1,27 @@
+# Generated from lib/tinyagent/commands/base.rb with RBS::Inline
+
+module Tinyagent
+  module Commands
+    # Base class for commands.
+    # @abstract
+    class Base
+      attr_reader request: Request
+
+      # @rbs request: Request
+      def initialize: (request: Request) -> untyped
+
+      def message: () -> _Message
+
+      def chat_thread: () -> Tinyagent::ChatThread
+
+      # @rbs *args: untyped
+      # @rbs return: untyped
+      def call: (*untyped args) -> untyped
+
+      # @rbs commandline: String
+      # @rbs return: boolish
+      # @abstract
+      def match?: (String commandline) -> boolish
+    end
+  end
+end

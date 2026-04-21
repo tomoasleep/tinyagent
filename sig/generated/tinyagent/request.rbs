@@ -1,0 +1,21 @@
+# Generated from lib/tinyagent/request.rb with RBS::Inline
+
+module Tinyagent
+  class Request < Data
+    attr_reader message(): _Message
+
+    attr_reader chat_thread(): Tinyagent::ChatThread
+
+    def self.new: (_Message message, Tinyagent::ChatThread chat_thread) -> instance
+                | (message: _Message, chat_thread: Tinyagent::ChatThread) -> instance
+
+    def self.members: () -> [ :message, :chat_thread ]
+
+    def members: () -> [ :message, :chat_thread ]
+  end
+
+  # Request for chat action from user.
+  class Request
+    def message_body: () -> String
+  end
+end

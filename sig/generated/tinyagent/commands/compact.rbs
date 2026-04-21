@@ -1,0 +1,10 @@
+# Generated from lib/tinyagent/commands/compact.rb with RBS::Inline
+
+module Tinyagent
+  module Commands
+    # Compact chat history by summarizing it
+    class Compact < BuiltinBase
+      def call: (*untyped) -> void
+    end
+  end
+end

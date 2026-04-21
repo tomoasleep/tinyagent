@@ -1,0 +1,21 @@
+# Generated from lib/tinyagent/prompt_command_definition.rb with RBS::Inline
+
+module Tinyagent
+  class PromptCommandDefinition < Data
+    attr_reader name(): String
+
+    attr_reader prompt(): String
+
+    def self.new: (String name, String prompt) -> instance
+                | (name: String, prompt: String) -> instance
+
+    def self.members: () -> [ :name, :prompt ]
+
+    def members: () -> [ :name, :prompt ]
+  end
+
+  # User-defined command model
+  class PromptCommandDefinition
+    include Recordable
+  end
+end

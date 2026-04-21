@@ -1,0 +1,36 @@
+# Generated from lib/tinyagent/actions/base.rb with RBS::Inline
+
+module Tinyagent
+  module Actions
+    # Base class for actions.
+    # @abstract
+    class Base
+      attr_reader message: _Message
+
+      # @rbs message: _Message
+      # @rbs return: void
+      def self.call: (_Message message) -> void
+
+      # @rbs return: void
+      def call: () -> void
+
+      def initialize: (untyped message) -> untyped
+
+      # @rbs %a{memorized}
+      %a{memorized}
+      def database: () -> Tinyagent::Database
+
+      # @rbs %a{memorized}
+      %a{memorized}
+      def user: () -> Tinyagent::User
+
+      # @rbs %a{memorized}
+      %a{memorized}
+      def chat_thread: () -> Tinyagent::ChatThread
+
+      private
+
+      def thread_id: () -> String
+    end
+  end
+end

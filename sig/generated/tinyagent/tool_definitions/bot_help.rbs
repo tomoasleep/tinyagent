@@ -1,0 +1,27 @@
+# Generated from lib/tinyagent/tool_definitions/bot_help.rb with RBS::Inline
+
+module Tinyagent
+  module ToolDefinitions
+    class BotHelp < Base
+      @actions: Array[untyped]?
+
+      def self.actions: () -> untyped
+
+      # @rbs actions: Array[untyped]
+      def self.actions=: (Array[untyped] actions) -> untyped
+
+      # @rbs arguments: Hash[String, untyped]
+      # @rbs return: String?
+      def call: (Hash[String, untyped] arguments) -> String?
+
+      private
+
+      # @rbs filter: String?
+      # @rbs return: Array[String]
+      def filtered_descriptions: (String? filter) -> Array[String]
+
+      # @rbs return: Array[String]
+      def all_descriptions: () -> Array[String]
+    end
+  end
+end

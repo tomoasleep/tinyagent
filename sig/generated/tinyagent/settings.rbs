@@ -1,0 +1,19 @@
+# Generated from lib/tinyagent/settings.rb with RBS::Inline
+
+module Tinyagent
+  # Provide library-wide settings.
+  class Settings
+    # Provide access to settings instance.
+    module Accessor
+      def settings: () -> Tinyagent::Settings
+    end
+
+    # @rbs %a{memorized}
+    %a{memorized}
+    def self.instance: () -> Tinyagent::Settings
+
+    def max_tokens: () -> Integer?
+
+    def auto_compact_threshold: () -> Float
+  end
+end

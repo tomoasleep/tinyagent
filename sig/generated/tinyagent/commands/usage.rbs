@@ -1,0 +1,16 @@
+# Generated from lib/tinyagent/commands/usage.rb with RBS::Inline
+
+module Tinyagent
+  module Commands
+    # Show token usage information for the latest AI response
+    class Usage < BuiltinBase
+      def call: (*untyped) -> void
+
+      private
+
+      # @rbs number: Integer
+      # @rbs return: String
+      def format_number: (Integer number) -> String
+    end
+  end
+end

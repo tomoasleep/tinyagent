@@ -1,0 +1,7 @@
+# Generated from lib/tinyagent/llm.rb with RBS::Inline
+
+module Tinyagent
+  # LLM-related backends and its utilities.
+  module LLM
+  end
+end

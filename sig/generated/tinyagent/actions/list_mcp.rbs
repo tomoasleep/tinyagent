@@ -1,0 +1,21 @@
+# Generated from lib/tinyagent/actions/list_mcp.rb with RBS::Inline
+
+module Tinyagent
+  module Actions
+    # ListMcp action for Tinyagent
+    class ListMcp < Base
+      def call: () -> untyped
+
+      private
+
+      # @rbs client: UserMcpClient
+      # @rbs show_headers: bool
+      # @rbs return: String
+      def format_mcp_client: (UserMcpClient client, ?show_headers: bool) -> String
+
+      # @rbs client: UserMcpClient
+      # @rbs return: String
+      def format_tools: (UserMcpClient client) -> String
+    end
+  end
+end

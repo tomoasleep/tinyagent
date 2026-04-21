@@ -1,4 +1,13 @@
 ## Unreleased
+
+### Changed
+
+- Rename gem from `ruboty-ai_agent` to `tinyagent`
+- Change namespace from `Ruboty::AiAgent` to `Tinyagent`
+- Remove Ruboty dependency - now a standalone gem
+- Change Database::NAMESPACE from `:ai_agent` to `:tinyagent`
+- Move entry point from `lib/ruboty/ai_agent.rb` to `lib/tinyagent.rb`
+
 ## 0.4.0
 
 - Add `bot_help` builtin tool to retrieve Ruboty's help information.

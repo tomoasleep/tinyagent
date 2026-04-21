@@ -1,0 +1,10 @@
+# Generated from lib/tinyagent/user_prompt_command_definitions.rb with RBS::Inline
+
+module Tinyagent
+  # User-defined commands record set
+  class UserPromptCommandDefinitions < UserAssociations[PromptCommandDefinition]
+    # @rbs command: PromptCommandDefinition
+    # @rbs return: PromptCommandDefinition
+    def add: (PromptCommandDefinition command) -> PromptCommandDefinition
+  end
+end

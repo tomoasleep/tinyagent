@@ -1,0 +1,37 @@
+# Generated from lib/tinyagent/user.rb with RBS::Inline
+
+module Tinyagent
+  # User class to manage user-specific data.
+  class User
+    attr_reader database: Tinyagent::Database
+
+    attr_reader id: String
+
+    def self.find_or_create: (database: untyped, id: untyped) -> User
+
+    def initialize: (database: untyped, id: untyped) -> untyped
+
+    # @rbs %a{memorized}
+    %a{memorized}
+    def mcp_configurations: () -> UserMcpConfigurations
+
+    def mcp_clients: () -> Array[UserMcpClient]
+
+    # @rbs %a{memorized}
+    %a{memorized}
+    def ai_memories: () -> UserAiMemories
+
+    def system_prompt: () -> String?
+
+    # @rbs prompt: String?
+    def system_prompt=: (String? prompt) -> untyped
+
+    # @rbs %a{memorized}
+    %a{memorized}
+    def mcp_tools_caches: () -> UserMcpToolsCaches
+
+    # @rbs %a{memorized}
+    %a{memorized}
+    def prompt_command_definitions: () -> UserPromptCommandDefinitions
+  end
+end

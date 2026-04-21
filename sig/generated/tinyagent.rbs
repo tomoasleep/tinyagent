@@ -1,0 +1,8 @@
+# Generated from lib/tinyagent.rb with RBS::Inline
+
+module Tinyagent
+  class Error < StandardError
+  end
+
+  extend Settings::Accessor
+end

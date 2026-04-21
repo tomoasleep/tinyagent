@@ -1,0 +1,7 @@
+# Generated from lib/tinyagent/actions.rb with RBS::Inline
+
+module Tinyagent
+  # Tinyagent actions.
+  module Actions
+  end
+end

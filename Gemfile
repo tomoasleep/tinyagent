@@ -20,6 +20,7 @@ gem 'rubocop-rbs_inline', '~> 1.4.0'
 gem 'rubocop-rspec', '~> 3.7.0'
 gem 'steep', require: false
 
+gem 'kaminari'
 gem 'charm'
 
 gem 'ruby-readability'

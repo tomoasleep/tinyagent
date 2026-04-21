@@ -1,0 +1,21 @@
+# Generated from lib/tinyagent/global_settings.rb with RBS::Inline
+
+module Tinyagent
+  # Global settings for AI agent.
+  class GlobalSettings
+    attr_reader database: Tinyagent::Database
+
+    NAMESPACE_KEYS: Array[Database::keynable]
+
+    def self.find_or_create: (database: untyped) -> GlobalSettings
+
+    # @rbs database: Tinyagent::Database
+    def initialize: (database: Tinyagent::Database) -> untyped
+
+    def system_prompt: () -> String?
+
+    # @rbs prompt: String?
+    # @rbs return: void
+    def system_prompt=: (String? prompt) -> void
+  end
+end

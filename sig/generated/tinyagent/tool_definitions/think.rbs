@@ -1,0 +1,15 @@
+# Generated from lib/tinyagent/tool_definitions/think.rb with RBS::Inline
+
+module Tinyagent
+  module ToolDefinitions
+    # Tool
+    class Think < Base
+      # @rbs arguments: Hash[String, untyped]
+      # @rbs return: String?
+      def call: (Hash[String, untyped] arguments) -> String?
+
+      # @rbs override
+      def silent?: ...
+    end
+  end
+end

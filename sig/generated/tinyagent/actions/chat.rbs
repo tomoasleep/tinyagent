@@ -1,0 +1,29 @@
+# Generated from lib/tinyagent/actions/chat.rb with RBS::Inline
+
+module Tinyagent
+  module Actions
+    # Chat action for Tinyagent
+    class Chat < Base
+      CONVERSATION_KEY: ::Symbol
+
+      # @rbs override
+      def call: ...
+
+      def body_param: () -> String
+
+      # @rbs %a{memorized}
+      %a{memorized}
+      def request: () -> Request
+
+      private
+
+      # @rbs body: String
+      # @rbs return: void
+      def complete_chat: (String body) -> void
+
+      def truncate: (untyped text, max: untyped) -> untyped
+
+      def indent_with_quotation: (untyped text, ?untyped quota) -> untyped
+    end
+  end
+end

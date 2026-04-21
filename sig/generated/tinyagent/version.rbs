@@ -1,0 +1,5 @@
+# Generated from lib/tinyagent/version.rb with RBS::Inline
+
+module Tinyagent
+  VERSION: ::String
+end
