@@ -9,6 +9,7 @@ module Tinyagent
   class Error < StandardError; end
 
   autoload :Agent, 'tinyagent/agent'
+  autoload :Cli, 'tinyagent/cli'
   autoload :CompletionLoop, 'tinyagent/completion_loop'
   autoload :HttpMcpClient, 'tinyagent/http_mcp_client'
   autoload :LLM, 'tinyagent/llm'
@@ -17,6 +18,10 @@ module Tinyagent
   autoload :TokenUsage, 'tinyagent/token_usage'
   autoload :Tool, 'tinyagent/tool'
   autoload :ToolDefinitions, 'tinyagent/tool_definitions'
+
+  module Tui
+    autoload :Chat, 'tinyagent/tui/chat'
+  end
 
   extend Settings::Accessor
 

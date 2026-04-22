@@ -4,6 +4,9 @@ module Tinyagent
   class Error < StandardError
   end
 
+  module Tui
+  end
+
   extend Settings::Accessor
 
   Model: untyped

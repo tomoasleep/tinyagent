@@ -8,8 +8,8 @@ module Tinyagent
     module Commands
       extend Dry::CLI::Registry
 
-      def run
-        Dry::CLI.new(Tinyagent::CLI::Commands).call
+      def self.run
+        Dry::CLI.new(Tinyagent::Cli::Commands).call
       end
 
       require_relative 'commands/tui'

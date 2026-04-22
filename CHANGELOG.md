@@ -1,5 +1,14 @@
 ## Unreleased
 
+### Added
+
+- Add interactive Chat TUI (`tinyagent tui`) built on Bubbletea Elm Architecture
+- Add message history viewport with scrolling (j/k, PgUp/PgDn)
+- Add text input mode (press `i` to enter, Escape to cancel, Enter to send)
+- Add slash commands: `/clear`, `/compact`, `/usage`
+- Add spinner animation during LLM completion
+- Add token usage display in status bar
+
 ### Changed
 
 - Replace custom Hash-based Database layer with Sequel ORM models

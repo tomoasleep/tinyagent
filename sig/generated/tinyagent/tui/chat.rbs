@@ -2,10 +2,71 @@
 
 module Tinyagent
   module Tui
+    # Interactive chat TUI built on Bubbletea Elm Architecture.
     class Chat
       include Bubbletea::Model
 
-      def initialize: () -> untyped
+      class CompletionDoneMessage < Bubbletea::Message
+      end
+
+      # Error message sent when the LLM completion fails.
+      class CompletionErrorMessage < Bubbletea::Message
+        attr_reader error: untyped
+
+        def initialize: (untyped error) -> untyped
+      end
+
+      attr_reader state: untyped
+
+      attr_reader thread: untyped
+
+      attr_reader viewport: untyped
+
+      def initialize: (?thread: untyped) -> untyped
+
+      def init: () -> untyped
+
+      def update: (untyped message) -> untyped
+
+      def view: () -> untyped
+
+      def refresh_viewport: () -> untyped
+
+      private
+
+      def handle_resize: (untyped message) -> untyped
+
+      def handle_key: (untyped message) -> untyped
+
+      def handle_idle_key: (untyped message) -> untyped
+
+      def handle_input_key: (untyped message) -> untyped
+
+      def enter_input_mode: () -> untyped
+
+      def exit_input_mode: () -> untyped
+
+      def submit_message: () -> untyped
+
+      def handle_slash_command: (untyped text) -> untyped
+
+      def handle_usage_command: () -> untyped
+
+      def send_user_message: (untyped text) -> untyped
+
+      def handle_spinner_tick: (untyped message) -> untyped
+
+      def handle_completion_done: () -> untyped
+
+      def handle_completion_error: (untyped message) -> untyped
+
+      def build_messages_content: () -> untyped
+
+      def format_message: (untyped msg) -> untyped
+
+      def help_text: () -> untyped
+
+      def status_bar: () -> untyped
     end
   end
 end
