@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require 'sequel'
 
 require 'tinyagent/version'
 
@@ -47,4 +48,8 @@ module Tinyagent
     PromptCommandDefinition,
     TokenUsage
   ]
+
+  Model = Class.new(Sequel::Model)
+  Model.def_Model(self)
+  DB = Model.db = Sequel.sqlite
 end

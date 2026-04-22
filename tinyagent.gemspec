@@ -31,5 +31,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'openai', '~> 0.22.0'
 
   spec.add_dependency 'charm'
-  spec.add_dependency 'commander'
+  spec.add_dependency 'dry-cli'
+  spec.add_dependency 'sequel'
 end

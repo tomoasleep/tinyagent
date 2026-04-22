@@ -4,11 +4,11 @@ module Tinyagent
   # Agent class to interact with LLM and manage conversations.
   class Agent
     attr_reader :llm #: LLM::OpenAI
-    attr_reader :messages #: Array[ChatMessage]
+    attr_reader :messages #: Array[Message]
     attr_reader :tools #: Array[Tool]
 
     # @rbs llm: LLM::OpenAI
-    # @rbs messages: Array[ChatMessage]
+    # @rbs messages: Array[Message]
     # @rbs tools: Array[Tool]
     def initialize(
       llm:,
