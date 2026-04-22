@@ -14,6 +14,6 @@ RSpec.describe Tinyagent do
   end
 
   it 'loads without errors' do
-    expect { Tinyagent }.not_to raise_error
+    expect { described_class }.not_to raise_error
   end
 end

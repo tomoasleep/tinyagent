@@ -53,9 +53,9 @@ RSpec.describe Tinyagent::HttpMcpClient do
     before do
       stub_mcp_initialize(base_url: base_url)
       stub_mcp_list_tools(base_url: base_url, tools: [
-        { 'name' => 'tool1', 'description' => 'First tool' },
-        { 'name' => 'tool2', 'description' => 'Second tool' }
-      ])
+                            { 'name' => 'tool1', 'description' => 'First tool' },
+                            { 'name' => 'tool2', 'description' => 'Second tool' }
+                          ])
     end
 
     it 'returns an array of tools' do

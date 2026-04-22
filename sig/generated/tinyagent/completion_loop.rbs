@@ -1,0 +1,18 @@
+# Generated from lib/tinyagent/completion_loop.rb with RBS::Inline
+
+module Tinyagent
+  class CompletionLoop
+    attr_reader thread: Thread
+
+    # @rbs thread: Thread
+    def initialize: (thread: Thread) -> untyped
+
+    def llm: () -> untyped
+
+    def completion_loop: () -> untyped
+
+    def agent: () -> untyped
+
+    def tools: () -> untyped
+  end
+end

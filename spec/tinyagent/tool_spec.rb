@@ -20,8 +20,8 @@ RSpec.describe Tinyagent::Tool do
         name: 'echo',
         title: 'Echo',
         description: 'Echoes input',
-        input_schema: {}
-      ) { |params| params.to_s }
+        input_schema: {}, &:to_s
+      )
 
       expect(tool.on_call).not_to be_nil
     end

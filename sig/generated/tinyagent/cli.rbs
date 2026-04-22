@@ -1,0 +1,7 @@
+# Generated from lib/tinyagent/cli.rb with RBS::Inline
+
+module Tinyagent
+  # Define cli Handlers in this module
+  module Cli
+  end
+end

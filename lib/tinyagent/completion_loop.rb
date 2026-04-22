@@ -1,53 +1,66 @@
 # frozen_string_literal: true
 
 module Tinyagent
-  # Chat action for Tinyagent
   class CompletionLoop
     attr_reader :thread #: Thread
-    attr_reader :llm #: LLM::OpenAI
 
     # @rbs thread: Thread
     def initialize(thread:)
       @thread = thread
-      @llm = LLM::OpenAI.new
     end
 
-    # @rbs return: void
+    def llm
+      @llm ||= LLM::OpenAI.new
+    end
+
     def completion_loop
       agent.complete do |event|
         case event[:type]
         when :new_message
-          chat_thread.messages << event[:message]
-          message.reply(event[:message].content) if event[:message].content.length.positive?
-
-          chat_thread.messages.compact(llm:) if chat_thread.messages.over_auto_compact_threshold?
+          thread.add_message(
+            role: event[:message].role,
+            content: event[:message].content
+          )
         when :tool_call
-          message.reply(indent_with_quotation("Calling tool #{event[:tool].name} with arguments #{truncate(event[:tool_arguments]&.to_json, max: 100)}")) unless event[:tool].silent?
+          # Tool calls are logged via events if needed
         when :tool_response
-          chat_thread.messages << event[:message]
-          message.reply(indent_with_quotation("Tool response: #{truncate(event[:tool_response], max: 100)}")) unless event[:tool].silent?
+          msg = event[:message]
+          thread.add_message(
+            role: msg.role,
+            content: msg.content
+          )
+          if msg.tool_calls.any?
+            msg.tool_calls.each do |tc|
+              Tinyagent::ToolCall.create(
+                message_id: thread.messages.last.id,
+                api_id: tc.api_id,
+                name: tc.name,
+                arguments: tc.arguments
+              )
+            end
+          end
         end
       end
+
+      thread.compact(llm:) if thread.over_auto_compact_threshold?
     rescue StandardError => e
       if ENV['DEBUG']
-        message.reply("エラーが発生しました: #{e.full_message}")
+        warn e.full_message
       else
-        message.reply("エラーが発生しました: #{e.message}")
+        warn e.message
       end
     end
 
-    def agent #: Agent
+    def agent
       Agent.new(
         llm:,
-        messages:,
+        messages: thread.messages,
         tools:
       )
     end
 
-    def tools #: Array[Tool]
-      @tools ||= thread.tools
+    def tools
+      thread.tools
     end
-
-    def messages = thread.messages #: Array[Message]
   end
 end

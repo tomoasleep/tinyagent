@@ -11,9 +11,7 @@ module Tinyagent
         end
 
         # @rbs actions: Array[untyped]
-        def actions=(actions)
-          @actions = actions
-        end
+        attr_writer :actions
       end
 
       self.tool_name = 'bot_help'

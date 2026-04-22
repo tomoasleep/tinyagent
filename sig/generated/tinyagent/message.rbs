@@ -1,0 +1,29 @@
+# Generated from lib/tinyagent/message.rb with RBS::Inline
+
+module Tinyagent
+  class Message < ThreadItem
+    ROLES: untyped
+
+    ROLE_IDS: untyped
+
+    def role: () -> untyped
+
+    def tool_call?: () -> untyped
+
+    def tool_call_id: () -> untyped
+
+    def tool_name: () -> untyped
+
+    def tool_arguments: () -> untyped
+
+    def token_usage: () -> untyped
+
+    def to_h: () -> untyped
+
+    def self.from_llm_response: (tool: untyped, tool_call_id: untyped, tool_arguments: untyped, tool_response: untyped) -> untyped
+
+    def associate_tool_call: (api_id: untyped, name: untyped, arguments: untyped) -> untyped
+
+    def before_create: () -> untyped
+  end
+end

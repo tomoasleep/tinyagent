@@ -3,15 +3,14 @@
 module Tinyagent
   module LLM
     Response = Data.define(
-      :message, #: ChatMessage
+      :message, #: Message
       :tool, #: Tinyagent::Tool?
       :tool_call_id, #: String?
-      :tool_arguments #: Hash[String, String]?
+      :tool_arguments #: Hash[String, untyped]?
     )
 
-    # General response class for LLM interactions.
     class Response
-      def call_tool #: String?
+      def call_tool
         tool&.call(tool_arguments)
       end
     end

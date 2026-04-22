@@ -81,8 +81,8 @@ module OpenAIMockHelper
     match(
       messages.map do |msg|
         case msg
-        when Tinyagent::ChatMessage
-          deep_stringify_keys(format_chat_message_for_request(msg))
+        when Tinyagent::Message
+          deep_stringify_keys(format_message_for_request(msg))
         when Hash, Array
           deep_stringify_keys(msg)
         else
@@ -92,7 +92,7 @@ module OpenAIMockHelper
     )
   end
 
-  def format_chat_message_for_request(message)
+  def format_message_for_request(message)
     case message.role.to_sym
     when :system
       { role: 'system', content: message.content }

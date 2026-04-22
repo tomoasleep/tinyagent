@@ -1,0 +1,12 @@
+# Generated from lib/tinyagent/cli/commands.rb with RBS::Inline
+
+module Tinyagent
+  module Cli
+    # Define cli commands in this module.
+    module Commands
+      extend Dry::CLI::Registry
+
+      def run: () -> untyped
+    end
+  end
+end

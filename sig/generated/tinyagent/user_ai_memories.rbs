@@ -1,9 +1,0 @@
-# Generated from lib/tinyagent/user_ai_memories.rb with RBS::Inline
-
-module Tinyagent
-  # Manage Ai Memories for a specific user.
-  class UserAiMemories < UserAssociations[String]
-    # @rbs memory: String
-    def add: (String memory) -> void
-  end
-end

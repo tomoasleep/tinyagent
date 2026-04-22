@@ -2,6 +2,19 @@
 
 ### Changed
 
+- Replace custom Hash-based Database layer with Sequel ORM models
+- Replace ChatMessage/ChatThread with Sequel-based Message/Thread models
+- Use Class Table Inheritance for ThreadItem/Message hierarchy
+- Store token usage directly in messages table columns
+- Store tool call details via associated ToolCall records (api_id, name, arguments)
+- Remove Recordable serialization system
+- Remove Actions, Commands, User, GlobalSettings brain-based layers
+- Remove Database, RecordSet, ChatThreadAssociations, UserAssociations
+
+## Unreleased (previous)
+
+### Changed
+
 - Rename gem from `ruboty-ai_agent` to `tinyagent`
 - Change namespace from `Ruboty::AiAgent` to `Tinyagent`
 - Remove Ruboty dependency - now a standalone gem

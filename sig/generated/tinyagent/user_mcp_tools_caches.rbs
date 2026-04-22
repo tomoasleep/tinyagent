@@ -1,9 +1,0 @@
-# Generated from lib/tinyagent/user_mcp_tools_caches.rb with RBS::Inline
-
-module Tinyagent
-  type tool_def = Hash[Symbol | String, untyped]
-
-  # Manage tools cache for a specific user and server.
-  class UserMcpToolsCaches < UserMcpCaches[Array[tool_def]]
-  end
-end

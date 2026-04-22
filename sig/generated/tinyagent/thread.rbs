@@ -1,0 +1,21 @@
+# Generated from lib/tinyagent/thread.rb with RBS::Inline
+
+module Tinyagent
+  class Thread < Model
+    def messages_dataset: () -> untyped
+
+    def add_message: (role: untyped, content: untyped, **untyped opts) -> untyped
+
+    def clear: () -> untyped
+
+    def over_auto_compact_threshold?: () -> untyped
+
+    def token_usage: () -> untyped
+
+    def compact: (llm: untyped) -> untyped
+
+    def summarize: (llm: untyped) -> untyped
+
+    def tools: () -> untyped
+  end
+end

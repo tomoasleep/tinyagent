@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 module Tinyagent
-  # Token usage information from LLM responses
   class TokenUsage
-    include Recordable
-
-    register_record_type :token_usage
-
     attr_reader :prompt_tokens #: Integer
     attr_reader :completion_tokens #: Integer
     attr_reader :total_tokens #: Integer
@@ -23,16 +18,12 @@ module Tinyagent
       @token_limit = token_limit
     end
 
-    # Calculate usage percentage if token limit is available
-    # @rbs return: (Float | nil)
     def usage_percentage
       return nil unless token_limit
 
       (total_tokens.to_f / token_limit * 100).round(2).to_f
     end
 
-    # Check if usage percentage exceeds auto compact threshold
-    # @rbs return: bool
     def over_auto_compact_threshold?
       percentage = usage_percentage
       return false unless percentage
@@ -41,7 +32,7 @@ module Tinyagent
       percentage >= threshold
     end
 
-    def to_h #: Hash[Symbol, untyped]
+    def to_h
       {
         prompt_tokens:,
         completion_tokens:,

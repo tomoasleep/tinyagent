@@ -2,46 +2,45 @@
 
 Sequel.migration do
   change do
-    create_tables(:sessions) do
+    create_table(:sessions) do
       primary_key :id
 
       foreign_key :thread_id, :threads
     end
 
-    create_tables(:threads) do
+    create_table(:threads) do
       primary_key :id
       foreign_key :session_id, :sessions
     end
 
-    create_tables(:thread_item) do
+    create_table(:thread_items) do
       primary_key :id
       foreign_key :thread_id, :threads
 
       String :type, null: false
-      Datetime :created_at, null: false
+      DateTime :created_at, null: false, default: Sequel::CURRENT_TIMESTAMP
     end
 
-    create_tables(:messages) do
-      primary_key :id
+    create_table(:messages) do
+      foreign_key :id, :thread_items, primary_key: true
 
       Integer :role_id, null: false
+      String :content, text: true
 
-      String :content
+      Integer :token_usage_prompt_tokens
+      Integer :token_usage_completion_tokens
+      Integer :token_usage_total_tokens
+      Integer :token_usage_token_limit
     end
 
-    create_tables(:tool_call) do
+    create_table(:tool_calls) do
       primary_key :id
       foreign_key :message_id, :messages
 
+      String :api_id, null: false
       String :name, null: false
-      String :arguments, null: false
-      String :response
-    end
-
-    create_tables(:tools) do
-      primary_key :id
-
-      String :name
+      String :arguments, text: true
+      String :response, text: true
     end
   end
 end

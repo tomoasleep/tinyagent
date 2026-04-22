@@ -2,7 +2,6 @@
 
 module Tinyagent
   module LLM
-    # LLM interface for OpenAI's chat completion API.
     class OpenAI
       attr_reader client: OpenAI::Client
 
@@ -16,10 +15,10 @@ module Tinyagent
       %a{memorized}
       def model_info: () -> Model
 
-      # @rbs messages: Array[ChatMessage]
+      # @rbs messages: Array[Message]
       # @rbs tools: Array[Tool]
       # @rbs return: Response
-      def complete: (messages: Array[ChatMessage], ?tools: Array[Tool]) -> Response
+      def complete: (messages: Array[Message], ?tools: Array[Tool]) -> Response
 
       private
 
@@ -35,9 +34,9 @@ module Tinyagent
 
       type message = system_message | user_message | assistant_message | tool_message
 
-      # @rbs messages: Array[ChatMessage]
+      # @rbs messages: Array[Message]
       # @rbs return: Array[OpenAI::Models::Chat::chat_completion_message_param]
-      def openai_messages_from_messages: (Array[ChatMessage] messages) -> Array[OpenAI::Models::Chat::chat_completion_message_param]
+      def openai_messages_from_messages: (Array[Message] messages) -> Array[OpenAI::Models::Chat::chat_completion_message_param]
 
       # @rbs tools: Array[Tool]
       # @rbs return: Array[OpenAI::Models::Chat::chat_completion_tool]

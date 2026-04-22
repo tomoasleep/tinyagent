@@ -1,0 +1,7 @@
+# Generated from lib/tinyagent/session.rb with RBS::Inline
+
+module Tinyagent
+  # Manage thread-specific data.
+  class Session < Model
+  end
+end

@@ -1,10 +1,7 @@
 # Generated from lib/tinyagent/token_usage.rb with RBS::Inline
 
 module Tinyagent
-  # Token usage information from LLM responses
   class TokenUsage
-    include Recordable
-
     attr_reader prompt_tokens: Integer
 
     attr_reader completion_tokens: Integer
@@ -19,14 +16,10 @@ module Tinyagent
     # @rbs ?token_limit: Integer?
     def initialize: (prompt_tokens: Integer, completion_tokens: Integer, total_tokens: Integer, ?token_limit: untyped) -> untyped
 
-    # Calculate usage percentage if token limit is available
-    # @rbs return: (Float | nil)
-    def usage_percentage: () -> (Float | nil)
+    def usage_percentage: () -> untyped
 
-    # Check if usage percentage exceeds auto compact threshold
-    # @rbs return: bool
-    def over_auto_compact_threshold?: () -> bool
+    def over_auto_compact_threshold?: () -> untyped
 
-    def to_h: () -> Hash[Symbol, untyped]
+    def to_h: () -> untyped
   end
 end

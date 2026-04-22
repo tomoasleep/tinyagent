@@ -4,7 +4,6 @@ require 'openai'
 
 module Tinyagent
   module LLM
-    # LLM interface for OpenAI's chat completion API.
     class OpenAI
       autoload :Model, 'tinyagent/llm/openai/model'
       attr_reader :client #: OpenAI::Client
@@ -22,7 +21,7 @@ module Tinyagent
         @model_info ||= Model.new(model)
       end
 
-      # @rbs messages: Array[ChatMessage]
+      # @rbs messages: Array[Message]
       # @rbs tools: Array[Tool]
       # @rbs return: Response
       def complete(messages:, tools: [])
@@ -51,11 +50,11 @@ module Tinyagent
       #   type tool_message = { role: 'tool', tool_call_id: String, content: String }
       #   type message = system_message | user_message | assistant_message | tool_message
 
-      # @rbs messages: Array[ChatMessage]
+      # @rbs messages: Array[Message]
       # @rbs return: Array[OpenAI::Models::Chat::chat_completion_message_param]
       def openai_messages_from_messages(messages)
         messages.map do |message|
-          case message.role.to_sym
+          case message.role
           when :system
             ::OpenAI::Models::Chat::ChatCompletionSystemMessageParam.new(
               role: :system, content: message.content
@@ -64,9 +63,8 @@ module Tinyagent
             ::OpenAI::Models::Chat::ChatCompletionUserMessageParam.new(
               role: :user, content: message.content
             )
-            # { role: 'user', content: message.content } #: user_message
           when :assistant
-            if message.tool_call_id
+            if message.tool_call?
               tool_calls = [
                 ::OpenAI::Models::Chat::ChatCompletionMessageFunctionToolCall.new(
                   id: message.tool_call_id,
@@ -160,15 +158,25 @@ module Tinyagent
             JSON.parse(arguments)
           end
 
+        msg = Message.new(
+          role_id: Message::ROLES[:assistant],
+          content: choice.message.content || '',
+          token_usage_prompt_tokens: token_usage&.prompt_tokens,
+          token_usage_completion_tokens: token_usage&.completion_tokens,
+          token_usage_total_tokens: token_usage&.total_tokens,
+          token_usage_token_limit: token_usage&.token_limit
+        )
+
+        if tool_call && tool_arguments
+          msg.associate_tool_call(
+            api_id: tool_call.id,
+            name: tool&.name || 'unknown',
+            arguments: tool_arguments
+          )
+        end
+
         Response.new(
-          message: ChatMessage.new(
-            role: choice.message.role,
-            content: choice.message.content || '',
-            tool_call_id: tool_call&.id,
-            tool_name: tool&.name,
-            tool_arguments:,
-            token_usage:
-          ),
+          message: msg,
           tool:,
           tool_call_id: tool_call&.id,
           tool_arguments:

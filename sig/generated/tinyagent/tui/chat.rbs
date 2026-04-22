@@ -1,0 +1,11 @@
+# Generated from lib/tinyagent/tui/chat.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    class Chat
+      include Bubbletea::Model
+
+      def initialize: () -> untyped
+    end
+  end
+end

@@ -96,11 +96,4 @@ RSpec.describe Tinyagent::TokenUsage do
       expect(h[:token_limit]).to eq(100)
     end
   end
-
-  describe 'Recordable' do
-    it 'includes record_type in to_h' do
-      usage = described_class.new(prompt_tokens: 10, completion_tokens: 5, total_tokens: 15)
-      expect(usage.to_h[:record_type]).to eq(:token_usage)
-    end
-  end
 end

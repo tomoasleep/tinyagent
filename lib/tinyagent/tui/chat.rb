@@ -9,7 +9,7 @@ module Tinyagent
       include Bubbletea::Model
 
       def initialize
-        @chat_thread = ChatThread.new
+        @thread = Thread.create
       end
     end
   end

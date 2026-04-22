@@ -10,8 +10,7 @@ module Tinyagent
       class Tui < Dry::CLI::Command
         desc 'Start TUI chat'
 
-        def call
-        end
+        def call; end
       end
     end
   end

@@ -5,4 +5,8 @@ module Tinyagent
   end
 
   extend Settings::Accessor
+
+  Model: untyped
+
+  DB: untyped
 end

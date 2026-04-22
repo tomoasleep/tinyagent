@@ -2,6 +2,9 @@
 
 RSpec.describe Tinyagent::Agent do
   include OpenAIMockHelper
+  include EnvMockHelper
+
+  before { stub_env(OPENAI_API_KEY: 'test-key') }
 
   let(:llm) { Tinyagent::LLM::OpenAI.new }
   let(:tool) do
@@ -31,7 +34,10 @@ RSpec.describe Tinyagent::Agent do
   describe '#complete' do
     let(:messages) do
       [
-        Tinyagent::ChatMessage.new(role: :user, content: 'Hello')
+        Tinyagent::Message.new(
+          role_id: Tinyagent::Message::ROLES[:user],
+          content: 'Hello'
+        )
       ]
     end
 
@@ -67,10 +73,10 @@ RSpec.describe Tinyagent::Agent do
 
         stub_openai_chat_completion_with_content(
           messages: match([
-            anything,
-            anything,
-            anything
-          ]),
+                            anything,
+                            anything,
+                            anything
+                          ]),
           response_content: 'The result is 4.'
         )
       end

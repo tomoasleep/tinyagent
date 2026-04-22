@@ -23,3 +23,5 @@ gem 'steep', require: false
 gem 'charm'
 
 gem 'ruby-readability'
+
+gem 'sqlite3', '~> 2.9', group: :test

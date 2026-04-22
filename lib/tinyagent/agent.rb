@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Tinyagent
-  # Agent class to interact with LLM and manage conversations.
   class Agent
     attr_reader :llm #: LLM::OpenAI
     attr_reader :messages #: Array[Message]
@@ -34,7 +33,7 @@ module Tinyagent
           messages << response.message
 
           tool_response = response.call_tool || 'no return value'
-          tool_response_message = ChatMessage.from_llm_response(
+          tool_response_message = Message.from_llm_response(
             tool: response.tool,
             tool_call_id: response.tool_call_id,
             tool_arguments: response.tool_arguments,
