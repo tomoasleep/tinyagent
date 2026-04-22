@@ -100,19 +100,24 @@ module Tinyagent
       end
 
       def handle_key(message)
-        case @state
-        when :idle
-          handle_idle_key(message)
-        when :input
-          handle_input_key(message)
-        when :thinking
-          [self, nil]
+        case message.to_s
+        when 'ctrl+c'
+          [self, Bubbletea.quit]
+        else
+          case @state
+          when :idle
+            handle_idle_key(message)
+          when :input
+            handle_input_key(message)
+          when :thinking
+            [self, nil]
+          end
         end
       end
 
       def handle_idle_key(message)
         case message.to_s
-        when 'q', 'ctrl+c'
+        when 'q'
           [self, Bubbletea.quit]
         when 'i'
           enter_input_mode

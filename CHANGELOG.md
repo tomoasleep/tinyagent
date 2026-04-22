@@ -2,6 +2,7 @@
 
 ### Added
 
+- Allow Ctrl+C to quit the TUI from any state (input, thinking, idle)
 - Add interactive Chat TUI (`tinyagent tui`) built on Bubbletea Elm Architecture
 - Add message history viewport with scrolling (j/k, PgUp/PgDn)
 - Add text input mode (press `i` to enter, Escape to cancel, Enter to send)

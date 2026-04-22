@@ -103,6 +103,11 @@ RSpec.describe Tinyagent::Tui::Chat do
     describe 'input state' do
       before { chat.update(key('i')) }
 
+      it 'quits on ctrl+c' do
+        _model, cmd = chat.update(key('ctrl+c'))
+        expect(cmd).to be_a(Bubbletea::QuitCommand)
+      end
+
       it 'returns to idle on escape' do
         chat.update(key('esc'))
         expect(chat.state).to eq(:idle)
@@ -186,6 +191,15 @@ RSpec.describe Tinyagent::Tui::Chat do
 
   describe 'completion' do
     before { chat.init }
+
+    it 'quits on ctrl+c while thinking' do
+      chat.update(key('i'))
+      submit_text(chat, 'Hi')
+      expect(chat.state).to eq(:thinking)
+
+      _model, cmd = chat.update(key('ctrl+c'))
+      expect(cmd).to be_a(Bubbletea::QuitCommand)
+    end
 
     it 'returns to idle on CompletionDoneMessage' do
       chat.update(key('i'))
