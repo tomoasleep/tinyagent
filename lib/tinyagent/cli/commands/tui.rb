@@ -12,6 +12,7 @@ module Tinyagent
         desc 'Start TUI chat'
 
         def call(*)
+          Migrations.run
           Bubbletea.run(Tinyagent::Tui::Chat.new, alt_screen: true)
         end
       end

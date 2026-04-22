@@ -14,28 +14,21 @@ module Tinyagent
   autoload :HttpMcpClient, 'tinyagent/http_mcp_client'
   autoload :LLM, 'tinyagent/llm'
   autoload :McpClients, 'tinyagent/mcp_clients'
+  autoload :Message, 'tinyagent/message'
+  autoload :Migrations, 'tinyagent/migrations'
+  autoload :Session, 'tinyagent/session'
   autoload :Settings, 'tinyagent/settings'
   autoload :TokenUsage, 'tinyagent/token_usage'
   autoload :Tool, 'tinyagent/tool'
   autoload :ToolDefinitions, 'tinyagent/tool_definitions'
-
-  module Tui
-    autoload :Chat, 'tinyagent/tui/chat'
-  end
+  autoload :ThreadItem, 'tinyagent/thread_item'
+  autoload :ToolCall, 'tinyagent/tool_call'
+  autoload :Tui, 'tinyagent/tui'
+  autoload :Thread, 'tinyagent/thread'
 
   extend Settings::Accessor
 
   Model = Class.new(Sequel::Model)
   Model.def_Model(self)
   DB = Model.db = Sequel.sqlite
-
-  Sequel.extension :migration
-  migrations_dir = File.join(File.dirname(__FILE__), 'tinyagent', 'migrations')
-  Sequel::Migrator.run(DB, migrations_dir)
-
-  require 'tinyagent/thread_item'
-  require 'tinyagent/message'
-  require 'tinyagent/tool_call'
-  require 'tinyagent/thread'
-  require 'tinyagent/session'
 end
