@@ -2,6 +2,9 @@
 
 ### Added
 
+- Add `OPENAI_BASE_URL` environment variable support for custom LLM endpoints
+- Add E2E test suite using AIMock and tuistory (`spec/e2e/`)
+- Rewrite E2E tests from TypeScript/Vitest to Ruby/RSpec
 - Allow Ctrl+C to quit the TUI from any state (input, thinking, idle)
 - Add interactive Chat TUI (`tinyagent tui`) built on Bubbletea Elm Architecture
 - Add message history viewport with scrolling (j/k, PgUp/PgDn)

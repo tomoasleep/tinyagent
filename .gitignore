@@ -11,9 +11,13 @@
 
 # rspec failure tracking
 .rspec_status
+.rspec_e2e_status
 
 Gemfile.lock
 
 # rbs collection
 .gem_rbs_collection/
 rbs_collection.lock.yaml
+
+# e2e
+spec/support/e2e/node_modules/

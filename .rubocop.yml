@@ -37,6 +37,8 @@ Metrics:
 RSpec/ExampleLength:
   Max: 7
   CountAsOne: ["array", "heredoc", "method_call"]
+  Exclude:
+    - 'spec/e2e/**/*'
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
@@ -61,3 +63,24 @@ Style/Documentation:
 
 Style/RedundantBegin:
   Enabled: false # because of Steep annotations
+
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/e2e/**/*'
+
+RSpec/NoExpectationExample:
+  Exclude:
+    - 'spec/e2e/**/*'
+
+RSpec/ContextWording:
+  Exclude:
+    - 'spec/e2e/**/*'
+
+Style/GlobalVars:
+  Exclude:
+    - 'spec/e2e/**/*'
+    - 'spec/support/e2e/**/*'
+
+Style/SpecialGlobalVars:
+  Exclude:
+    - 'spec/e2e/**/*'

@@ -12,7 +12,7 @@ module Tinyagent
       # @rbs ?client: OpenAI::Client
       # @rbs ?model: String
       def initialize(client: nil, model: nil)
-        @client = client || ::OpenAI::Client.new(api_key: ENV.fetch('OPENAI_API_KEY', nil))
+        @client = client || build_default_client
         @model = model || ENV.fetch('OPENAI_MODEL', 'gpt-5-nano')
       end
 
@@ -35,6 +35,13 @@ module Tinyagent
       end
 
       private
+
+      def build_default_client
+        opts = { api_key: ENV.fetch('OPENAI_API_KEY', nil) }
+        base_url = ENV.fetch('OPENAI_BASE_URL', nil)
+        opts[:base_url] = base_url if base_url
+        ::OpenAI::Client.new(**opts)
+      end
 
       # @rbs!
       #   type tool_call = {

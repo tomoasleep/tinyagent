@@ -8,6 +8,10 @@ require 'bump/tasks'
 
 RSpec::Core::RakeTask.new(:spec)
 
+RSpec::Core::RakeTask.new(:'spec:e2e') do |t|
+  t.pattern = 'spec/e2e/**/*_spec.rb'
+end
+
 RuboCop::RakeTask.new do |task|
   task.plugins << 'rubocop-rake'
 end

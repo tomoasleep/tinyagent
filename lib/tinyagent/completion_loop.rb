@@ -14,6 +14,7 @@ module Tinyagent
     end
 
     def completion_loop
+      thread.refresh
       agent.complete do |event|
         case event[:type]
         when :new_message
