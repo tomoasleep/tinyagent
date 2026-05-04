@@ -14,6 +14,7 @@ module KeyHelper
                when 'tab' then Bubbletea::KeyMessage::KEY_TAB
                when 'backspace' then Bubbletea::KeyMessage::KEY_BACKSPACE
                when 'ctrl+c' then Bubbletea::KeyMessage::KEY_CTRL_C
+               when 'ctrl+p' then Bubbletea::KeyMessage::KEY_CTRL_P
                else
                  Bubbletea::KeyMessage::KEY_RUNES
                end
@@ -71,7 +72,7 @@ RSpec.describe Tinyagent::Tui::Chat do
 
     it 'shows help text in idle state' do
       chat.init
-      expect(chat.view).to include('Press')
+      expect(chat.view).to include('Ctrl+P')
     end
   end
 
@@ -185,6 +186,144 @@ RSpec.describe Tinyagent::Tui::Chat do
     it 'ignores unknown slash commands' do
       chat.update(key('i'))
       submit_text(chat, '/xyz')
+      expect(chat.state).to eq(:idle)
+    end
+  end
+
+  describe 'command palette' do
+    before { chat.init }
+
+    it 'opens palette on ctrl+p' do
+      chat.update(key('ctrl+p'))
+      expect(chat.state).to eq(:palette)
+    end
+
+    it 'closes palette on esc' do
+      chat.update(key('ctrl+p'))
+      chat.update(key('esc'))
+      expect(chat.state).to eq(:idle)
+    end
+
+    it 'toggles palette on ctrl+p' do
+      chat.update(key('ctrl+p'))
+      expect(chat.state).to eq(:palette)
+      chat.update(key('ctrl+p'))
+      expect(chat.state).to eq(:idle)
+    end
+
+    it 'executes clear command from palette' do
+      thread.add_message(role: :user, content: 'Hello')
+      chat.update(key('ctrl+p'))
+      chat.update(key('enter'))
+      expect(thread.messages_dataset.all).to be_empty
+      expect(chat.state).to eq(:idle)
+    end
+
+    it 'executes usage command from palette and shows tokens' do
+      thread.add_message(
+        role: :assistant,
+        content: 'Hi',
+        token_usage_prompt_tokens: 10,
+        token_usage_completion_tokens: 5,
+        token_usage_total_tokens: 15,
+        token_usage_token_limit: 4096
+      )
+      chat.update(key('ctrl+p'))
+      chat.update(key('enter'))
+      expect(chat.state).to eq(:idle)
+      expect(chat.view).to include('15')
+    end
+
+    it 'navigates and executes compact command from palette' do
+      chat.update(key('ctrl+p'))
+      chat.update(key('down'))
+      chat.update(key('enter'))
+      expect(chat.state).to eq(:idle)
+      expect(chat.view).to include('not yet available')
+    end
+
+    it 'quits on ctrl+c while palette is open' do
+      chat.update(key('ctrl+p'))
+      _model, cmd = chat.update(key('ctrl+c'))
+      expect(cmd).to be_a(Bubbletea::QuitCommand)
+    end
+
+    it 'renders palette overlay on top of viewport content' do
+      chat.update(key('ctrl+p'))
+      view = chat.view
+      plain_lines = view.split("\n").map { |l| Bubbles::ANSI.strip(l).rstrip }
+
+      expect(plain_lines.length).to eq(23)
+      expect(plain_lines[0]).to start_with('Welcome to tinyagent')
+      expect(plain_lines[0]).to include('╭')
+      expect(plain_lines[6]).to include('╰')
+    end
+
+    it 'shows viewport text alongside palette border' do
+      chat.update(key('ctrl+p'))
+      plain_lines = chat.view.split("\n").map { |l| Bubbles::ANSI.strip(l).rstrip }
+
+      expect(plain_lines[2]).to start_with('Press i to enter inpu')
+      expect(plain_lines[2]).to include('│').and include('clear')
+      expect(plain_lines[5]).to include('esc to close')
+    end
+
+    it 'has separator and help bar below overlay' do
+      chat.update(key('ctrl+p'))
+      view = chat.view
+      plain_lines = view.split("\n").map { |l| Bubbles::ANSI.strip(l).rstrip }
+
+      expect(plain_lines[21]).to start_with('──')
+      expect(plain_lines[22]).to include('navigate')
+      expect(plain_lines[22]).to include('esc')
+    end
+
+    it 'shows palette-specific help bar instead of status bar' do
+      chat.update(key('ctrl+p'))
+      view = chat.view
+      expect(view).to include('navigate')
+      expect(view).to include('enter: execute')
+      expect(view).not_to include('i:input')
+    end
+
+    it 'opens palette from input mode' do
+      chat.update(key('i'))
+      chat.update(key('ctrl+p'))
+      expect(chat.state).to eq(:palette)
+    end
+
+    it 'filters commands with fuzzy matching' do
+      chat.update(key('ctrl+p'))
+      type_text(chat, 'cl')
+      items = chat.instance_variable_get(:@command_palette).visible_items
+      expect(items.length).to eq(1)
+      expect(items.first[:title]).to eq('clear')
+    end
+
+    it 'resets filter on palette reopen' do
+      chat.update(key('ctrl+p'))
+      type_text(chat, 'cl')
+      chat.update(key('esc'))
+      chat.update(key('ctrl+p'))
+      expect(chat.state).to eq(:palette)
+      items = chat.instance_variable_get(:@command_palette).visible_items
+      expect(items.length).to eq(3)
+    end
+
+    it 'shows all items when filter is empty' do
+      chat.update(key('ctrl+p'))
+      type_text(chat, 'c')
+      chat.update(key('backspace'))
+      items = chat.instance_variable_get(:@command_palette).visible_items
+      expect(items.length).to eq(3)
+    end
+
+    it 'executes filtered command' do
+      thread.add_message(role: :user, content: 'Hello')
+      chat.update(key('ctrl+p'))
+      type_text(chat, 'cl')
+      chat.update(key('enter'))
+      expect(thread.messages_dataset.all).to be_empty
       expect(chat.state).to eq(:idle)
     end
   end

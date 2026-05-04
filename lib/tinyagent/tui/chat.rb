@@ -24,6 +24,14 @@ module Tinyagent
 
       attr_reader :state, :thread, :viewport
 
+      COMMANDS = [
+        { title: 'clear', key: :clear },
+        { title: 'compact', key: :compact },
+        { title: 'usage', key: :usage }
+      ].freeze
+
+      PALETTE_WIDTH = 36
+
       def initialize(thread: nil)
         @thread = thread || Tinyagent::Thread.create
         @state = :idle
@@ -35,6 +43,16 @@ module Tinyagent
         @text_input.width = @width - 2
         @text_input.placeholder = 'Type a message...'
         @spinner = Bubbles::Spinner.new
+        @command_palette = Bubbles::List.new(COMMANDS.dup, width: PALETTE_WIDTH - 6, height: COMMANDS.length)
+        @command_palette.show_title = false
+        @command_palette.show_filter = false
+        @command_palette.show_pagination = false
+        @command_palette.show_status_bar = false
+        @command_palette.fill_height = false
+        @palette_filter_input = Bubbles::TextInput.new
+        @palette_filter_input.prompt = ''
+        @palette_filter_input.placeholder = 'Type to filter...'
+        @palette_filter_input.width = PALETTE_WIDTH - 6
         refresh_viewport
       end
 
@@ -62,7 +80,11 @@ module Tinyagent
       def view
         lines = []
 
-        lines << viewport.view
+        lines << if @state == :palette
+                   palette_overlay_view
+                 else
+                   viewport.view
+                 end
 
         separator = Lipgloss::Style.new.foreground('240').render('─' * @width)
         lines << separator
@@ -70,6 +92,8 @@ module Tinyagent
         case @state
         when :input
           lines << @text_input.view
+        when :palette
+          lines << Lipgloss::Style.new.foreground('241').render('↑↓ navigate | enter: execute | esc: close')
         when :thinking
           spinner_view = "#{@spinner.view} Thinking..."
           lines << Lipgloss::Style.new.foreground('205').render(spinner_view)
@@ -95,6 +119,8 @@ module Tinyagent
         @viewport.width = @width
         @viewport.height = [@height - 3, 1].max
         @text_input.width = [@width - 2, 1].max
+        @command_palette.width = PALETTE_WIDTH - 6
+        @palette_filter_input.width = PALETTE_WIDTH - 6
         refresh_viewport
         [self, nil]
       end
@@ -109,6 +135,8 @@ module Tinyagent
             handle_idle_key(message)
           when :input
             handle_input_key(message)
+          when :palette
+            handle_palette_key(message)
           when :thinking
             [self, nil]
           end
@@ -121,6 +149,8 @@ module Tinyagent
           [self, Bubbletea.quit]
         when 'i'
           enter_input_mode
+        when 'ctrl+p'
+          open_palette
         else
           @viewport, cmd = @viewport.update(message)
           [self, cmd]
@@ -131,6 +161,10 @@ module Tinyagent
         case message.to_s
         when 'esc'
           exit_input_mode
+        when 'ctrl+p'
+          @text_input.blur
+          @text_input.reset
+          open_palette
         else
           @text_input, cmd = @text_input.update(message)
           if message.enter?
@@ -139,6 +173,117 @@ module Tinyagent
             [self, cmd]
           end
         end
+      end
+
+      def handle_palette_key(message)
+        case message.to_s
+        when 'esc', 'ctrl+p'
+          close_palette
+        when 'enter'
+          execute_palette_command
+        when 'up', 'k'
+          @command_palette.select_prev
+          [self, nil]
+        when 'down', 'j'
+          @command_palette.select_next
+          [self, nil]
+        else
+          @palette_filter_input, cmd = @palette_filter_input.update(message)
+          filter_commands
+          [self, cmd]
+        end
+      end
+
+      def filter_commands
+        query = @palette_filter_input.value.strip
+        if query.empty?
+          @command_palette.items = COMMANDS.dup
+        else
+          filtered = COMMANDS.select { |cmd| fuzzy_match?(query, cmd[:title]) }
+          @command_palette.items = filtered
+        end
+      end
+
+      def fuzzy_match?(query, target)
+        return true if query.empty?
+
+        query = query.downcase
+        target = target.downcase
+        idx = -1
+        query.each_char.all? { |c| idx = target.index(c, idx + 1) }
+      end
+
+      def palette_overlay_view
+        inner_lines = []
+        inner_lines << @palette_filter_input.view
+        inner_lines << @command_palette.view
+        inner_lines << Lipgloss::Style.new.foreground('241').render('esc to close')
+        inner = inner_lines.join("\n")
+
+        box_style = Lipgloss::Style.new
+                                   .border(Lipgloss::ROUNDED_BORDER)
+                                   .padding(0, 2)
+                                   .width(PALETTE_WIDTH)
+
+        palette_box = box_style.render(inner)
+        palette_w = Lipgloss.width(palette_box)
+        palette_h = Lipgloss.height(palette_box)
+
+        viewport_content = @viewport.view
+        vp_lines = viewport_content.split("\n")
+
+        viewport_height = [@height - 3, 1].max
+        vp_lines << '' while vp_lines.length < viewport_height
+
+        overlay_x = [(@width - palette_w) / 2, 0].max
+
+        last_content_line = vp_lines.rindex { |l| Bubbles::ANSI.strip(l).strip != '' }
+        overlay_y = last_content_line ? [last_content_line - palette_h + 2, 0].max : 0
+
+        dim_style = Lipgloss::Style.new.foreground('244')
+
+        palette_lines = palette_box.split("\n")
+        palette_lines.each_with_index do |pl, i|
+          target_y = overlay_y + i
+          break if target_y >= vp_lines.length
+
+          plain = Bubbles::ANSI.strip(vp_lines[target_y]).ljust(@width)
+          dim_left = dim_style.render(plain[0, overlay_x])
+          dim_right = dim_style.render(plain[overlay_x + palette_w, @width - overlay_x - palette_w])
+          vp_lines[target_y] = dim_left + pl + dim_right
+        end
+
+        vp_lines.join("\n")
+      end
+
+      def open_palette
+        @state = :palette
+        @palette_filter_input.focus
+        @palette_filter_input.reset
+        @command_palette.items = COMMANDS.dup
+        @command_palette.select(0)
+        [self, nil]
+      end
+
+      def close_palette
+        @state = :idle
+        @palette_filter_input.blur
+        [self, nil]
+      end
+
+      def execute_palette_command
+        item = @command_palette.selected_item
+        case item[:key]
+        when :clear
+          @thread.clear
+          @status_message = 'Cleared.'
+        when :compact
+          @status_message = 'Compact not yet available.'
+        when :usage
+          handle_usage_command
+        end
+        refresh_viewport
+        close_palette
       end
 
       def enter_input_mode
@@ -258,6 +403,7 @@ module Tinyagent
           Welcome to tinyagent chat!
 
           Press i to enter input mode
+          Press Ctrl+P to open command palette
           Press q or Ctrl+C to quit
           Use /clear, /compact, /usage for commands
         TEXT
@@ -271,7 +417,7 @@ module Tinyagent
         parts << "tokens:#{usage.total_tokens}" if usage
 
         bar = if parts.empty?
-                'Press i to input | q to quit'
+                'i:input | Ctrl+P:commands | q:quit'
               else
                 parts.join(' | ')
               end

@@ -2,6 +2,7 @@
 
 ### Added
 
+- Add command palette with fuzzy search: press `Ctrl+P` to open a floating overlay with real-time filtering of commands (clear, compact, usage)
 - Add `OPENAI_BASE_URL` environment variable support for custom LLM endpoints
 - Add E2E test suite using AIMock and tuistory (`spec/e2e/`)
 - Rewrite E2E tests from TypeScript/Vitest to Ruby/RSpec
