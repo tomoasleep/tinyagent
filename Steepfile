@@ -3,6 +3,7 @@
 target :lib do
   check 'lib'
   ignore 'lib/tinyagent/migrations'
+  ignore 'lib/tinyagent/rubocop'
 
   signature 'sig'
   signature 'sig-lib'
