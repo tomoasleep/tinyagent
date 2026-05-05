@@ -2,6 +2,8 @@
 
 ### Added
 
+- Add `TinyAgent/DescriptionWording` custom RuboCop cop to disallow specific wording patterns in RSpec `context`, `describe`, and `it` descriptions
+
 - Add models.dev integration: fetch OpenAI-compatible providers and available models on startup
 - Add provider/model selection UI: press `Ctrl+M` to open a two-step picker (provider → model)
 - Add `Tinyagent::Configuration` for persisting current provider/model and per-provider API keys in JSON files

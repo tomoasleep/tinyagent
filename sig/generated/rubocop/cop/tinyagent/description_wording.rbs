@@ -1,0 +1,26 @@
+# Generated from lib/rubocop/cop/tinyagent/description_wording.rb with RBS::Inline
+
+module RuboCop
+  module Cop
+    module TinyAgent
+      # Checks for disallowed wording patterns in RSpec context, describe, and it descriptions.
+      class DescriptionWording < ::RuboCop::Cop::Base
+        MSG: ::String
+
+        METHODS: untyped
+
+        def on_block: (untyped node) -> untyped
+
+        private
+
+        def check_description: (untyped block_node, untyped description_node) -> untyped
+
+        def text: (untyped node) -> untyped
+
+        def disallowed_patterns: () -> untyped
+
+        def pattern_source: (untyped pattern) -> untyped
+      end
+    end
+  end
+end
