@@ -1,0 +1,24 @@
+# Generated from lib/tinyagent/llm/provider.rb with RBS::Inline
+
+module Tinyagent
+  module LLM
+    # Represents an LLM provider with API credentials and client building.
+    class Provider
+      attr_reader id: untyped
+
+      attr_reader name: untyped
+
+      attr_reader base_url: untyped
+
+      attr_reader api_key_env: untyped
+
+      def initialize: (id: untyped, name: untyped, ?base_url: untyped, ?api_key: untyped, ?api_key_env: untyped) -> untyped
+
+      def resolved_api_key: () -> untyped
+
+      def build_client: () -> untyped
+
+      def available_models: (?catalog: untyped) -> untyped
+    end
+  end
+end

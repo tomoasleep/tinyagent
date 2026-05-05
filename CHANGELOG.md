@@ -2,6 +2,12 @@
 
 ### Added
 
+- Add models.dev integration: fetch OpenAI-compatible providers and available models on startup
+- Add provider/model selection UI: press `Ctrl+M` to open a two-step picker (provider → model)
+- Add `Tinyagent::Configuration` for persisting current provider/model and per-provider API keys in JSON files
+- Add `Tinyagent::LLM::Provider` to abstract provider credentials and client building
+- Add `Tinyagent::LLM::Model` to generalize model metadata (context limit, tool support)
+- Add `Tinyagent::ModelsDev::Catalog` to fetch and cache the models.dev API catalog
 - Add command palette with fuzzy search: press `Ctrl+P` to open a floating overlay with real-time filtering of commands (clear, compact, usage)
 - Add `OPENAI_BASE_URL` environment variable support for custom LLM endpoints
 - Add E2E test suite using AIMock and tuistory (`spec/e2e/`)

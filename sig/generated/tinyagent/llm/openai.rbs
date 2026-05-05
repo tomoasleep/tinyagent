@@ -22,6 +22,8 @@ module Tinyagent
 
       private
 
+      def build_default_client: () -> untyped
+
       type tool_call = { id: String, type: "function", function: { name: String, arguments: String } }
 
       type system_message = { role: "system", content: String }

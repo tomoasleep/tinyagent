@@ -1,0 +1,20 @@
+# Generated from lib/tinyagent/llm/model.rb with RBS::Inline
+
+module Tinyagent
+  module LLM
+    # Represents an LLM model with metadata like context limit and tool support.
+    class Model
+      attr_reader name: untyped
+
+      attr_reader context_limit: untyped
+
+      attr_reader supports_tools: untyped
+
+      def initialize: (name: untyped, ?context_limit: untyped, ?supports_tools: untyped) -> untyped
+
+      def token_limit: () -> untyped
+
+      def supports_tools?: () -> untyped
+    end
+  end
+end

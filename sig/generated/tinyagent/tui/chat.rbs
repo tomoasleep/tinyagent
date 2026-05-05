@@ -22,6 +22,10 @@ module Tinyagent
 
       attr_reader viewport: untyped
 
+      COMMANDS: untyped
+
+      PALETTE_WIDTH: ::Integer
+
       def initialize: (?thread: untyped) -> untyped
 
       def init: () -> untyped
@@ -41,6 +45,48 @@ module Tinyagent
       def handle_idle_key: (untyped message) -> untyped
 
       def handle_input_key: (untyped message) -> untyped
+
+      def handle_palette_key: (untyped message) -> untyped
+
+      def handle_provider_select_key: (untyped message) -> untyped
+
+      def handle_model_select_key: (untyped message) -> untyped
+
+      def filter_commands: () -> untyped
+
+      def filter_providers: () -> untyped
+
+      def filter_models: () -> untyped
+
+      def all_provider_items: () -> untyped
+
+      def fuzzy_match?: (untyped query, untyped target) -> untyped
+
+      def palette_overlay_view: () -> untyped
+
+      def model_select_overlay_view: () -> untyped
+
+      def generic_overlay_view: (untyped list, untyped filter_input) -> untyped
+
+      def open_palette: () -> untyped
+
+      def close_palette: () -> untyped
+
+      def execute_palette_command: () -> untyped
+
+      def open_provider_select: () -> untyped
+
+      def close_provider_select: () -> untyped
+
+      def execute_provider_select: () -> untyped
+
+      def open_model_select: () -> untyped
+
+      def close_model_select: () -> untyped
+
+      def execute_model_select: () -> untyped
+
+      def all_model_items: (untyped provider_id) -> untyped
 
       def enter_input_mode: () -> untyped
 

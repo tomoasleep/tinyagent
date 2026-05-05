@@ -1,0 +1,34 @@
+# Generated from lib/tinyagent/models_dev/catalog.rb with RBS::Inline
+
+module Tinyagent
+  module ModelsDev
+    # Fetches and caches the models.dev API catalog.
+    class Catalog
+      API_URL: ::String
+
+      DEFAULT_TTL: ::Integer
+
+      attr_accessor cache_path: untyped
+
+      def initialize: (?cache_path: untyped) -> untyped
+
+      def fetch: () -> untyped
+
+      def cached_fetch: (?ttl: untyped) -> untyped
+
+      def providers: () -> untyped
+
+      def openai_compatible_providers: () -> untyped
+
+      def models_for: (untyped provider_id) -> untyped
+
+      private
+
+      def default_cache_path: () -> untyped
+
+      def fresh_cache?: (untyped ttl) -> untyped
+
+      def write_cache: (untyped data) -> untyped
+    end
+  end
+end

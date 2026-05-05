@@ -53,6 +53,14 @@ module Tinyagent
         @palette_filter_input.prompt = ''
         @palette_filter_input.placeholder = 'Type to filter...'
         @palette_filter_input.width = PALETTE_WIDTH - 6
+        @provider_filter_input = Bubbles::TextInput.new
+        @provider_filter_input.prompt = ''
+        @provider_filter_input.placeholder = 'Type to filter...'
+        @provider_filter_input.width = PALETTE_WIDTH - 6
+        @model_filter_input = Bubbles::TextInput.new
+        @model_filter_input.prompt = ''
+        @model_filter_input.placeholder = 'Type to filter...'
+        @model_filter_input.width = PALETTE_WIDTH - 6
         refresh_viewport
       end
 
@@ -80,8 +88,11 @@ module Tinyagent
       def view
         lines = []
 
-        lines << if @state == :palette
+        lines << case @state
+                 when :palette
                    palette_overlay_view
+                 when :provider_select, :model_select
+                   model_select_overlay_view
                  else
                    viewport.view
                  end
@@ -94,6 +105,10 @@ module Tinyagent
           lines << @text_input.view
         when :palette
           lines << Lipgloss::Style.new.foreground('241').render('↑↓ navigate | enter: execute | esc: close')
+        when :provider_select
+          lines << Lipgloss::Style.new.foreground('241').render('↑↓ navigate | enter: choose provider | esc: close')
+        when :model_select
+          lines << Lipgloss::Style.new.foreground('241').render('↑↓ navigate | enter: choose model | esc: close')
         when :thinking
           spinner_view = "#{@spinner.view} Thinking..."
           lines << Lipgloss::Style.new.foreground('205').render(spinner_view)
@@ -137,6 +152,10 @@ module Tinyagent
             handle_input_key(message)
           when :palette
             handle_palette_key(message)
+          when :provider_select
+            handle_provider_select_key(message)
+          when :model_select
+            handle_model_select_key(message)
           when :thinking
             [self, nil]
           end
@@ -151,6 +170,8 @@ module Tinyagent
           enter_input_mode
         when 'ctrl+p'
           open_palette
+        when 'ctrl+m'
+          open_provider_select
         else
           @viewport, cmd = @viewport.update(message)
           [self, cmd]
@@ -194,6 +215,44 @@ module Tinyagent
         end
       end
 
+      def handle_provider_select_key(message)
+        case message.to_s
+        when 'esc'
+          close_provider_select
+        when 'enter'
+          execute_provider_select
+        when 'up', 'k'
+          @provider_palette.select_prev
+          [self, nil]
+        when 'down', 'j'
+          @provider_palette.select_next
+          [self, nil]
+        else
+          @provider_filter_input, cmd = @provider_filter_input.update(message)
+          filter_providers
+          [self, cmd]
+        end
+      end
+
+      def handle_model_select_key(message)
+        case message.to_s
+        when 'esc'
+          close_model_select
+        when 'enter'
+          execute_model_select
+        when 'up', 'k'
+          @model_palette.select_prev
+          [self, nil]
+        when 'down', 'j'
+          @model_palette.select_next
+          [self, nil]
+        else
+          @model_filter_input, cmd = @model_filter_input.update(message)
+          filter_models
+          [self, cmd]
+        end
+      end
+
       def filter_commands
         query = @palette_filter_input.value.strip
         if query.empty?
@@ -201,6 +260,35 @@ module Tinyagent
         else
           filtered = COMMANDS.select { |cmd| fuzzy_match?(query, cmd[:title]) }
           @command_palette.items = filtered
+        end
+      end
+
+      def filter_providers
+        query = @provider_filter_input.value.strip
+        providers = all_provider_items
+        if query.empty?
+          @provider_palette.items = providers
+        else
+          filtered = providers.select { |p| fuzzy_match?(query, p[:title]) }
+          @provider_palette.items = filtered
+        end
+      end
+
+      def filter_models
+        query = @model_filter_input.value.strip
+        models = all_model_items
+        if query.empty?
+          @model_palette.items = models
+        else
+          filtered = models.select { |m| fuzzy_match?(query, m[:title]) }
+          @model_palette.items = filtered
+        end
+      end
+
+      def all_provider_items
+        catalog = ModelsDev::Catalog.new
+        catalog.openai_compatible_providers.map do |id, data|
+          { title: data['name'] || id, key: id }
         end
       end
 
@@ -214,9 +302,19 @@ module Tinyagent
       end
 
       def palette_overlay_view
+        generic_overlay_view(@command_palette, @palette_filter_input)
+      end
+
+      def model_select_overlay_view
+        list = @state == :provider_select ? @provider_palette : @model_palette
+        filter = @state == :provider_select ? @provider_filter_input : @model_filter_input
+        generic_overlay_view(list, filter)
+      end
+
+      def generic_overlay_view(list, filter_input)
         inner_lines = []
-        inner_lines << @palette_filter_input.view
-        inner_lines << @command_palette.view
+        inner_lines << filter_input.view
+        inner_lines << list.view
         inner_lines << Lipgloss::Style.new.foreground('241').render('esc to close')
         inner = inner_lines.join("\n")
 
@@ -284,6 +382,71 @@ module Tinyagent
         end
         refresh_viewport
         close_palette
+      end
+
+      def open_provider_select
+        @state = :provider_select
+        @provider_filter_input.focus
+        @provider_filter_input.reset
+        providers = all_provider_items
+        @provider_palette = Bubbles::List.new(providers, width: PALETTE_WIDTH - 6, height: [providers.length, 10].min)
+        @provider_palette.show_title = false
+        @provider_palette.show_filter = false
+        @provider_palette.show_pagination = false
+        @provider_palette.show_status_bar = false
+        @provider_palette.fill_height = false
+        @provider_palette.select(0)
+        [self, nil]
+      end
+
+      def close_provider_select
+        @state = :idle
+        @provider_filter_input.blur
+        [self, nil]
+      end
+
+      def execute_provider_select
+        item = @provider_palette.selected_item
+        @selected_provider = item[:key]
+        open_model_select
+      end
+
+      def open_model_select
+        @state = :model_select
+        @model_filter_input.focus
+        @model_filter_input.reset
+        models = all_model_items(@selected_provider)
+        @model_palette = Bubbles::List.new(models, width: PALETTE_WIDTH - 6, height: [models.length, 10].min)
+        @model_palette.show_title = false
+        @model_palette.show_filter = false
+        @model_palette.show_pagination = false
+        @model_palette.show_status_bar = false
+        @model_palette.fill_height = false
+        @model_palette.select(0)
+        [self, nil]
+      end
+
+      def close_model_select
+        @state = :idle
+        @model_filter_input.blur
+        [self, nil]
+      end
+
+      def execute_model_select
+        item = @model_palette.selected_item
+        config = Tinyagent::Configuration.new
+        config.current_provider = @selected_provider
+        config.current_model = item[:key]
+        @status_message = "Model set to #{@selected_provider}/#{item[:key]}"
+        refresh_viewport
+        close_model_select
+      end
+
+      def all_model_items(provider_id)
+        catalog = ModelsDev::Catalog.new
+        catalog.models_for(provider_id).map do |id, data|
+          { title: data['name'] || id, key: id }
+        end
       end
 
       def enter_input_mode
@@ -404,6 +567,7 @@ module Tinyagent
 
           Press i to enter input mode
           Press Ctrl+P to open command palette
+          Press Ctrl+M to change model
           Press q or Ctrl+C to quit
           Use /clear, /compact, /usage for commands
         TEXT
@@ -416,12 +580,10 @@ module Tinyagent
         usage = @thread.token_usage
         parts << "tokens:#{usage.total_tokens}" if usage
 
-        bar = if parts.empty?
-                'i:input | Ctrl+P:commands | q:quit'
-              else
-                parts.join(' | ')
-              end
+        config = Tinyagent::Configuration.new
+        parts << "model:#{config.current_provider}/#{config.current_model}"
 
+        bar = parts.join(' | ')
         Lipgloss::Style.new.foreground('241').render(bar)
       end
     end

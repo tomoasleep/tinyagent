@@ -1,0 +1,7 @@
+# Generated from lib/tinyagent/models_dev.rb with RBS::Inline
+
+module Tinyagent
+  # Integration with models.dev catalog for provider and model discovery.
+  module ModelsDev
+  end
+end

@@ -28,8 +28,8 @@ module E2E
         tuistory("-s #{name} type #{Shellwords.escape(text)}")
       end
 
-      def press(key)
-        tuistory("-s #{name} press #{key}")
+      def press(*keys)
+        tuistory("-s #{name} press #{keys.join(' ')}")
       end
 
       def wait_for_text(pattern, timeout: 10)

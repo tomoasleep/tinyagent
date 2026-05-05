@@ -1,0 +1,8 @@
+# Generated from lib/tinyagent/migrations.rb with RBS::Inline
+
+module Tinyagent
+  # Manage migrations
+  module Migrations
+    def self.run: () -> void
+  end
+end

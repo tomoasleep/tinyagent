@@ -1,0 +1,42 @@
+# Generated from lib/tinyagent/configuration.rb with RBS::Inline
+
+module Tinyagent
+  # Manages persistent configuration for providers and models via JSON files.
+  class Configuration
+    DEFAULT_DATA_PATH: untyped
+
+    DEFAULT_CONFIG_PATH: untyped
+
+    attr_reader data_path: untyped
+
+    attr_reader config_path: untyped
+
+    def initialize: (?data_path: untyped, ?config_path: untyped) -> untyped
+
+    def current_provider: () -> untyped
+
+    def current_provider=: (untyped provider) -> untyped
+
+    def current_model: () -> untyped
+
+    def current_model=: (untyped model) -> untyped
+
+    def provider_config: (untyped provider_id) -> untyped
+
+    def set_provider_config: (untyped provider_id, ?api_key: untyped, ?base_url: untyped) -> untyped
+
+    private
+
+    def data: () -> untyped
+
+    def config: () -> untyped
+
+    def update_data: (untyped updates) -> untyped
+
+    def write_config: (untyped new_config) -> untyped
+
+    def read_json: (untyped path) -> untyped
+
+    def write_json: (untyped path, untyped content) -> untyped
+  end
+end

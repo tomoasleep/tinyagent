@@ -54,7 +54,7 @@ module Tinyagent
     # @rbs return: Array[Hash[String, untyped]]
     def handle_streaming_response: (Net::HTTPResponse response) ?{ (Hash[String, untyped]) -> void } -> Array[Hash[String, untyped]]
 
-    class Error < StandardError
+    class Error < Tinyagent::Error
     end
   end
 end

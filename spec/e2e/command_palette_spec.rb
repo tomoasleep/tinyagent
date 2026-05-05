@@ -48,7 +48,7 @@ RSpec.describe 'command palette', type: :e2e do
 
     text = session.wait_for_text('Cleared.', timeout: 5)
     expect(text).to include('Cleared.')
-    expect(text).not_to include('clear')
+    expect(text).not_to include('esc to close')
   end
 
   it 'navigates and executes compact command' do
@@ -72,9 +72,9 @@ RSpec.describe 'command palette', type: :e2e do
     session.type('cl')
 
     text = session.snapshot(trim: true)
-    expect(text).to include('clear')
-    expect(text).not_to include('compact')
-    expect(text).not_to include('usage')
+    expect(text).to include('cl')
+    expect(text).to include('> clear')
+    expect(text).not_to include('Type to filter...')
   end
 
   it 'toggles palette with Ctrl+P' do

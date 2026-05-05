@@ -5,12 +5,56 @@ module Tinyagent
     attr_reader :thread #: Thread
 
     # @rbs thread: Thread
-    def initialize(thread:)
+    # @rbs ?configuration: Configuration
+    def initialize(thread:, configuration: nil)
       @thread = thread
+      @configuration = configuration
+    end
+
+    def configuration
+      @configuration ||= Configuration.new
     end
 
     def llm
-      @llm ||= LLM::OpenAI.new
+      @llm ||= build_llm
+    end
+
+    def build_llm
+      provider = build_provider(configuration.current_provider)
+      LLM::OpenAI.new(
+        client: provider.build_client,
+        model: configuration.current_model
+      )
+    end
+
+    def build_provider(provider_id)
+      catalog = ModelsDev::Catalog.new
+      provider_data = catalog.openai_compatible_providers[provider_id.to_s]
+
+      unless provider_data
+        return LLM::Provider.new(
+          id: provider_id,
+          name: provider_id,
+          base_url: ENV.fetch('OPENAI_BASE_URL', nil),
+          api_key_env: 'OPENAI_API_KEY'
+        )
+      end
+
+      config = configuration.provider_config(provider_id)
+      LLM::Provider.new(
+        id: provider_id,
+        name: provider_data['name'],
+        base_url: config['base_url'] || provider_data['api'],
+        api_key: config['api_key'],
+        api_key_env: provider_data['env']&.first
+      )
+    rescue StandardError
+      LLM::Provider.new(
+        id: provider_id,
+        name: provider_id,
+        base_url: ENV.fetch('OPENAI_BASE_URL', nil),
+        api_key_env: 'OPENAI_API_KEY'
+      )
     end
 
     def completion_loop

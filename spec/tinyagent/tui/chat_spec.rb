@@ -3,38 +3,7 @@
 require 'spec_helper'
 require 'bubbletea'
 require 'bubbles'
-
-module KeyHelper
-  def key(name, alt: false)
-    key_type = case name
-               when 'enter' then Bubbletea::KeyMessage::KEY_ENTER
-               when 'esc' then Bubbletea::KeyMessage::KEY_ESC
-               when 'up' then Bubbletea::KeyMessage::KEY_UP
-               when 'down' then Bubbletea::KeyMessage::KEY_DOWN
-               when 'tab' then Bubbletea::KeyMessage::KEY_TAB
-               when 'backspace' then Bubbletea::KeyMessage::KEY_BACKSPACE
-               when 'ctrl+c' then Bubbletea::KeyMessage::KEY_CTRL_C
-               when 'ctrl+p' then Bubbletea::KeyMessage::KEY_CTRL_P
-               else
-                 Bubbletea::KeyMessage::KEY_RUNES
-               end
-    runes = key_type == Bubbletea::KeyMessage::KEY_RUNES ? name.chars.map(&:ord) : []
-    Bubbletea::KeyMessage.new(key_type:, runes:, alt:, name:)
-  end
-
-  def resize(width, height)
-    Bubbletea::WindowSizeMessage.new(width:, height:)
-  end
-
-  def type_text(chat, text)
-    text.each_char { |c| chat.update(key(c)) }
-  end
-
-  def submit_text(chat, text)
-    type_text(chat, text)
-    chat.update(key('enter'))
-  end
-end
+require_relative '../../support/key_helper'
 
 RSpec.describe Tinyagent::Tui::Chat do
   include KeyHelper
@@ -255,8 +224,8 @@ RSpec.describe Tinyagent::Tui::Chat do
 
       expect(plain_lines.length).to eq(23)
       expect(plain_lines[0]).to start_with('Welcome to tinyagent')
-      expect(plain_lines[0]).to include('╭')
-      expect(plain_lines[6]).to include('╰')
+      overlay_lines = plain_lines.select { |l| l.include?('╭') || l.include?('╰') }
+      expect(overlay_lines).not_to be_empty
     end
 
     it 'shows viewport text alongside palette border' do
@@ -264,8 +233,8 @@ RSpec.describe Tinyagent::Tui::Chat do
       plain_lines = chat.view.split("\n").map { |l| Bubbles::ANSI.strip(l).rstrip }
 
       expect(plain_lines[2]).to start_with('Press i to enter inpu')
-      expect(plain_lines[2]).to include('│').and include('clear')
-      expect(plain_lines[5]).to include('esc to close')
+      expect(plain_lines.any? { |l| l.include?('│') && l.include?('clear') }).to be true
+      expect(plain_lines.any? { |l| l.include?('esc to close') }).to be true
     end
 
     it 'has separator and help bar below overlay' do

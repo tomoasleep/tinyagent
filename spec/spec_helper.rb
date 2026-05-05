@@ -7,12 +7,11 @@ require 'webmock/rspec'
 # Load factory methods and mock helpers
 require_relative 'support/factories'
 require_relative 'support/mocks'
+require_relative 'support/key_helper'
+
+Tinyagent::Migrations.run
 
 RSpec.configure do |config|
-  config.before(:suite) do
-    Tinyagent::Migrations.run
-  end
-
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = '.rspec_status'
 

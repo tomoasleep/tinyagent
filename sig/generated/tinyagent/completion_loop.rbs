@@ -5,9 +5,16 @@ module Tinyagent
     attr_reader thread: Thread
 
     # @rbs thread: Thread
-    def initialize: (thread: Thread) -> untyped
+    # @rbs ?configuration: Configuration
+    def initialize: (thread: Thread, ?configuration: untyped) -> untyped
+
+    def configuration: () -> untyped
 
     def llm: () -> untyped
+
+    def build_llm: () -> untyped
+
+    def build_provider: (untyped provider_id) -> untyped
 
     def completion_loop: () -> untyped
 

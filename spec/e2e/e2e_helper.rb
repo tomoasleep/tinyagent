@@ -10,7 +10,7 @@ require_relative '../support/e2e/tuistory_helper'
 WebMock.allow_net_connect!
 
 RSpec.shared_context 'e2e' do
-  let(:aimock) { $aimock_server }
+  let(:aimock) { E2E::AimockHelper::AimockServer.instance }
 
   let(:session) do
     name = "test-#{$$}-#{SecureRandom.hex(4)}"
@@ -30,16 +30,20 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
-    $aimock_server = E2E::AimockHelper::AimockServer.new
-    $aimock_server.start
+    E2E::AimockHelper::AimockServer.instance.start
   end
 
   config.after(:suite) do
-    $aimock_server&.stop
+    E2E::AimockHelper::AimockServer.instance&.stop
   end
 
-  config.before do
-    $aimock_server&.clear_fixtures
+  config.after do
+    if ENV['DEBUG'] && RSpec.current_example&.exception
+      warn "\n--- AIMock logs ---"
+      E2E::AimockHelper::AimockServer.instance&.logs&.each { |line| warn line }
+      warn "--- End AIMock logs ---\n"
+    end
+    E2E::AimockHelper::AimockServer.instance&.clear_fixtures
   end
 
   config.include_context 'e2e', type: :e2e

@@ -72,6 +72,7 @@ RSpec.describe Tinyagent::HttpMcpClient do
       stub_mcp_call_tool(
         base_url: base_url,
         tool_name: 'add',
+        tool_arguments: { 'a' => 1, 'b' => 2 },
         response_content: [{ 'type' => 'text', 'text' => '3' }]
       )
     end

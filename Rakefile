@@ -23,7 +23,7 @@ end
 
 Bump.changelog = true
 
-task default: %i[rubocop steep spec]
+task default: %i[rubocop rbs steep spec]
 task autocorrect: %i[rubocop:autocorrect rbs steep spec]
 
 namespace :rbs do

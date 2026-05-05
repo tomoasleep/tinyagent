@@ -13,6 +13,10 @@ module E2E
     class AimockServer
       attr_reader :url
 
+      def self.instance
+        @instance ||= new
+      end
+
       def initialize
         @pid = nil
         @url = nil
@@ -26,8 +30,20 @@ module E2E
           'HOME' => ENV.fetch('HOME', '/tmp'),
           'NODE_OPTIONS' => '--no-deprecation'
         }
+        env['DEBUG'] = ENV['DEBUG'] if ENV['DEBUG']
 
         @stdin, @stdout, @stderr, @wait_thr = Open3.popen3(env, 'node', STARTER_SCRIPT, chdir: E2E_DIR)
+
+        if ENV['DEBUG']
+          Thread.new do
+            loop do
+              line = @stderr.gets
+              break unless line
+
+              warn "[aimock] #{line.chomp}"
+            end
+          end
+        end
 
         url_line = nil
         30.times do
@@ -101,6 +117,14 @@ module E2E
 
       def reset_match_counts
         reset
+      end
+
+      def logs
+        return [] unless @stderr
+
+        @stderr.read_nonblock(65_536)&.split("\n") || []
+      rescue IO::WaitReadable, EOFError
+        []
       end
 
       def journal

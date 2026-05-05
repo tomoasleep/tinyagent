@@ -6,7 +6,7 @@ module Tinyagent
     module Commands
       extend Dry::CLI::Registry
 
-      def run: () -> untyped
+      def self.run: () -> untyped
     end
   end
 end

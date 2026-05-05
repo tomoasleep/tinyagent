@@ -211,6 +211,6 @@ module Tinyagent
       events
     end
 
-    class Error < StandardError; end
+    class Error < Tinyagent::Error; end
   end
 end

@@ -1,0 +1,6 @@
+# Generated from lib/tinyagent/tui.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+  end
+end
