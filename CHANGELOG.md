@@ -7,6 +7,12 @@
 - Resolve `Style/Documentation` offenses by adding doc comments to all public classes and modules
 - Resolve RSpec/MultipleExpectations offenses by adding `aggregate_failures` to affected examples
 - Resolve `Style/DisableCopsWithinSourceCodeDirective` offenses by removing inline disable directives and adding `super()` call
+- Remove hand-written column accessor RBS definitions for Sequel models (now auto-generated)
+
+### Added
+
+- Add `script/generate-schema-model-rbs.rb` to auto-generate RBS type definitions for Sequel model columns and `initialize` from database schema
+- Add `rake rbs:script` integration for the new schema model RBS generator
 
 ### Added
 

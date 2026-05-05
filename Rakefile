@@ -48,6 +48,7 @@ namespace :rbs do
   task :script do
     sh('script/generate-data-rbs.rb')
     sh('script/generate-concern-rbs.rb')
+    sh('script/generate-schema-model-rbs.rb')
   end
 end
 

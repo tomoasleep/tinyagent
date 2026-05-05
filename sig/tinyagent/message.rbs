@@ -1,15 +1,6 @@
 module Tinyagent
   class Message < ThreadItem
-    def role_id: () -> Integer
-    def role_id=: (Integer) -> Integer
-    def content: () -> String?
-    def content=: (String) -> String?
-    def thread_id: () -> Integer
     def tool_calls: () -> Array[ToolCall]
-    def token_usage_total_tokens: () -> Integer?
-    def token_usage_prompt_tokens: () -> Integer?
-    def token_usage_completion_tokens: () -> Integer?
-    def token_usage_token_limit: () -> Integer?
     def destroy: () -> void
   end
 end

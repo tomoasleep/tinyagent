@@ -1,8 +1,4 @@
 module Tinyagent
   class ToolCall < Model
-    def api_id: () -> String
-    def name: () -> String
-    def arguments: () -> String?
-    def message_id: () -> Integer
   end
 end

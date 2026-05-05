@@ -1,9 +1,5 @@
 module Tinyagent
   class ThreadItem < Model
-    def thread_id: () -> Integer
-    def thread_id=: (Integer) -> Integer
-    def type: () -> String?
-    def type=: (String) -> String?
     def destroy: () -> void
   end
 end
