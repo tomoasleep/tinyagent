@@ -3,17 +3,18 @@
 require 'bundler/setup'
 require 'tinyagent'
 require 'securerandom'
+require 'english'
 require 'webmock'
 require_relative '../support/e2e/aimock_helper'
 require_relative '../support/e2e/tuistory_helper'
 
 WebMock.allow_net_connect!
 
-RSpec.shared_context 'e2e' do
+RSpec.shared_context 'when e2e' do
   let(:aimock) { E2E::AimockHelper::AimockServer.instance }
 
   let(:session) do
-    name = "test-#{$$}-#{SecureRandom.hex(4)}"
+    name = "test-#{$PROCESS_ID}-#{SecureRandom.hex(4)}"
     E2E::TuistoryHelper::Session.new(name:, aimock_url: aimock.v1_url)
   end
 
@@ -46,5 +47,5 @@ RSpec.configure do |config|
     E2E::AimockHelper::AimockServer.instance&.clear_fixtures
   end
 
-  config.include_context 'e2e', type: :e2e
+  config.include_context 'when e2e', type: :e2e
 end

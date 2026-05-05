@@ -154,7 +154,7 @@ RSpec.describe Tinyagent::HttpMcpClient do
 
     it 'sends custom headers with requests' do
       client = described_class.new(url: base_url, headers: custom_headers)
-      client.initialize_session
+      expect { client.initialize_session }.not_to raise_error
     end
   end
 end

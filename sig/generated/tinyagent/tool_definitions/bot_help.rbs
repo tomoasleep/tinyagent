@@ -8,7 +8,6 @@ module Tinyagent
 
       def self.actions: () -> untyped
 
-      # @rbs actions: Array[untyped]
       attr_writer actions: untyped
 
       # @rbs arguments: Hash[String, untyped]

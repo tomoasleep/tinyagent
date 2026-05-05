@@ -6,12 +6,12 @@ RSpec.describe 'quit', type: :e2e do
   it 'quits on q key' do
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
-    session.press('q')
+    expect { session.press('q') }.not_to raise_error
   end
 
   it 'quits on ctrl+c' do
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
-    session.press('ctrl c')
+    expect { session.press('ctrl c') }.not_to raise_error
   end
 end
