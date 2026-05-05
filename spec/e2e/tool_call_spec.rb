@@ -3,6 +3,8 @@
 require_relative 'e2e_helper'
 
 RSpec.describe 'tool call flow', type: :e2e do
+  let(:screen_size) { { cols: 80, rows: 12 } }
+
   it 'executes a tool call and shows the result' do
     pending 'Requires AIMock server running'
     aimock.add_fixture(
@@ -30,8 +32,8 @@ RSpec.describe 'tool call flow', type: :e2e do
     session.type('What is 2+2?')
     session.press('enter')
 
-    text = session.wait_for_text('The result of 2+2 is 4.', timeout: 15)
-    expect(text).to include('You: What is 2+2?')
-    expect(text).to include('Assistant: The result of 2+2 is 4.')
+    session.wait_for_text('The result of 2+2 is 4.', timeout: 15)
+
+    expect(session.snapshot(trim: true)).to match_screen('')
   end
 end

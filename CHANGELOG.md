@@ -2,6 +2,8 @@
 
 ### Changed
 
+- E2E テストを `include` チェックから画面全体のスナップショット比較 (`match_screen`) に移行しました
+- E2E テストの端末サイズを spec 毎に `screen_size` で設定可能にしました（デフォルト: 80x12）
 - Resolve `Style/Documentation` offenses by adding doc comments to all public classes and modules
 - Resolve RSpec/MultipleExpectations offenses by adding `aggregate_failures` to affected examples
 - Resolve `Style/DisableCopsWithinSourceCodeDirective` offenses by removing inline disable directives and adding `super()` call

@@ -13,9 +13,11 @@ module E2E
     class Session
       attr_reader :name, :aimock_url
 
-      def initialize(name:, aimock_url:)
+      def initialize(name:, aimock_url:, cols: 120, rows: 36)
         @name = name
         @aimock_url = aimock_url
+        @cols = cols
+        @rows = rows
         launch
       end
 
@@ -51,8 +53,8 @@ module E2E
           [
             "launch '#{RUN_TUI_SCRIPT}'",
             "-s #{name}",
-            '--cols 120',
-            '--rows 36',
+            "--cols #{@cols}",
+            "--rows #{@rows}",
             "--cwd #{PROJECT_ROOT}",
             '--env OPENAI_API_KEY=test-key',
             "--env OPENAI_BASE_URL=#{aimock_url}",

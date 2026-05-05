@@ -3,6 +3,8 @@
 require_relative 'e2e_helper'
 
 RSpec.describe 'chat message exchange', type: :e2e do
+  let(:screen_size) { { cols: 80, rows: 12 } }
+
   it 'sends a message and receives a response' do
     aimock.add_catch_all_fixture(content: 'Hi there! How can I help?')
 
@@ -12,11 +14,20 @@ RSpec.describe 'chat message exchange', type: :e2e do
     session.type('Hello')
     session.press('enter')
 
-    response = session.wait_for_text('Hi there! How can I help?', timeout: 15)
-    expect(response).to include('Hi there! How can I help?')
+    session.wait_for_text('Hi there! How can I help?', timeout: 15)
 
-    after_response = session.snapshot(trim: true)
-    expect(after_response).to include('You: Hello')
-    expect(after_response).to include('Assistant: Hi there! How can I help?')
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      You: Hello
+      Assistant: Hi there! How can I help?
+
+
+
+
+
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      tokens:0 | model:openai/gpt-5-nano
+    SCREEN
   end
 end

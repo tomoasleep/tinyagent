@@ -3,6 +3,8 @@
 require_relative 'e2e_helper'
 
 RSpec.describe 'slash commands', type: :e2e do
+  let(:screen_size) { { cols: 80, rows: 12 } }
+
   it 'shows usage info on /usage when no data' do
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
@@ -10,12 +12,25 @@ RSpec.describe 'slash commands', type: :e2e do
     session.type('/usage')
     session.press('enter')
 
-    text = session.wait_for_text('No token usage data.', timeout: 5)
-    expect(text).to include('No token usage data.')
+    session.wait_for_text('No token usage data.', timeout: 5)
+
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Welcome to tinyagent chat!
+
+      Press i to enter input mode
+      Press Ctrl+P to open command palette
+      Press Ctrl+M to change model
+      Press q or Ctrl+C to quit
+      Use /clear, /compact, /usage for commands
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      No token usage data. | model:openai/gpt-5-nano
+    SCREEN
   end
 
   it 'clears messages on /clear' do
-    aimock.on_message('test message', content: 'reply')
+    aimock.add_catch_all_fixture(content: 'reply')
 
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
@@ -29,8 +44,21 @@ RSpec.describe 'slash commands', type: :e2e do
     session.type('/clear')
     session.press('enter')
 
-    text = session.wait_for_text('Cleared.', timeout: 5)
-    expect(text).to include('Cleared.')
+    session.wait_for_text('Cleared.', timeout: 5)
+
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Assistant: reply
+
+
+
+
+
+
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      Cleared. | tokens:0 | model:openai/gpt-5-nano
+    SCREEN
   end
 
   it 'shows compact not available on /compact' do
@@ -40,7 +68,20 @@ RSpec.describe 'slash commands', type: :e2e do
     session.type('/compact')
     session.press('enter')
 
-    text = session.wait_for_text('Compact not yet available.', timeout: 5)
-    expect(text).to include('Compact not yet available.')
+    session.wait_for_text('Compact not yet available.', timeout: 5)
+
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Welcome to tinyagent chat!
+
+      Press i to enter input mode
+      Press Ctrl+P to open command palette
+      Press Ctrl+M to change model
+      Press q or Ctrl+C to quit
+      Use /clear, /compact, /usage for commands
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      Compact not yet available. | model:openai/gpt-5-nano
+    SCREEN
   end
 end

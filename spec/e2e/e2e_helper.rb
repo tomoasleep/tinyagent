@@ -7,15 +7,20 @@ require 'english'
 require 'webmock'
 require_relative '../support/e2e/aimock_helper'
 require_relative '../support/e2e/tuistory_helper'
+require_relative '../support/e2e/matchers/match_screen'
 
 WebMock.allow_net_connect!
 
 RSpec.shared_context 'when e2e' do
+  include ScreenMatching
+
   let(:aimock) { E2E::AimockHelper::AimockServer.instance }
+
+  let(:screen_size) { { cols: 120, rows: 36 } }
 
   let(:session) do
     name = "test-#{$PROCESS_ID}-#{SecureRandom.hex(4)}"
-    E2E::TuistoryHelper::Session.new(name:, aimock_url: aimock.v1_url)
+    E2E::TuistoryHelper::Session.new(name:, aimock_url: aimock.v1_url, **screen_size)
   end
 
   after do

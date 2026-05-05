@@ -3,16 +3,29 @@
 require_relative 'e2e_helper'
 
 RSpec.describe 'command palette', type: :e2e do
+  let(:screen_size) { { cols: 80, rows: 14 } }
+
   it 'opens command palette on Ctrl+P' do
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
     session.press('ctrl', 'p')
+    session.wait_for_text('clear', timeout: 5)
 
-    text = session.wait_for_text('clear', timeout: 5)
-    expect(text).to include('clear')
-    expect(text).to include('compact')
-    expect(text).to include('usage')
-    expect(text).to include('esc to close')
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Welcome to tinyagent chat!
+                           ╭────────────────────────────────────╮
+      Press i to enter inpu│  Type to filter...                 │
+      Press Ctrl+P to open │  > clear                           │
+      Press Ctrl+M to chang│    compact                         │
+      Press q or Ctrl+C to │    usage                           │
+      Use /clear, /compact,│  esc to close                      │
+                           ╰────────────────────────────────────╯
+
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      ↑↓ navigate | enter: execute | esc: close
+    SCREEN
   end
 
   it 'closes command palette on Esc' do
@@ -22,20 +35,21 @@ RSpec.describe 'command palette', type: :e2e do
     session.wait_for_text('clear', timeout: 5)
     session.press('esc')
 
-    text = session.snapshot(trim: true)
-    expect(text).not_to include('esc to close')
-  end
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Welcome to tinyagent chat!
 
-  it 'renders palette as overlay with rounded border' do
-    session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
+      Press i to enter input mode
+      Press Ctrl+P to open command palette
+      Press Ctrl+M to change model
+      Press q or Ctrl+C to quit
+      Use /clear, /compact, /usage for commands
 
-    session.press('ctrl', 'p')
-    text = session.wait_for_text('clear', timeout: 5)
 
-    expect(text).to include('╭')
-    expect(text).to include('╮')
-    expect(text).to include('╰')
-    expect(text).to include('╯')
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      model:openai/gpt-5-nano
+    SCREEN
   end
 
   it 'executes clear command from palette' do
@@ -43,12 +57,25 @@ RSpec.describe 'command palette', type: :e2e do
 
     session.press('ctrl', 'p')
     session.wait_for_text('clear', timeout: 5)
-
     session.press('enter')
 
-    text = session.wait_for_text('Cleared.', timeout: 5)
-    expect(text).to include('Cleared.')
-    expect(text).not_to include('esc to close')
+    session.wait_for_text('Cleared.', timeout: 5)
+
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Welcome to tinyagent chat!
+
+      Press i to enter input mode
+      Press Ctrl+P to open command palette
+      Press Ctrl+M to change model
+      Press q or Ctrl+C to quit
+      Use /clear, /compact, /usage for commands
+
+
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      Cleared. | model:openai/gpt-5-nano
+    SCREEN
   end
 
   it 'navigates and executes compact command' do
@@ -59,8 +86,23 @@ RSpec.describe 'command palette', type: :e2e do
     session.press('down')
     session.press('enter')
 
-    text = session.wait_for_text('Compact not yet available.', timeout: 5)
-    expect(text).to include('Compact not yet available.')
+    session.wait_for_text('Compact not yet available.', timeout: 5)
+
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Welcome to tinyagent chat!
+
+      Press i to enter input mode
+      Press Ctrl+P to open command palette
+      Press Ctrl+M to change model
+      Press q or Ctrl+C to quit
+      Use /clear, /compact, /usage for commands
+
+
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      Compact not yet available. | model:openai/gpt-5-nano
+    SCREEN
   end
 
   it 'filters commands with fuzzy search' do
@@ -68,13 +110,23 @@ RSpec.describe 'command palette', type: :e2e do
 
     session.press('ctrl', 'p')
     session.wait_for_text('clear', timeout: 5)
-
     session.type('cl')
 
-    text = session.snapshot(trim: true)
-    expect(text).to include('cl')
-    expect(text).to include('> clear')
-    expect(text).not_to include('Type to filter...')
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Welcome to tinyagent chat!
+
+      Press i to enter input mode
+      Press Ctrl+P to open ╭────────────────────────────────────╮
+      Press Ctrl+M to chang│  cl                                │
+      Press q or Ctrl+C to │  > clear                           │
+      Use /clear, /compact,│  esc to close                      │
+                           ╰────────────────────────────────────╯
+
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      ↑↓ navigate | enter: execute | esc: close
+    SCREEN
   end
 
   it 'toggles palette with Ctrl+P' do
@@ -82,10 +134,22 @@ RSpec.describe 'command palette', type: :e2e do
 
     session.press('ctrl', 'p')
     session.wait_for_text('clear', timeout: 5)
-
     session.press('ctrl', 'p')
 
-    text = session.snapshot(trim: true)
-    expect(text).not_to include('esc to close')
+    expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
+      Welcome to tinyagent chat!
+
+      Press i to enter input mode
+      Press Ctrl+P to open command palette
+      Press Ctrl+M to change model
+      Press q or Ctrl+C to quit
+      Use /clear, /compact, /usage for commands
+
+
+
+
+      ───────────────────────────────────────────────────────────────────────────────
+      model:openai/gpt-5-nano
+    SCREEN
   end
 end
