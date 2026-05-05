@@ -19,6 +19,8 @@ gems:
   - name: json
   - name: optparse
   - name: shellwords
+  - name: cgi
+    ignore: true
 #   # If you want to avoid installing rbs files for gems, you can specify them here.
 #   - name: GEM_NAME
 #     ignore: true

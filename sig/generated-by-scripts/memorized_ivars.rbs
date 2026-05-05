@@ -4,13 +4,13 @@
 module Tinyagent
   module LLM
     class OpenAI
-      @model_info: Model
+      self.@model_info: Model
     end
   end
 end
 
 module Tinyagent
   class Settings
-    self.@instance: Tinyagent::Settings
+    @instance: Tinyagent::Settings
   end
 end
