@@ -8,27 +8,27 @@ module Tinyagent
 
     one_to_many :tool_calls
 
-    def role
+    def role #: Symbol
       ROLE_IDS[role_id]
     end
 
-    def tool_call?
+    def tool_call? #: bool
       !tool_calls.empty?
     end
 
-    def tool_call_id
+    def tool_call_id #: String?
       tool_calls.first&.api_id
     end
 
-    def tool_name
+    def tool_name #: String?
       tool_calls.first&.name
     end
 
-    def tool_arguments
+    def tool_arguments #: Hash[String, untyped]?
       tool_calls.first&.parsed_arguments
     end
 
-    def token_usage
+    def token_usage #: TokenUsage?
       return nil unless token_usage_total_tokens
 
       TokenUsage.new(
@@ -39,7 +39,7 @@ module Tinyagent
       )
     end
 
-    def to_h
+    def to_h #: Hash[Symbol, untyped]
       {
         role: role,
         content: content,
@@ -50,7 +50,11 @@ module Tinyagent
       }
     end
 
-    def self.from_llm_response(tool:, tool_call_id:, tool_arguments:, tool_response:)
+    # @rbs tool: Tool
+    # @rbs tool_call_id: String
+    # @rbs tool_arguments: Hash[String, untyped]
+    # @rbs tool_response: String
+    def self.from_llm_response(tool:, tool_call_id:, tool_arguments:, tool_response:) #: Message
       msg = new(
         role_id: ROLES[:tool],
         content: tool_response
@@ -63,7 +67,10 @@ module Tinyagent
       msg
     end
 
-    def associate_tool_call(api_id:, name:, arguments:)
+    # @rbs api_id: String
+    # @rbs name: String
+    # @rbs arguments: Hash[String, untyped]
+    def associate_tool_call(api_id:, name:, arguments:) #: ToolCall
       tc = ToolCall.new(
         api_id: api_id,
         name: name,
@@ -73,7 +80,7 @@ module Tinyagent
       tc
     end
 
-    def before_create
+    def before_create #: void
       self.type = 'Message'
       super
     end

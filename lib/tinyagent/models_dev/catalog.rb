@@ -11,13 +11,14 @@ module Tinyagent
       API_URL = 'https://models.dev/api.json'
       DEFAULT_TTL = 86_400
 
-      attr_accessor :cache_path
+      attr_accessor :cache_path #: String
 
-      def initialize(cache_path: default_cache_path)
+      # @rbs cache_path: String
+      def initialize(cache_path: default_cache_path) #: void
         @cache_path = cache_path
       end
 
-      def fetch
+      def fetch #: Hash[String, untyped]
         uri = URI(API_URL)
         response = Net::HTTP.get_response(uri)
         raise "Failed to fetch catalog: #{response.code}" unless response.is_a?(Net::HTTPSuccess)
@@ -25,7 +26,8 @@ module Tinyagent
         JSON.parse(response.body)
       end
 
-      def cached_fetch(ttl: DEFAULT_TTL)
+      # @rbs ttl: Integer
+      def cached_fetch(ttl: DEFAULT_TTL) #: Hash[String, untyped]
         if fresh_cache?(ttl)
           cache = JSON.parse(File.read(cache_path))
           return cache['data']
@@ -36,18 +38,19 @@ module Tinyagent
         data
       end
 
-      def providers
+      def providers #: Hash[String, untyped]
         cached_fetch
       end
 
-      def openai_compatible_providers
+      def openai_compatible_providers #: Hash[String, untyped]
         providers.select do |_id, provider|
           npm = provider['npm'].to_s
           npm.include?('openai-compatible')
         end
       end
 
-      def models_for(provider_id)
+      # @rbs provider_id: Symbol | String
+      def models_for(provider_id) #: Hash[String, untyped]
         provider = providers[provider_id.to_s]
         return {} unless provider
 
@@ -56,11 +59,12 @@ module Tinyagent
 
       private
 
-      def default_cache_path
+      def default_cache_path #: String
         File.expand_path('~/.tinyagent/cache/models.dev.json')
       end
 
-      def fresh_cache?(ttl)
+      # @rbs ttl: Integer
+      def fresh_cache?(ttl) #: bool
         return false unless File.exist?(cache_path)
 
         cache = JSON.parse(File.read(cache_path))
@@ -70,7 +74,8 @@ module Tinyagent
         false
       end
 
-      def write_cache(data)
+      # @rbs data: Hash[String, untyped]
+      def write_cache(data) #: void
         FileUtils.mkdir_p(File.dirname(cache_path))
         File.write(cache_path, JSON.dump({ 'data' => data, 'fetched_at' => Time.now.to_i }))
       end

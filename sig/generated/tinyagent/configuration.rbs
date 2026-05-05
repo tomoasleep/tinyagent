@@ -7,36 +7,49 @@ module Tinyagent
 
     DEFAULT_CONFIG_PATH: untyped
 
-    attr_reader data_path: untyped
+    attr_reader data_path: String
 
-    attr_reader config_path: untyped
+    attr_reader config_path: String
 
-    def initialize: (?data_path: untyped, ?config_path: untyped) -> untyped
+    # @rbs data_path: String
+    # @rbs config_path: String
+    def initialize: (?data_path: String, ?config_path: String) -> void
 
-    def current_provider: () -> untyped
+    def current_provider: () -> String
 
-    def current_provider=: (untyped provider) -> untyped
+    # @rbs provider: String
+    def current_provider=: (String provider) -> void
 
-    def current_model: () -> untyped
+    def current_model: () -> String
 
-    def current_model=: (untyped model) -> untyped
+    # @rbs model: String
+    def current_model=: (String model) -> void
 
-    def provider_config: (untyped provider_id) -> untyped
+    # @rbs provider_id: Symbol | String
+    def provider_config: (Symbol | String provider_id) -> Hash[String, untyped]
 
-    def set_provider_config: (untyped provider_id, ?api_key: untyped, ?base_url: untyped) -> untyped
+    # @rbs provider_id: Symbol | String
+    # @rbs api_key: String?
+    # @rbs base_url: String?
+    def set_provider_config: (Symbol | String provider_id, ?api_key: String?, ?base_url: String?) -> void
 
     private
 
-    def data: () -> untyped
+    def data: () -> Hash[String, untyped]
 
-    def config: () -> untyped
+    def config: () -> Hash[String, untyped]
 
-    def update_data: (untyped updates) -> untyped
+    # @rbs updates: Hash[String, untyped]
+    def update_data: (Hash[String, untyped] updates) -> void
 
-    def write_config: (untyped new_config) -> untyped
+    # @rbs new_config: Hash[String, untyped]
+    def write_config: (Hash[String, untyped] new_config) -> void
 
-    def read_json: (untyped path) -> untyped
+    # @rbs path: String
+    def read_json: (String path) -> Hash[String, untyped]
 
-    def write_json: (untyped path, untyped content) -> untyped
+    # @rbs path: String
+    # @rbs content: Hash[String, untyped]
+    def write_json: (String path, Hash[String, untyped] content) -> void
   end
 end

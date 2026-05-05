@@ -4,17 +4,20 @@ module Tinyagent
   module LLM
     # Represents an LLM model with metadata like context limit and tool support.
     class Model
-      attr_reader name: untyped
+      attr_reader name: String
 
-      attr_reader context_limit: untyped
+      attr_reader context_limit: String
 
-      attr_reader supports_tools: untyped
+      attr_reader supports_tools: String
 
-      def initialize: (name: untyped, ?context_limit: untyped, ?supports_tools: untyped) -> untyped
+      # @rbs name: String
+      # @rbs context_limit: Integer?
+      # @rbs supports_tools: boolish
+      def initialize: (name: String, ?context_limit: Integer?, ?supports_tools: boolish) -> void
 
-      def token_limit: () -> untyped
+      def token_limit: () -> Integer
 
-      def supports_tools?: () -> untyped
+      def supports_tools?: () -> bool
     end
   end
 end

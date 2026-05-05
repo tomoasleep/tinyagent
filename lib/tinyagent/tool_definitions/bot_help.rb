@@ -5,9 +5,7 @@ module Tinyagent
     # Tool for displaying help about available bot actions.
     class BotHelp < Base
       class << self
-        # @rbs @actions: Array[untyped]?
-
-        def actions
+        def actions #: Array[untyped]
           @actions || []
         end
 
@@ -40,8 +38,7 @@ module Tinyagent
       }
 
       # @rbs arguments: Hash[String, untyped]
-      # @rbs return: String?
-      def call(arguments)
+      def call(arguments) #: String?
         filter = arguments['filter']
 
         descriptions = filtered_descriptions(filter)
@@ -60,8 +57,7 @@ module Tinyagent
       private
 
       # @rbs filter: String?
-      # @rbs return: Array[String]
-      def filtered_descriptions(filter)
+      def filtered_descriptions(filter) #: Array[String]
         descriptions = all_descriptions
 
         if filter
@@ -73,8 +69,7 @@ module Tinyagent
         descriptions
       end
 
-      # @rbs return: Array[String]
-      def all_descriptions
+      def all_descriptions #: Array[String]
         actions = self.class.actions
 
         sorted_actions = begin

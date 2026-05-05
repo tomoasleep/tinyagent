@@ -5,7 +5,6 @@ module Tinyagent
     # Tool
     class Think < Base
       # @rbs arguments: Hash[String, untyped]
-      # @rbs return: String?
       def call: (Hash[String, untyped] arguments) -> String?
 
       # @rbs override

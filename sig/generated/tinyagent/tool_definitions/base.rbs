@@ -39,11 +39,10 @@ module Tinyagent
       attr_reader request: Request
 
       # @rbs request: Request
-      def initialize: (request: Request) -> untyped
+      def initialize: (request: Request) -> void
 
       # @abstract
       # @rbs arguments: Hash[String, untyped]
-      # @rbs return: String?
       def call: (Hash[String, untyped] arguments) -> String?
 
       def to_tool: () -> Tool

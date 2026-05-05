@@ -134,7 +134,7 @@ class ConcernRbsGenerator
 
     @env.class_decls.each do |type_name, decl|
       # Skip if not a module
-      next unless decl.primary.decl.is_a?(RBS::AST::Declarations::Module)
+      next unless decl.primary_decl.is_a?(RBS::AST::Declarations::Module)
 
       module_name = type_name.to_s
 
@@ -177,16 +177,16 @@ class ConcernRbsGenerator
       next if @namespace_filter && !type_name.to_s.start_with?("::#{@namespace_filter}")
 
       # Check all declarations (primary and others) for includes
-      all_decls = [decl.primary] + decl.decls
+      all_decls = [decl.primary_decl] + decl.context_decls
 
       includes = []
       is_class = false
 
       all_decls.each do |d|
-        case d.decl
+        case d
         when RBS::AST::Declarations::Class
           is_class = true
-          d.decl.members.each do |member|
+          d.members.each do |member|
             case member
             when RBS::AST::Members::Include
               # Resolve the included module name to full TypeName
@@ -195,7 +195,7 @@ class ConcernRbsGenerator
             end
           end
         when RBS::AST::Declarations::Module
-          d.decl.members.each do |member|
+          d.members.each do |member|
             case member
             when RBS::AST::Members::Include
               # Resolve the included module name to full TypeName

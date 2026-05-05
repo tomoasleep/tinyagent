@@ -4,7 +4,6 @@ module Tinyagent
   # Tool Definitions for AI Agent
   module ToolDefinitions
     # @rbs request: Request
-    # @rbs return: Array[Base]
     def self.builtins: (request: Request) -> Array[Base]
   end
 end

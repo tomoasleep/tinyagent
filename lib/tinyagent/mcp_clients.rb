@@ -6,12 +6,11 @@ module Tinyagent
     attr_reader :clients #: Array[UserMcpClient]
 
     # @rbs clients: Array[UserMcpClient]
-    def initialize(clients)
+    def initialize(clients) #: void
       @clients = clients
     end
 
-    # @rbs return: Array[Tool]
-    def available_tools
+    def available_tools #: Array[Tool]
       clients.flat_map do |client|
         tool_defs = client.list_tools
         tool_defs.map do |tool_def|
@@ -31,8 +30,7 @@ module Tinyagent
       end
     end
 
-    # @rbs return: bool
-    def any?
+    def any? #: bool
       @clients.any?
     end
   end

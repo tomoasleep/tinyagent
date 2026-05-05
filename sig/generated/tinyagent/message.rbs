@@ -7,24 +7,31 @@ module Tinyagent
 
     ROLE_IDS: untyped
 
-    def role: () -> untyped
+    def role: () -> Symbol
 
-    def tool_call?: () -> untyped
+    def tool_call?: () -> bool
 
-    def tool_call_id: () -> untyped
+    def tool_call_id: () -> String?
 
-    def tool_name: () -> untyped
+    def tool_name: () -> String?
 
-    def tool_arguments: () -> untyped
+    def tool_arguments: () -> Hash[String, untyped]?
 
-    def token_usage: () -> untyped
+    def token_usage: () -> TokenUsage?
 
-    def to_h: () -> untyped
+    def to_h: () -> Hash[Symbol, untyped]
 
-    def self.from_llm_response: (tool: untyped, tool_call_id: untyped, tool_arguments: untyped, tool_response: untyped) -> untyped
+    # @rbs tool: Tool
+    # @rbs tool_call_id: String
+    # @rbs tool_arguments: Hash[String, untyped]
+    # @rbs tool_response: String
+    def self.from_llm_response: (tool: Tool, tool_call_id: String, tool_arguments: Hash[String, untyped], tool_response: String) -> Message
 
-    def associate_tool_call: (api_id: untyped, name: untyped, arguments: untyped) -> untyped
+    # @rbs api_id: String
+    # @rbs name: String
+    # @rbs arguments: Hash[String, untyped]
+    def associate_tool_call: (api_id: String, name: String, arguments: Hash[String, untyped]) -> ToolCall
 
-    def before_create: () -> untyped
+    def before_create: () -> void
   end
 end

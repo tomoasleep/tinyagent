@@ -6,12 +6,10 @@ module Tinyagent
     attr_reader clients: Array[UserMcpClient]
 
     # @rbs clients: Array[UserMcpClient]
-    def initialize: (Array[UserMcpClient] clients) -> untyped
+    def initialize: (Array[UserMcpClient] clients) -> void
 
-    # @rbs return: Array[Tool]
     def available_tools: () -> Array[Tool]
 
-    # @rbs return: bool
     def any?: () -> bool
   end
 end

@@ -11,21 +11,21 @@ module Tinyagent
     # @rbs prompt_tokens: Integer
     # @rbs completion_tokens: Integer
     # @rbs total_tokens: Integer
-    # @rbs ?token_limit: Integer?
-    def initialize(prompt_tokens:, completion_tokens:, total_tokens:, token_limit: nil)
+    # @rbs token_limit: Integer?
+    def initialize(prompt_tokens:, completion_tokens:, total_tokens:, token_limit: nil) #: void
       @prompt_tokens = prompt_tokens
       @completion_tokens = completion_tokens
       @total_tokens = total_tokens
       @token_limit = token_limit
     end
 
-    def usage_percentage
+    def usage_percentage #: Float?
       return nil unless token_limit
 
       (total_tokens.to_f / token_limit * 100).round(2).to_f
     end
 
-    def over_auto_compact_threshold?
+    def over_auto_compact_threshold? #: bool
       percentage = usage_percentage
       return false unless percentage
 
@@ -33,7 +33,7 @@ module Tinyagent
       percentage >= threshold
     end
 
-    def to_h
+    def to_h #: Hash[Symbol, untyped]
       {
         prompt_tokens:,
         completion_tokens:,

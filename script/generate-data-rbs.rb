@@ -8,8 +8,15 @@ require 'fileutils'
 
 # Process Ruby files to generate RBS definitions for Data classes
 class Processor
-  Source = Data.define(:file, :content, :prism_node)
-  RbsOutput = Data.define(:origin_source, :content)
+  Source = Data.define(
+    :file,       #: untyped
+    :content,    #: untyped
+    :prism_node  #: untyped
+  )
+  RbsOutput = Data.define(
+    :origin_source,  #: untyped
+    :content         #: untyped
+  )
 
   def initialize(lib_path: 'lib', output_path: 'sig/generated-by-scripts')
     @lib_path = Pathname(lib_path)
@@ -62,7 +69,13 @@ end
 
 # Generate RBS definitions for Data classes found in Ruby files
 class DataClassRbsGenerator
-  DataClass = Data.define(:name, :namespace, :full_name, :attributes, :file)
+  DataClass = Data.define(
+    :name,        #: untyped
+    :namespace,   #: untyped
+    :full_name,   #: untyped
+    :attributes,  #: untyped
+    :file         #: untyped
+  )
 
   # @rbs source: Processor::Source
   # @rbs return: Processor::RbsOutput?

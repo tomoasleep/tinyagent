@@ -9,8 +9,7 @@ module Tinyagent
     autoload :BotHelp, 'tinyagent/tool_definitions/bot_help'
 
     # @rbs request: Request
-    # @rbs return: Array[Base]
-    def self.builtins(request:)
+    def self.builtins(request:) #: Array[Base]
       [
         Think,
         BotHelp,

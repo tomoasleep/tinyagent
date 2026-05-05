@@ -11,7 +11,7 @@ module Tinyagent
       class Tui < Dry::CLI::Command
         desc 'Start TUI chat'
 
-        def call(*)
+        def call(*) #: void
           Migrations.run
           Bubbletea.run(Tinyagent::Tui::Chat.new, alt_screen: true)
         end

@@ -39,8 +39,19 @@ require 'fileutils'
 
 # Generate RBS instance variable definitions for memorized methods
 class MemorizedIvarRbsGenerator
-  Source = Data.define(:file, :content, :prism_node)
-  MemorizedMethod = Data.define(:class_name, :method_name, :ivar_name, :return_type, :file, :is_class_ivar)
+  Source = Data.define(
+    :file,       #: untyped
+    :content,    #: untyped
+    :prism_node  #: untyped
+  )
+  MemorizedMethod = Data.define(
+    :class_name,    #: untyped
+    :method_name,   #: untyped
+    :ivar_name,     #: untyped
+    :return_type,   #: untyped
+    :file,          #: untyped
+    :is_class_ivar  #: untyped
+  )
 
   def initialize(lib_path: 'lib', output_path: 'sig/generated-by-scripts', namespace_filter: nil)
     @lib_path = Pathname(lib_path)

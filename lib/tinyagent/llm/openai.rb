@@ -10,12 +10,14 @@ module Tinyagent
       attr_reader :client #: OpenAI::Client
       attr_reader :model #: String
 
-      # @rbs ?client: OpenAI::Client
-      # @rbs ?model: String
-      def initialize(client: nil, model: nil)
+      # @rbs client: OpenAI::Client
+      # @rbs model: String
+      def initialize(client: nil, model: nil) #: void
         @client = client || build_default_client
         @model = model || ENV.fetch('OPENAI_MODEL', 'gpt-5-nano')
       end
+
+      # @rbs @model_info: Model
 
       # @rbs %a{memorized}
       def model_info #: Model
@@ -24,8 +26,7 @@ module Tinyagent
 
       # @rbs messages: Array[Message]
       # @rbs tools: Array[Tool]
-      # @rbs return: Response
-      def complete(messages:, tools: [])
+      def complete(messages:, tools: []) #: Response
         openai_response = client.chat.completions.create(
           model:,
           messages: openai_messages_from_messages(messages), #: untyped
@@ -37,7 +38,7 @@ module Tinyagent
 
       private
 
-      def build_default_client
+      def build_default_client #: OpenAI::Client
         opts = { api_key: ENV.fetch('OPENAI_API_KEY', nil) }
         base_url = ENV.fetch('OPENAI_BASE_URL', nil)
         opts[:base_url] = base_url if base_url
@@ -59,8 +60,7 @@ module Tinyagent
       #   type message = system_message | user_message | assistant_message | tool_message
 
       # @rbs messages: Array[Message]
-      # @rbs return: Array[OpenAI::Models::Chat::chat_completion_message_param]
-      def openai_messages_from_messages(messages)
+      def openai_messages_from_messages(messages) #: Array[OpenAI::Models::Chat::chat_completion_message_param]
         messages.map do |message|
           case message.role
           when :system
@@ -110,8 +110,7 @@ module Tinyagent
       end
 
       # @rbs tools: Array[Tool]
-      # @rbs return: Array[OpenAI::Models::Chat::chat_completion_tool]
-      def openai_tools_from_tools(tools)
+      def openai_tools_from_tools(tools) #: Array[OpenAI::Models::Chat::chat_completion_tool]
         tools.map do |tool|
           ::OpenAI::Models::Chat::ChatCompletionFunctionTool.new(
             type: :function,
@@ -130,8 +129,7 @@ module Tinyagent
 
       # @rbs openai_response: OpenAI::Models::Chat::ChatCompletion
       # @rbs tools: Array[Tool]
-      # @rbs return: Response
-      def to_response(openai_response:, tools:)
+      def to_response(openai_response:, tools:) #: Response
         choice = openai_response.choices.first
         tool_call = choice.message.tool_calls&.first
 

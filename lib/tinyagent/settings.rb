@@ -10,6 +10,8 @@ module Tinyagent
       end
     end
 
+    # @rbs @instance: Tinyagent::Settings
+
     # @rbs %a{memorized}
     def self.instance #: Tinyagent::Settings
       @instance ||= Settings.new

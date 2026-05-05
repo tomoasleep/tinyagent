@@ -8,9 +8,11 @@ module Tinyagent
 
       attr_reader model: String
 
-      # @rbs ?client: OpenAI::Client
-      # @rbs ?model: String
-      def initialize: (?client: untyped, ?model: untyped) -> untyped
+      # @rbs client: OpenAI::Client
+      # @rbs model: String
+      def initialize: (?client: OpenAI::Client, ?model: String) -> void
+
+      @model_info: Model
 
       # @rbs %a{memorized}
       %a{memorized}
@@ -18,12 +20,11 @@ module Tinyagent
 
       # @rbs messages: Array[Message]
       # @rbs tools: Array[Tool]
-      # @rbs return: Response
       def complete: (messages: Array[Message], ?tools: Array[Tool]) -> Response
 
       private
 
-      def build_default_client: () -> untyped
+      def build_default_client: () -> OpenAI::Client
 
       type tool_call = { id: String, type: "function", function: { name: String, arguments: String } }
 
@@ -38,16 +39,13 @@ module Tinyagent
       type message = system_message | user_message | assistant_message | tool_message
 
       # @rbs messages: Array[Message]
-      # @rbs return: Array[OpenAI::Models::Chat::chat_completion_message_param]
       def openai_messages_from_messages: (Array[Message] messages) -> Array[OpenAI::Models::Chat::chat_completion_message_param]
 
       # @rbs tools: Array[Tool]
-      # @rbs return: Array[OpenAI::Models::Chat::chat_completion_tool]
       def openai_tools_from_tools: (Array[Tool] tools) -> Array[OpenAI::Models::Chat::chat_completion_tool]
 
       # @rbs openai_response: OpenAI::Models::Chat::ChatCompletion
       # @rbs tools: Array[Tool]
-      # @rbs return: Response
       def to_response: (openai_response: OpenAI::Models::Chat::ChatCompletion, tools: Array[Tool]) -> Response
     end
   end

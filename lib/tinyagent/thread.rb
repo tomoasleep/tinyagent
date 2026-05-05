@@ -8,11 +8,14 @@ module Tinyagent
 
     one_to_many :messages
 
-    def messages_dataset
+    def messages_dataset #: untyped
       super.order(:id)
     end
 
-    def add_message(role:, content:, **opts)
+    # @rbs role: Symbol
+    # @rbs content: String
+    # @rbs **opts: untyped
+    def add_message(role:, content:, **opts) #: Message
       Message.create(
         thread_id: id,
         role_id: Message::ROLES[role],
@@ -21,22 +24,23 @@ module Tinyagent
       )
     end
 
-    def clear
+    def clear #: void
       messages.each do |msg|
         msg.tool_calls.each(&:destroy)
         msg.destroy
       end
     end
 
-    def over_auto_compact_threshold?
+    def over_auto_compact_threshold? #: bool
       !!token_usage&.over_auto_compact_threshold?
     end
 
-    def token_usage
+    def token_usage #: TokenUsage?
       messages.reverse_each.find(&:token_usage)&.token_usage
     end
 
-    def compact(llm:)
+    # @rbs llm: LLM::OpenAI
+    def compact(llm:) #: void
       msgs = messages
       return if msgs.empty?
 
@@ -49,7 +53,8 @@ module Tinyagent
       add_message(role: :assistant, content: last_assistant_message.content) if last_assistant_message&.tool_call?
     end
 
-    def summarize(llm:)
+    # @rbs llm: LLM::OpenAI
+    def summarize(llm:) #: String
       summary_prompt = Message.new(
         role_id: Message::ROLES[:system],
         content: <<~TEXT
@@ -61,7 +66,7 @@ module Tinyagent
       response.message.content
     end
 
-    def tools
+    def tools #: Array[Tool]
       []
     end
   end

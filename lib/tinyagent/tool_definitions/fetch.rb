@@ -33,11 +33,11 @@ module Tinyagent
       class << self
         # @rbs @available: bool
 
-        def avaliable!
+        def avaliable! #: void
           @available = true
         end
 
-        def not_avaliable!
+        def not_avaliable! #: void
           @available = false
         end
 
@@ -47,8 +47,7 @@ module Tinyagent
       end
 
       # @rbs arguments: Hash[String, untyped]
-      # @rbs return: String?
-      def call(arguments)
+      def call(arguments) #: String?
         url = arguments['url']
 
         return 'Error: Please provide a URL parameter.' unless url
@@ -76,16 +75,14 @@ module Tinyagent
       private
 
       # @rbs url: String
-      # @rbs return: String
-      def normalize_url(url)
+      def normalize_url(url) #: String
         url = url.strip
         url = "https://#{url}" unless url.match?(%r{\Ahttps?://})
         url
       end
 
       # @rbs url: String
-      # @rbs return: bool
-      def valid_url?(url)
+      def valid_url?(url) #: bool
         uri = URI.parse(url)
         return false unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
         return false if uri.host.nil?
@@ -96,8 +93,7 @@ module Tinyagent
       end
 
       # @rbs url: String
-      # @rbs return: String
-      def fetch_content(url)
+      def fetch_content(url) #: String
         uri = URI.parse(url)
         host = uri.host
         port = uri.port
@@ -121,8 +117,7 @@ module Tinyagent
       end
 
       # @rbs content: String
-      # @rbs return: String
-      def extract_readable_content(content)
+      def extract_readable_content(content) #: String
         document = Readability::Document.new(content)
         document.content
       end

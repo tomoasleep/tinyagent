@@ -21,8 +21,7 @@ module Tinyagent
       }
 
       # @rbs arguments: Hash[String, untyped]
-      # @rbs return: String?
-      def call(arguments)
+      def call(arguments) #: String?
         thought = arguments['thought']
 
         request.message.reply("Thought:\n#{thought}")

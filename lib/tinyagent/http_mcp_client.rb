@@ -9,9 +9,14 @@ require 'event_stream_parser'
 module Tinyagent
   # Mcp client with HTTP transport.
   class HttpMcpClient
-    attr_reader :base_url, :headers, :session_id
+    attr_reader :base_url #: String
+    attr_reader :headers #: Hash[String, String]
+    attr_reader :session_id #: String?
 
-    def initialize(url:, headers: {}, session_id: nil)
+    # @rbs url: String
+    # @rbs headers: Hash[String, String]
+    # @rbs session_id: String?
+    def initialize(url:, headers: {}, session_id: nil) #: void
       @base_url = url
       @headers = headers
       @session_id = session_id
@@ -19,7 +24,7 @@ module Tinyagent
       @initialize_called = false
     end
 
-    def initialize_session
+    def initialize_session #: String?
       response = send_request(
         method: 'initialize',
         params: {
@@ -37,20 +42,21 @@ module Tinyagent
       @session_id
     end
 
-    def ping
+    def ping #: Array[Hash[String, untyped]]
       ensure_initialized
       send_request(method: 'ping')
     end
 
-    def list_tools
+    def list_tools #: Array[Hash[String, untyped]]
       ensure_initialized
       results = send_request(method: 'tools/list')
       results.flat_map { |res| res.dig('result', 'tools') || [] }
     end
 
     # @rbs name: String
+    # @rbs arguments: Hash[String, untyped]
     # @rbs &block: ? (Hash[String, untyped]) -> void
-    def call_tool(name, arguments = {}, &)
+    def call_tool(name, arguments = {}, &) #: Array[Hash[String, untyped]]
       ensure_initialized
       results = send_request(
         method: 'tools/call',
@@ -64,12 +70,14 @@ module Tinyagent
       results.flat_map { |res| res.dig('result', 'content') || [] }
     end
 
-    def list_prompts
+    def list_prompts #: Array[Hash[String, untyped]]
       ensure_initialized
       send_request(method: 'prompts/list')
     end
 
-    def get_prompt(name, arguments = {})
+    # @rbs name: String
+    # @rbs arguments: Hash[String, untyped]
+    def get_prompt(name, arguments = {}) #: Array[Hash[String, untyped]]
       ensure_initialized
       send_request(
         method: 'prompts/get',
@@ -80,12 +88,13 @@ module Tinyagent
       )
     end
 
-    def list_resources
+    def list_resources #: Array[Hash[String, untyped]]
       ensure_initialized
       send_request(method: 'resources/list')
     end
 
-    def read_resource(uri)
+    # @rbs uri: String
+    def read_resource(uri) #: Array[Hash[String, untyped]]
       ensure_initialized
       send_request(
         method: 'resources/read',
@@ -95,7 +104,7 @@ module Tinyagent
       )
     end
 
-    def cleanup_session
+    def cleanup_session #: void
       if @session_id
         uri = URI.parse(@base_url)
 
@@ -121,18 +130,17 @@ module Tinyagent
 
     # @rbs @initialize_called: bool
 
-    def ensure_initialized
+    def ensure_initialized #: void
       return if @initialize_called || @session_id
 
       initialize_session
     end
 
     # @rbs method: String
-    # @rbs ?params: Hash[String | Symbol, untyped]?
-    # @rbs ?id: String?
+    # @rbs params: Hash[String | Symbol, untyped]?
+    # @rbs id: String?
     # @rbs &block: ? (Hash[String, untyped]) -> void
-    # @rbs return: Array[Hash[String, untyped]]
-    def send_request(method:, params: nil, id: nil, &block)
+    def send_request(method:, params: nil, id: nil, &block) #: Array[Hash[String, untyped]]
       uri = URI.parse(@base_url)
 
       raise 'Invalid uri' if uri.host.nil?
@@ -172,8 +180,7 @@ module Tinyagent
 
     # @rbs response: Net::HTTPResponse
     # @rbs &block: ? (Hash[String, untyped]) -> void
-    # @rbs return: Array[Hash[String, untyped]]
-    def handle_response(response, &block)
+    def handle_response(response, &block) #: Array[Hash[String, untyped]]
       result = JSON.parse(response.body)
 
       raise Error, "JSON-RPC Error #{result['error']['code']}: #{result['error']['message']}" if result['error']
@@ -187,8 +194,7 @@ module Tinyagent
 
     # @rbs response: Net::HTTPResponse
     # @rbs &block: ? (Hash[String, untyped]) -> void
-    # @rbs return: Array[Hash[String, untyped]]
-    def handle_streaming_response(response, &block)
+    def handle_streaming_response(response, &block) #: Array[Hash[String, untyped]]
       events = [] #: Array[Hash[String, untyped]]
       parser = EventStreamParser::Parser.new
 

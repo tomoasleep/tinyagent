@@ -9,17 +9,22 @@ module RuboCop
 
         METHODS: untyped
 
-        def on_block: (untyped node) -> untyped
+        # @rbs node: RuboCop::AST::Node
+        def on_block: (RuboCop::AST::Node node) -> void
 
         private
 
-        def check_description: (untyped block_node, untyped description_node) -> untyped
+        # @rbs block_node: RuboCop::AST::Node
+        # @rbs description_node: RuboCop::AST::Node
+        def check_description: (RuboCop::AST::Node block_node, RuboCop::AST::Node description_node) -> void
 
-        def text: (untyped node) -> untyped
+        # @rbs node: RuboCop::AST::Node
+        def text: (RuboCop::AST::Node node) -> String
 
-        def disallowed_patterns: () -> untyped
+        def disallowed_patterns: () -> Array[Regexp]
 
-        def pattern_source: (untyped pattern) -> untyped
+        # @rbs pattern: Regexp | String
+        def pattern_source: (Regexp | String pattern) -> String
       end
     end
   end

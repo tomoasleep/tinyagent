@@ -6,21 +6,26 @@ module Tinyagent
     attr_reader thread: Thread
 
     # @rbs thread: Thread
-    # @rbs ?configuration: Configuration
-    def initialize: (thread: Thread, ?configuration: untyped) -> untyped
+    # @rbs configuration: Configuration
+    def initialize: (thread: Thread, ?configuration: Configuration) -> void
 
-    def configuration: () -> untyped
+    @configuration: Configuration?
 
-    def llm: () -> untyped
+    @llm: LLM::OpenAI
 
-    def build_llm: () -> untyped
+    def configuration: () -> Configuration
 
-    def build_provider: (untyped provider_id) -> untyped
+    def llm: () -> LLM::OpenAI
 
-    def completion_loop: () -> untyped
+    def build_llm: () -> LLM::OpenAI
 
-    def agent: () -> untyped
+    # @rbs provider_id: Symbol
+    def build_provider: (Symbol provider_id) -> LLM::Provider
 
-    def tools: () -> untyped
+    def completion_loop: () -> void
+
+    def agent: () -> Agent
+
+    def tools: () -> Array[Tool]
   end
 end

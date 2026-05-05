@@ -4,21 +4,29 @@ module Tinyagent
   module LLM
     # Represents an LLM provider with API credentials and client building.
     class Provider
-      attr_reader id: untyped
+      attr_reader id: Symbol
 
-      attr_reader name: untyped
+      attr_reader name: String
 
-      attr_reader base_url: untyped
+      attr_reader base_url: String?
 
-      attr_reader api_key_env: untyped
+      attr_reader api_key_env: String?
 
-      def initialize: (id: untyped, name: untyped, ?base_url: untyped, ?api_key: untyped, ?api_key_env: untyped) -> untyped
+      @api_key: String?
 
-      def resolved_api_key: () -> untyped
+      # @rbs id: Symbol
+      # @rbs name: String
+      # @rbs base_url: String?
+      # @rbs api_key: String?
+      # @rbs api_key_env: String?
+      def initialize: (id: Symbol, name: String, ?base_url: String?, ?api_key: String?, ?api_key_env: String?) -> void
 
-      def build_client: () -> untyped
+      def resolved_api_key: () -> String?
 
-      def available_models: (?catalog: untyped) -> untyped
+      def build_client: () -> OpenAI::Client
+
+      # @rbs catalog: ModelsDev::Catalog
+      def available_models: (?catalog: ModelsDev::Catalog) -> Hash[String, untyped]
     end
   end
 end

@@ -3,6 +3,6 @@
 module Tinyagent
   # Record of a tool call invocation.
   class ToolCall < Model
-    def parsed_arguments: () -> untyped
+    def parsed_arguments: () -> untyped?
   end
 end

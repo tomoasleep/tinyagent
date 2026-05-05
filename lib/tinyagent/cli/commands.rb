@@ -8,7 +8,7 @@ module Tinyagent
     module Commands
       extend Dry::CLI::Registry
 
-      def self.run
+      def self.run #: void
         Dry::CLI.new(Tinyagent::Cli::Commands).call
       end
 

@@ -70,6 +70,20 @@ Style/RedundantBegin:
 Style/DisableCopsWithinSourceCodeDirective:
   Enabled: true
 
+Style/RbsInline/MissingTypeAnnotation:
+  EnforcedStyle: doc_style_and_return_annotation
+  Exclude:
+    - 'script/**/*'
+    - 'spec/**/*'
+
+Style/RbsInline/RequireRbsInlineComment:
+  EnforcedStyle: never
+
+Style/RbsInline/UntypedInstanceVariable:
+  Exclude:
+    - 'script/**/*'
+    - 'spec/**/*'
+
 TinyAgent/DescriptionWording:
   Enabled: true
   DisallowedPatterns: ['basic']

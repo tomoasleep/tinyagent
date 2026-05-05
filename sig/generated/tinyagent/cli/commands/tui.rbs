@@ -5,7 +5,7 @@ module Tinyagent
     module Commands
       # Launches the interactive Chat TUI.
       class Tui < Dry::CLI::Command
-        def call: (*untyped) -> untyped
+        def call: (*untyped) -> void
       end
     end
   end

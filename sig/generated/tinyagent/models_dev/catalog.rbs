@@ -8,27 +8,32 @@ module Tinyagent
 
       DEFAULT_TTL: ::Integer
 
-      attr_accessor cache_path: untyped
+      attr_accessor cache_path: String
 
-      def initialize: (?cache_path: untyped) -> untyped
+      # @rbs cache_path: String
+      def initialize: (?cache_path: String) -> void
 
-      def fetch: () -> untyped
+      def fetch: () -> Hash[String, untyped]
 
-      def cached_fetch: (?ttl: untyped) -> untyped
+      # @rbs ttl: Integer
+      def cached_fetch: (?ttl: Integer) -> Hash[String, untyped]
 
-      def providers: () -> untyped
+      def providers: () -> Hash[String, untyped]
 
-      def openai_compatible_providers: () -> untyped
+      def openai_compatible_providers: () -> Hash[String, untyped]
 
-      def models_for: (untyped provider_id) -> untyped
+      # @rbs provider_id: Symbol | String
+      def models_for: (Symbol | String provider_id) -> Hash[String, untyped]
 
       private
 
-      def default_cache_path: () -> untyped
+      def default_cache_path: () -> String
 
-      def fresh_cache?: (untyped ttl) -> untyped
+      # @rbs ttl: Integer
+      def fresh_cache?: (Integer ttl) -> bool
 
-      def write_cache: (untyped data) -> untyped
+      # @rbs data: Hash[String, untyped]
+      def write_cache: (Hash[String, untyped] data) -> void
     end
   end
 end

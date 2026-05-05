@@ -14,15 +14,18 @@ module Tinyagent
 
       # Error message sent when the LLM completion fails.
       class CompletionErrorMessage < Bubbletea::Message
-        attr_reader :error
+        attr_reader :error #: Exception
 
-        def initialize(error)
+        # @rbs error: Exception
+        def initialize(error) #: void
           super()
           @error = error
         end
       end
 
-      attr_reader :state, :thread, :viewport
+      attr_reader :state #: Symbol
+      attr_reader :thread #: Tinyagent::Thread
+      attr_reader :viewport #: Bubbles::Viewport
 
       COMMANDS = [
         { title: 'clear', key: :clear },
@@ -32,7 +35,21 @@ module Tinyagent
 
       PALETTE_WIDTH = 36
 
-      def initialize(thread: nil)
+      # @rbs @width: Integer
+      # @rbs @height: Integer
+      # @rbs @status_message: String
+      # @rbs @text_input: Bubbles::TextInput
+      # @rbs @spinner: Bubbles::Spinner
+      # @rbs @command_palette: Bubbles::List[untyped]
+      # @rbs @palette_filter_input: Bubbles::TextInput
+      # @rbs @provider_filter_input: Bubbles::TextInput
+      # @rbs @model_filter_input: Bubbles::TextInput
+      # @rbs @provider_palette: Bubbles::List[untyped]?
+      # @rbs @selected_provider: String?
+      # @rbs @model_palette: Bubbles::List[untyped]?
+
+      # @rbs thread: Tinyagent::Thread?
+      def initialize(thread: nil) #: void
         @thread = thread || Tinyagent::Thread.create
         @state = :idle
         @width = 80
@@ -64,11 +81,12 @@ module Tinyagent
         refresh_viewport
       end
 
-      def init
+      def init #: Array[untyped]
         [self, Bubbletea.enter_alt_screen]
       end
 
-      def update(message)
+      # @rbs message: Bubbletea::Message
+      def update(message) #: Array[untyped]
         case message
         when Bubbletea::WindowSizeMessage
           handle_resize(message)
@@ -85,7 +103,7 @@ module Tinyagent
         end
       end
 
-      def view
+      def view #: String
         lines = []
 
         lines << case @state
@@ -120,7 +138,7 @@ module Tinyagent
         lines.join("\n")
       end
 
-      def refresh_viewport
+      def refresh_viewport #: void
         content = build_messages_content
         @viewport.content = content
         @viewport.goto_bottom unless @viewport.at_bottom?
@@ -128,7 +146,8 @@ module Tinyagent
 
       private
 
-      def handle_resize(message)
+      # @rbs message: Bubbletea::WindowSizeMessage
+      def handle_resize(message) #: Array[untyped]
         @width = message.width
         @height = message.height
         @viewport.width = @width
@@ -140,7 +159,8 @@ module Tinyagent
         [self, nil]
       end
 
-      def handle_key(message)
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_key(message) #: Array[untyped]
         case message.to_s
         when 'ctrl+c'
           [self, Bubbletea.quit]
@@ -162,7 +182,8 @@ module Tinyagent
         end
       end
 
-      def handle_idle_key(message)
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_idle_key(message) #: Array[untyped]
         case message.to_s
         when 'q'
           [self, Bubbletea.quit]
@@ -178,7 +199,8 @@ module Tinyagent
         end
       end
 
-      def handle_input_key(message)
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_input_key(message) #: Array[untyped]
         case message.to_s
         when 'esc'
           exit_input_mode
@@ -196,7 +218,8 @@ module Tinyagent
         end
       end
 
-      def handle_palette_key(message)
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_palette_key(message) #: Array[untyped]
         case message.to_s
         when 'esc', 'ctrl+p'
           close_palette
@@ -215,7 +238,8 @@ module Tinyagent
         end
       end
 
-      def handle_provider_select_key(message)
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_provider_select_key(message) #: Array[untyped]
         case message.to_s
         when 'esc'
           close_provider_select
@@ -234,7 +258,8 @@ module Tinyagent
         end
       end
 
-      def handle_model_select_key(message)
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_model_select_key(message) #: Array[untyped]
         case message.to_s
         when 'esc'
           close_model_select
@@ -253,7 +278,7 @@ module Tinyagent
         end
       end
 
-      def filter_commands
+      def filter_commands #: void
         query = @palette_filter_input.value.strip
         if query.empty?
           @command_palette.items = COMMANDS.dup
@@ -263,7 +288,7 @@ module Tinyagent
         end
       end
 
-      def filter_providers
+      def filter_providers #: void
         query = @provider_filter_input.value.strip
         providers = all_provider_items
         if query.empty?
@@ -274,7 +299,7 @@ module Tinyagent
         end
       end
 
-      def filter_models
+      def filter_models #: void
         query = @model_filter_input.value.strip
         models = all_model_items
         if query.empty?
@@ -285,14 +310,16 @@ module Tinyagent
         end
       end
 
-      def all_provider_items
+      def all_provider_items #: Array[untyped]
         catalog = ModelsDev::Catalog.new
         catalog.openai_compatible_providers.map do |id, data|
           { title: data['name'] || id, key: id }
         end
       end
 
-      def fuzzy_match?(query, target)
+      # @rbs query: String
+      # @rbs target: String
+      def fuzzy_match?(query, target) #: bool
         return true if query.empty?
 
         query = query.downcase
@@ -301,17 +328,19 @@ module Tinyagent
         query.each_char.all? { |c| idx = target.index(c, idx + 1) }
       end
 
-      def palette_overlay_view
+      def palette_overlay_view #: String
         generic_overlay_view(@command_palette, @palette_filter_input)
       end
 
-      def model_select_overlay_view
+      def model_select_overlay_view #: String
         list = @state == :provider_select ? @provider_palette : @model_palette
         filter = @state == :provider_select ? @provider_filter_input : @model_filter_input
         generic_overlay_view(list, filter)
       end
 
-      def generic_overlay_view(list, filter_input)
+      # @rbs list: Bubbles::List[untyped]
+      # @rbs filter_input: Bubbles::TextInput
+      def generic_overlay_view(list, filter_input) #: String
         inner_lines = []
         inner_lines << filter_input.view
         inner_lines << list.view
@@ -354,7 +383,7 @@ module Tinyagent
         vp_lines.join("\n")
       end
 
-      def open_palette
+      def open_palette #: Array[untyped]
         @state = :palette
         @palette_filter_input.focus
         @palette_filter_input.reset
@@ -363,13 +392,13 @@ module Tinyagent
         [self, nil]
       end
 
-      def close_palette
+      def close_palette #: Array[untyped]
         @state = :idle
         @palette_filter_input.blur
         [self, nil]
       end
 
-      def execute_palette_command
+      def execute_palette_command #: void
         item = @command_palette.selected_item
         case item[:key]
         when :clear
@@ -384,7 +413,7 @@ module Tinyagent
         close_palette
       end
 
-      def open_provider_select
+      def open_provider_select #: Array[untyped]
         @state = :provider_select
         @provider_filter_input.focus
         @provider_filter_input.reset
@@ -399,19 +428,19 @@ module Tinyagent
         [self, nil]
       end
 
-      def close_provider_select
+      def close_provider_select #: Array[untyped]
         @state = :idle
         @provider_filter_input.blur
         [self, nil]
       end
 
-      def execute_provider_select
+      def execute_provider_select #: untyped
         item = @provider_palette.selected_item
         @selected_provider = item[:key]
         open_model_select
       end
 
-      def open_model_select
+      def open_model_select #: Array[untyped]
         @state = :model_select
         @model_filter_input.focus
         @model_filter_input.reset
@@ -426,13 +455,13 @@ module Tinyagent
         [self, nil]
       end
 
-      def close_model_select
+      def close_model_select #: Array[untyped]
         @state = :idle
         @model_filter_input.blur
         [self, nil]
       end
 
-      def execute_model_select
+      def execute_model_select #: void
         item = @model_palette.selected_item
         config = Tinyagent::Configuration.new
         config.current_provider = @selected_provider
@@ -442,28 +471,29 @@ module Tinyagent
         close_model_select
       end
 
-      def all_model_items(provider_id)
+      # @rbs provider_id: String
+      def all_model_items(provider_id) #: Array[untyped]
         catalog = ModelsDev::Catalog.new
         catalog.models_for(provider_id).map do |id, data|
           { title: data['name'] || id, key: id }
         end
       end
 
-      def enter_input_mode
+      def enter_input_mode #: Array[untyped]
         @state = :input
         @status_message = ''
         @text_input.focus
         [self, nil]
       end
 
-      def exit_input_mode
+      def exit_input_mode #: Array[untyped]
         @state = :idle
         @text_input.blur
         @text_input.reset
         [self, nil]
       end
 
-      def submit_message
+      def submit_message #: untyped
         text = @text_input.value.strip
         return exit_input_mode if text.empty?
 
@@ -474,7 +504,8 @@ module Tinyagent
         end
       end
 
-      def handle_slash_command(text)
+      # @rbs text: String
+      def handle_slash_command(text) #: void
         case text.downcase
         when '/clear'
           @thread.clear
@@ -490,7 +521,7 @@ module Tinyagent
         exit_input_mode
       end
 
-      def handle_usage_command
+      def handle_usage_command #: void
         usage = @thread.token_usage
         @status_message = if usage
                             "Tokens: #{usage.total_tokens} (prompt: #{usage.prompt_tokens}, completion: #{usage.completion_tokens})"
@@ -499,7 +530,8 @@ module Tinyagent
                           end
       end
 
-      def send_user_message(text)
+      # @rbs text: String
+      def send_user_message(text) #: Array[untyped]
         @thread.add_message(role: :user, content: text)
         @text_input.reset
         @text_input.blur
@@ -520,32 +552,35 @@ module Tinyagent
         [self, Bubbletea.batch(cmd, @spinner.tick)]
       end
 
-      def handle_spinner_tick(message)
+      # @rbs message: Bubbles::Spinner::TickMessage
+      def handle_spinner_tick(message) #: Array[untyped]
         @spinner, cmd = @spinner.update(message)
         [self, cmd]
       end
 
-      def handle_completion_done
+      def handle_completion_done #: Array[untyped]
         @state = :idle
         refresh_viewport
         [self, nil]
       end
 
-      def handle_completion_error(message)
+      # @rbs message: CompletionErrorMessage
+      def handle_completion_error(message) #: Array[untyped]
         @state = :idle
         @status_message = "Error: #{message.error.message}"
         refresh_viewport
         [self, nil]
       end
 
-      def build_messages_content
+      def build_messages_content #: String
         messages = @thread.messages_dataset.all
         return help_text if messages.empty?
 
         messages.map { |msg| format_message(msg) }.join("\n")
       end
 
-      def format_message(msg)
+      # @rbs msg: untyped
+      def format_message(msg) #: String
         case msg.role
         when :user
           "You: #{msg.content}"
@@ -561,7 +596,7 @@ module Tinyagent
         end
       end
 
-      def help_text
+      def help_text #: String
         <<~TEXT
           Welcome to tinyagent chat!
 
@@ -573,7 +608,7 @@ module Tinyagent
         TEXT
       end
 
-      def status_bar
+      def status_bar #: String
         parts = []
         parts << @status_message if @status_message && !@status_message.empty?
 

@@ -11,108 +11,152 @@ module Tinyagent
 
       # Error message sent when the LLM completion fails.
       class CompletionErrorMessage < Bubbletea::Message
-        attr_reader error: untyped
+        attr_reader error: Exception
 
-        def initialize: (untyped error) -> untyped
+        # @rbs error: Exception
+        def initialize: (Exception error) -> void
       end
 
-      attr_reader state: untyped
+      attr_reader state: Symbol
 
-      attr_reader thread: untyped
+      attr_reader thread: Tinyagent::Thread
 
-      attr_reader viewport: untyped
+      attr_reader viewport: Bubbles::Viewport
 
       COMMANDS: untyped
 
       PALETTE_WIDTH: ::Integer
 
-      def initialize: (?thread: untyped) -> untyped
+      @width: Integer
 
-      def init: () -> untyped
+      @height: Integer
 
-      def update: (untyped message) -> untyped
+      @status_message: String
 
-      def view: () -> untyped
+      @text_input: Bubbles::TextInput
 
-      def refresh_viewport: () -> untyped
+      @spinner: Bubbles::Spinner
+
+      @command_palette: Bubbles::List[untyped]
+
+      @palette_filter_input: Bubbles::TextInput
+
+      @provider_filter_input: Bubbles::TextInput
+
+      @model_filter_input: Bubbles::TextInput
+
+      @provider_palette: Bubbles::List[untyped]?
+
+      @selected_provider: String?
+
+      @model_palette: Bubbles::List[untyped]?
+
+      # @rbs thread: Tinyagent::Thread?
+      def initialize: (?thread: Tinyagent::Thread?) -> void
+
+      def init: () -> Array[untyped]
+
+      # @rbs message: Bubbletea::Message
+      def update: (Bubbletea::Message message) -> Array[untyped]
+
+      def view: () -> String
+
+      def refresh_viewport: () -> void
 
       private
 
-      def handle_resize: (untyped message) -> untyped
+      # @rbs message: Bubbletea::WindowSizeMessage
+      def handle_resize: (Bubbletea::WindowSizeMessage message) -> Array[untyped]
 
-      def handle_key: (untyped message) -> untyped
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_key: (Bubbletea::KeyMessage message) -> Array[untyped]
 
-      def handle_idle_key: (untyped message) -> untyped
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_idle_key: (Bubbletea::KeyMessage message) -> Array[untyped]
 
-      def handle_input_key: (untyped message) -> untyped
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_input_key: (Bubbletea::KeyMessage message) -> Array[untyped]
 
-      def handle_palette_key: (untyped message) -> untyped
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_palette_key: (Bubbletea::KeyMessage message) -> Array[untyped]
 
-      def handle_provider_select_key: (untyped message) -> untyped
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_provider_select_key: (Bubbletea::KeyMessage message) -> Array[untyped]
 
-      def handle_model_select_key: (untyped message) -> untyped
+      # @rbs message: Bubbletea::KeyMessage
+      def handle_model_select_key: (Bubbletea::KeyMessage message) -> Array[untyped]
 
-      def filter_commands: () -> untyped
+      def filter_commands: () -> void
 
-      def filter_providers: () -> untyped
+      def filter_providers: () -> void
 
-      def filter_models: () -> untyped
+      def filter_models: () -> void
 
-      def all_provider_items: () -> untyped
+      def all_provider_items: () -> Array[untyped]
 
-      def fuzzy_match?: (untyped query, untyped target) -> untyped
+      # @rbs query: String
+      # @rbs target: String
+      def fuzzy_match?: (String query, String target) -> bool
 
-      def palette_overlay_view: () -> untyped
+      def palette_overlay_view: () -> String
 
-      def model_select_overlay_view: () -> untyped
+      def model_select_overlay_view: () -> String
 
-      def generic_overlay_view: (untyped list, untyped filter_input) -> untyped
+      # @rbs list: Bubbles::List[untyped]
+      # @rbs filter_input: Bubbles::TextInput
+      def generic_overlay_view: (Bubbles::List[untyped] list, Bubbles::TextInput filter_input) -> String
 
-      def open_palette: () -> untyped
+      def open_palette: () -> Array[untyped]
 
-      def close_palette: () -> untyped
+      def close_palette: () -> Array[untyped]
 
-      def execute_palette_command: () -> untyped
+      def execute_palette_command: () -> void
 
-      def open_provider_select: () -> untyped
+      def open_provider_select: () -> Array[untyped]
 
-      def close_provider_select: () -> untyped
+      def close_provider_select: () -> Array[untyped]
 
       def execute_provider_select: () -> untyped
 
-      def open_model_select: () -> untyped
+      def open_model_select: () -> Array[untyped]
 
-      def close_model_select: () -> untyped
+      def close_model_select: () -> Array[untyped]
 
-      def execute_model_select: () -> untyped
+      def execute_model_select: () -> void
 
-      def all_model_items: (untyped provider_id) -> untyped
+      # @rbs provider_id: String
+      def all_model_items: (String provider_id) -> Array[untyped]
 
-      def enter_input_mode: () -> untyped
+      def enter_input_mode: () -> Array[untyped]
 
-      def exit_input_mode: () -> untyped
+      def exit_input_mode: () -> Array[untyped]
 
       def submit_message: () -> untyped
 
-      def handle_slash_command: (untyped text) -> untyped
+      # @rbs text: String
+      def handle_slash_command: (String text) -> void
 
-      def handle_usage_command: () -> untyped
+      def handle_usage_command: () -> void
 
-      def send_user_message: (untyped text) -> untyped
+      # @rbs text: String
+      def send_user_message: (String text) -> Array[untyped]
 
-      def handle_spinner_tick: (untyped message) -> untyped
+      # @rbs message: Bubbles::Spinner::TickMessage
+      def handle_spinner_tick: (Bubbles::Spinner::TickMessage message) -> Array[untyped]
 
-      def handle_completion_done: () -> untyped
+      def handle_completion_done: () -> Array[untyped]
 
-      def handle_completion_error: (untyped message) -> untyped
+      # @rbs message: CompletionErrorMessage
+      def handle_completion_error: (CompletionErrorMessage message) -> Array[untyped]
 
-      def build_messages_content: () -> untyped
+      def build_messages_content: () -> String
 
-      def format_message: (untyped msg) -> untyped
+      # @rbs msg: untyped
+      def format_message: (untyped msg) -> String
 
-      def help_text: () -> untyped
+      def help_text: () -> String
 
-      def status_bar: () -> untyped
+      def status_bar: () -> String
     end
   end
 end

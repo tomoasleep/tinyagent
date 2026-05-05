@@ -6,21 +6,24 @@ module Tinyagent
     attr_reader :thread #: Thread
 
     # @rbs thread: Thread
-    # @rbs ?configuration: Configuration
-    def initialize(thread:, configuration: nil)
+    # @rbs configuration: Configuration
+    def initialize(thread:, configuration: nil) #: void
       @thread = thread
       @configuration = configuration
     end
 
-    def configuration
+    # @rbs @configuration: Configuration?
+    # @rbs @llm: LLM::OpenAI
+
+    def configuration #: Configuration
       @configuration ||= Configuration.new
     end
 
-    def llm
+    def llm #: LLM::OpenAI
       @llm ||= build_llm
     end
 
-    def build_llm
+    def build_llm #: LLM::OpenAI
       provider = build_provider(configuration.current_provider)
       LLM::OpenAI.new(
         client: provider.build_client,
@@ -28,7 +31,8 @@ module Tinyagent
       )
     end
 
-    def build_provider(provider_id)
+    # @rbs provider_id: Symbol
+    def build_provider(provider_id) #: LLM::Provider
       catalog = ModelsDev::Catalog.new
       provider_data = catalog.openai_compatible_providers[provider_id.to_s]
 
@@ -58,7 +62,7 @@ module Tinyagent
       )
     end
 
-    def completion_loop
+    def completion_loop #: void
       thread.refresh
       agent.complete do |event|
         case event[:type]
@@ -97,7 +101,7 @@ module Tinyagent
       end
     end
 
-    def agent
+    def agent #: Agent
       Agent.new(
         llm:,
         messages: thread.messages,
@@ -105,7 +109,7 @@ module Tinyagent
       )
     end
 
-    def tools
+    def tools #: Array[Tool]
       thread.tools
     end
   end

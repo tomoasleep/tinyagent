@@ -8,10 +8,9 @@ module Tinyagent
         attr_reader name: String
 
         # @rbs name: String
-        def initialize: (String name) -> untyped
+        def initialize: (String name) -> void
 
         # Estimate token limit based on model name
-        # @rbs return: Integer
         def token_limit: () -> Integer
       end
     end

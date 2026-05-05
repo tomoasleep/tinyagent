@@ -12,7 +12,7 @@ module Tinyagent
     # @rbs title: String
     # @rbs description: String
     # @rbs input_schema: Hash[untyped, untyped]?
-    # @rbs ?silent: boolish?
+    # @rbs silent: boolish
     # @rbs &on_call: ? (Hash[String, untyped]) -> String?
     def initialize(name:, title:, description:, input_schema:, silent: false, &on_call) #: void
       @name = name
@@ -28,6 +28,7 @@ module Tinyagent
       silent
     end
 
+    # @rbs params: Hash[String, untyped]
     def call(params) #: String?
       on_call&.call(params)
     end

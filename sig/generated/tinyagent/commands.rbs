@@ -4,7 +4,6 @@ module Tinyagent
   # Interaction commands (a.k.a. Slash commands, Prompts, etc)
   module Commands
     # @rbs request: Request
-    # @rbs return: Array[Commands::BuiltinBase]
     def self.builtins: (request: Request) -> Array[Commands::BuiltinBase]
   end
 end

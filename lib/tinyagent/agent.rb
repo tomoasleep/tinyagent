@@ -14,13 +14,13 @@ module Tinyagent
       llm:,
       messages: [],
       tools: []
-    )
+    ) #: void
       @llm = llm
       @messages = messages
       @tools = tools
     end
 
-    def complete(&)
+    def complete(&) #: Response
       loop do
         response = llm.complete(
           messages:,
@@ -50,19 +50,30 @@ module Tinyagent
       end
     end
 
-    def on_new_message(message, &callback)
+    # @rbs message: Message
+    # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
+    def on_new_message(message, &callback) #: void
       callback&.call({ type: :new_message, message: })
     end
 
-    def on_tool_call(tool:, tool_arguments:, &callback)
+    # @rbs tool: Tool
+    # @rbs tool_arguments: Hash[String, untyped]
+    # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
+    def on_tool_call(tool:, tool_arguments:, &callback) #: void
       callback&.call({ type: :tool_call, tool:, tool_arguments: })
     end
 
-    def on_tool_response(tool:, tool_response:, message:, &callback)
+    # @rbs tool: Tool
+    # @rbs tool_response: untyped
+    # @rbs message: Message
+    # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
+    def on_tool_response(tool:, tool_response:, message:, &callback) #: void
       callback&.call({ type: :tool_response, tool:, tool_response:, message: })
     end
 
-    def on_response(response, &callback)
+    # @rbs response: Response
+    # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
+    def on_response(response, &callback) #: void
       callback&.call({ type: :response, response: })
     end
   end

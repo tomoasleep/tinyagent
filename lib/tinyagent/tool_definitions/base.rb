@@ -24,16 +24,16 @@ module Tinyagent
         end
 
         # @rbs skip
-        attr_accessor :tool_name
+        attr_accessor :tool_name #: String?
 
         # @rbs skip
-        attr_accessor :tool_title
+        attr_accessor :tool_title #: String?
 
         # @rbs skip
-        attr_accessor :tool_description
+        attr_accessor :tool_description #: String?
 
         # @rbs skip
-        attr_accessor :tool_input_schema
+        attr_accessor :tool_input_schema #: input_schema?
       end
 
       def tool_name #: String
@@ -60,14 +60,13 @@ module Tinyagent
       attr_reader :request #: Request
 
       # @rbs request: Request
-      def initialize(request:)
+      def initialize(request:) #: void
         @request = request
       end
 
       # @abstract
       # @rbs arguments: Hash[String, untyped]
-      # @rbs return: String?
-      def call(arguments)
+      def call(arguments) #: String?
         raise NotImplementedError, "Subclasses must implement the 'call' method"
       end
 

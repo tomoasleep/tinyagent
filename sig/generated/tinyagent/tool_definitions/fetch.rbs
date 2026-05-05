@@ -9,32 +9,27 @@ module Tinyagent
 
       @available: bool
 
-      def self.avaliable!: () -> untyped
+      def self.avaliable!: () -> void
 
-      def self.not_avaliable!: () -> untyped
+      def self.not_avaliable!: () -> void
 
       def self.available?: () -> boolish
 
       # @rbs arguments: Hash[String, untyped]
-      # @rbs return: String?
       def call: (Hash[String, untyped] arguments) -> String?
 
       private
 
       # @rbs url: String
-      # @rbs return: String
       def normalize_url: (String url) -> String
 
       # @rbs url: String
-      # @rbs return: bool
       def valid_url?: (String url) -> bool
 
       # @rbs url: String
-      # @rbs return: String
       def fetch_content: (String url) -> String
 
       # @rbs content: String
-      # @rbs return: String
       def extract_readable_content: (String content) -> String
     end
   end

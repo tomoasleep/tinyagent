@@ -14,13 +14,13 @@ module Tinyagent
     # @rbs prompt_tokens: Integer
     # @rbs completion_tokens: Integer
     # @rbs total_tokens: Integer
-    # @rbs ?token_limit: Integer?
-    def initialize: (prompt_tokens: Integer, completion_tokens: Integer, total_tokens: Integer, ?token_limit: untyped) -> untyped
+    # @rbs token_limit: Integer?
+    def initialize: (prompt_tokens: Integer, completion_tokens: Integer, total_tokens: Integer, ?token_limit: Integer?) -> void
 
-    def usage_percentage: () -> untyped
+    def usage_percentage: () -> Float?
 
-    def over_auto_compact_threshold?: () -> untyped
+    def over_auto_compact_threshold?: () -> bool
 
-    def to_h: () -> untyped
+    def to_h: () -> Hash[Symbol, untyped]
   end
 end

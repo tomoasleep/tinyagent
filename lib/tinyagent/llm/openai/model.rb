@@ -8,13 +8,12 @@ module Tinyagent
         attr_reader :name #: String
 
         # @rbs name: String
-        def initialize(name)
+        def initialize(name) #: void
           @name = name
         end
 
         # Estimate token limit based on model name
-        # @rbs return: Integer
-        def token_limit
+        def token_limit #: Integer
           if name.include?('gpt-5')
             400_000
           else

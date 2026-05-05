@@ -12,16 +12,27 @@ module Tinyagent
     # @rbs llm: LLM::OpenAI
     # @rbs messages: Array[Message]
     # @rbs tools: Array[Tool]
-    def initialize: (llm: LLM::OpenAI, ?messages: Array[Message], ?tools: Array[Tool]) -> untyped
+    def initialize: (llm: LLM::OpenAI, ?messages: Array[Message], ?tools: Array[Tool]) -> void
 
-    def complete: () ?{ (?) -> untyped } -> untyped
+    def complete: () ?{ (?) -> untyped } -> Response
 
-    def on_new_message: (untyped message) ?{ (?) -> untyped } -> untyped
+    # @rbs message: Message
+    # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
+    def on_new_message: (Message message) ?{ (Hash[Symbol, untyped]) -> void } -> void
 
-    def on_tool_call: (tool: untyped, tool_arguments: untyped) ?{ (?) -> untyped } -> untyped
+    # @rbs tool: Tool
+    # @rbs tool_arguments: Hash[String, untyped]
+    # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
+    def on_tool_call: (tool: Tool, tool_arguments: Hash[String, untyped]) ?{ (Hash[Symbol, untyped]) -> void } -> void
 
-    def on_tool_response: (tool: untyped, tool_response: untyped, message: untyped) ?{ (?) -> untyped } -> untyped
+    # @rbs tool: Tool
+    # @rbs tool_response: untyped
+    # @rbs message: Message
+    # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
+    def on_tool_response: (tool: Tool, tool_response: untyped, message: Message) ?{ (Hash[Symbol, untyped]) -> void } -> void
 
-    def on_response: (untyped response) ?{ (?) -> untyped } -> untyped
+    # @rbs response: Response
+    # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
+    def on_response: (Response response) ?{ (Hash[Symbol, untyped]) -> void } -> void
   end
 end
