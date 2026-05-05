@@ -15,7 +15,8 @@ AllCops:
   TargetRubyVersion: 3.1
   NewCops: enable
   Exclude:
-    - '.ruby-lsp/**/*'
+    - ".ruby-lsp/**/*"
+    - "db/**/*"
 
 Naming/AccessorMethodName:
   Enabled: false
@@ -26,7 +27,7 @@ Naming/FileName:
 
 Style/OneClassPerFile:
   Exclude:
-    - 'script/**/*'
+    - "script/**/*"
 
 Layout/LineLength:
   Enabled: false
@@ -70,6 +71,10 @@ Style/Documentation:
     - ClassMethods
     - PrependFeatures
 
+Style/EmptyClassDefinition:
+  AllowedParentClasses:
+    - Sequel::Model
+
 Style/RedundantBegin:
   Enabled: false # because of Steep annotations
 
@@ -79,17 +84,17 @@ Style/DisableCopsWithinSourceCodeDirective:
 Style/RbsInline/MissingTypeAnnotation:
   EnforcedStyle: doc_style_and_return_annotation
   Exclude:
-    - 'script/**/*'
-    - 'spec/**/*'
+    - "script/**/*"
+    - "spec/**/*"
 
 Style/RbsInline/RequireRbsInlineComment:
   EnforcedStyle: never
 
 Style/RbsInline/UntypedInstanceVariable:
   Exclude:
-    - 'script/**/*'
-    - 'spec/**/*'
+    - "script/**/*"
+    - "spec/**/*"
 
 TinyAgent/DescriptionWording:
   Enabled: true
-  DisallowedPatterns: ['basic']
+  DisallowedPatterns: ["basic"]

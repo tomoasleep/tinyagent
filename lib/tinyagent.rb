@@ -31,9 +31,15 @@ module Tinyagent
 
   extend Settings::Accessor
 
-  class Model < Sequel::Model
-    # This block intentionally left blank
-  end
+  DB = Sequel.sqlite
+  Sequel::Model.db = DB
+
+  # Prevent Sequel from inferring table name "models" at class definition time
+  # @rbs skip
+  Model = Class.new(Sequel::Model)
   Model.def_Model(self)
-  DB = Model.db = Sequel.sqlite
+
+  # @rbs!
+  #   class Model < Sequel::Model
+  #   end
 end

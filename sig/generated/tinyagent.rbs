@@ -7,8 +7,8 @@ module Tinyagent
 
   extend Settings::Accessor
 
+  DB: untyped
+
   class Model < Sequel::Model
   end
-
-  DB: untyped
 end
