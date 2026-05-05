@@ -31,7 +31,9 @@ module Tinyagent
 
   extend Settings::Accessor
 
-  Model = Class.new(Sequel::Model)
+  Model = Class.new(Sequel::Model) do
+    # This block intentionally left blank
+  end
   Model.def_Model(self)
   DB = Model.db = Sequel.sqlite
 end

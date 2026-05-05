@@ -121,8 +121,7 @@ class MemorizedIvarRbsGenerator
       content << (('  ' * indent_level) + "class #{parts.last}")
 
       # Separate instance variables and class instance variables
-      instance_methods = methods.reject(&:is_class_ivar)
-      class_methods = methods.select(&:is_class_ivar)
+      instance_methods, class_methods = methods.partition(&:is_class_ivar)
 
       # Add instance variables
       instance_methods.each do |method|
