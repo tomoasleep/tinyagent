@@ -2,6 +2,7 @@
 
 target :lib do
   check 'lib'
+  ignore 'lib/tinyagent/migrations'
 
   signature 'sig'
   signature 'sig-lib'
