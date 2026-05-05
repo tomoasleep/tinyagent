@@ -3,9 +3,8 @@
 require_relative 'e2e_helper'
 
 RSpec.describe 'tool call flow', type: :e2e do
-  # rubocop:disable RSpec/PendingWithoutReason
-  xit 'executes a tool call and shows the result' do
-    # rubocop:enable RSpec/PendingWithoutReason
+  it 'executes a tool call and shows the result' do
+    pending 'Requires AIMock server running'
     aimock.add_fixture(
       {
         match: { userMessage: 'What is 2+2?' },

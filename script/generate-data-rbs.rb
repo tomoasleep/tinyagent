@@ -92,7 +92,8 @@ class DataClassRbsGenerator
     attr_reader :data_classes #: Array[DataClass]
     attr_reader :namespace #: Array[Symbol]
 
-    def initialize(source) # rubocop:disable Lint/MissingSuper --- Prism::Visitor has no initialize method
+    def initialize(source)
+      super()
       @source = source
       @data_classes = []
       @namespace = []
