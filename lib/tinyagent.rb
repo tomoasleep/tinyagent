@@ -5,6 +5,7 @@ require 'sequel'
 
 require 'tinyagent/version'
 
+# A tiny AI agent framework with LLM integration and MCP support.
 module Tinyagent
   class Error < StandardError; end
 

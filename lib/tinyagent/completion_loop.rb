@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Tinyagent
+  # Run the agent completion loop with configuration and persistence.
   class CompletionLoop
     attr_reader :thread #: Thread
 

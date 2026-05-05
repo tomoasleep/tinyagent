@@ -2,14 +2,13 @@
 
 module Tinyagent
   module LLM
+    # LLM response with optional tool call details.
     Response = Data.define(
       :message, #: Message
       :tool, #: Tinyagent::Tool?
       :tool_call_id, #: String?
       :tool_arguments #: Hash[String, untyped]?
-    )
-
-    class Response
+    ) do
       def call_tool
         tool&.call(tool_arguments)
       end

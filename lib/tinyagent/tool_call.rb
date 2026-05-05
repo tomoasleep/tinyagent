@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Tinyagent
+  # Record of a tool call invocation.
   class ToolCall < Model
     many_to_one :message
 

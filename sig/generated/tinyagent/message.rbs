@@ -1,6 +1,7 @@
 # Generated from lib/tinyagent/message.rb with RBS::Inline
 
 module Tinyagent
+  # Chat message stored in a thread.
   class Message < ThreadItem
     ROLES: untyped
 

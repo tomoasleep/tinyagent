@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Tinyagent
+  # Track token usage and context window utilization.
   class TokenUsage
     attr_reader :prompt_tokens #: Integer
     attr_reader :completion_tokens #: Integer

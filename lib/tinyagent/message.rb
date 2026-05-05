@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Tinyagent
+  # Chat message stored in a thread.
   class Message < ThreadItem
     ROLES = { system: 1, user: 2, assistant: 3, tool: 4 }.freeze
     ROLE_IDS = ROLES.invert.freeze

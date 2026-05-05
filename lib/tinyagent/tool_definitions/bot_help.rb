@@ -2,6 +2,7 @@
 
 module Tinyagent
   module ToolDefinitions
+    # Tool for displaying help about available bot actions.
     class BotHelp < Base
       class << self
         # @rbs @actions: Array[untyped]?

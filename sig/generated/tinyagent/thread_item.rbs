@@ -1,6 +1,7 @@
 # Generated from lib/tinyagent/thread_item.rb with RBS::Inline
 
 module Tinyagent
+  # Base class for items stored in a thread.
   class ThreadItem < Model
   end
 end

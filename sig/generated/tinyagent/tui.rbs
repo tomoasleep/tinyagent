@@ -1,6 +1,7 @@
 # Generated from lib/tinyagent/tui.rb with RBS::Inline
 
 module Tinyagent
+  # Terminal user interface components.
   module Tui
   end
 end

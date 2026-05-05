@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Tinyagent
+  # Orchestrate LLM completion with tool calling.
   class Agent
     attr_reader :llm #: LLM::OpenAI
     attr_reader :messages #: Array[Message]

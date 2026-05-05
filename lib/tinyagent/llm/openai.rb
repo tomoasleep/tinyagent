@@ -4,6 +4,7 @@ require 'openai'
 
 module Tinyagent
   module LLM
+    # OpenAI-compatible LLM client.
     class OpenAI
       autoload :Model, 'tinyagent/llm/openai/model'
       attr_reader :client #: OpenAI::Client

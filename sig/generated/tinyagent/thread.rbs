@@ -1,6 +1,7 @@
 # Generated from lib/tinyagent/thread.rb with RBS::Inline
 
 module Tinyagent
+  # Conversation thread with message history.
   class Thread < Model
     def messages_dataset: () -> untyped
 

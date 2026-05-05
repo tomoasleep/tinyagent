@@ -1,6 +1,7 @@
 # Generated from lib/tinyagent/completion_loop.rb with RBS::Inline
 
 module Tinyagent
+  # Run the agent completion loop with configuration and persistence.
   class CompletionLoop
     attr_reader thread: Thread
 

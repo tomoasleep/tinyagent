@@ -2,6 +2,7 @@
 
 ### Changed
 
+- Resolve `Style/Documentation` offenses by adding doc comments to all public classes and modules
 - Resolve RSpec/MultipleExpectations offenses by adding `aggregate_failures` to affected examples
 
 ### Added

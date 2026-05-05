@@ -1,6 +1,7 @@
 # Generated from lib/tinyagent/agent.rb with RBS::Inline
 
 module Tinyagent
+  # Orchestrate LLM completion with tool calling.
   class Agent
     attr_reader llm: LLM::OpenAI
 

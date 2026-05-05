@@ -1,6 +1,7 @@
 # Generated from lib/tinyagent/tool_call.rb with RBS::Inline
 
 module Tinyagent
+  # Record of a tool call invocation.
   class ToolCall < Model
     def parsed_arguments: () -> untyped
   end

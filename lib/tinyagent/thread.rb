@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Tinyagent
+  # Conversation thread with message history.
   class Thread < Model
     one_to_many :thread_items
     many_to_one :session

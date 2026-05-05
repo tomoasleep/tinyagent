@@ -1,5 +1,6 @@
 # Generated from lib/tinyagent.rb with RBS::Inline
 
+# A tiny AI agent framework with LLM integration and MCP support.
 module Tinyagent
   class Error < StandardError
   end

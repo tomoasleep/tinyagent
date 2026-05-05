@@ -2,6 +2,7 @@
 
 module Tinyagent
   module LLM
+    # OpenAI-compatible LLM client.
     class OpenAI
       attr_reader client: OpenAI::Client
 
