@@ -14,7 +14,7 @@ module Tinyagent
     # @rbs tools: Array[Tool]
     def initialize: (llm: LLM::OpenAI, ?messages: Array[Message], ?tools: Array[Tool]) -> void
 
-    def complete: () ?{ (?) -> untyped } -> Response
+    def complete: () ?{ (?) -> untyped } -> LLM::Response
 
     # @rbs message: Message
     # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
@@ -31,8 +31,8 @@ module Tinyagent
     # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
     def on_tool_response: (tool: Tool, tool_response: untyped, message: Message) ?{ (Hash[Symbol, untyped]) -> void } -> void
 
-    # @rbs response: Response
+    # @rbs response: LLM::Response
     # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
-    def on_response: (Response response) ?{ (Hash[Symbol, untyped]) -> void } -> void
+    def on_response: (LLM::Response response) ?{ (Hash[Symbol, untyped]) -> void } -> void
   end
 end

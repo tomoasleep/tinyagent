@@ -57,9 +57,9 @@ module Tinyagent
         false
       end
 
-      attr_reader :request #: Request
+      attr_reader :request #: untyped
 
-      # @rbs request: Request
+      # @rbs request: untyped
       def initialize(request:) #: void
         @request = request
       end

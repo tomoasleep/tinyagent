@@ -1,0 +1,6 @@
+module Tinyagent
+  class Thread < Model
+    def messages: () -> Array[Message]
+    def id: () -> Integer
+  end
+end

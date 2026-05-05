@@ -3,10 +3,10 @@
 module Tinyagent
   # Manages multiple MCP (Model Context Protocol) clients
   class McpClients
-    attr_reader clients: Array[UserMcpClient]
+    attr_reader clients: Array[untyped]
 
-    # @rbs clients: Array[UserMcpClient]
-    def initialize: (Array[UserMcpClient] clients) -> void
+    # @rbs clients: Array[untyped]
+    def initialize: (Array[untyped] clients) -> void
 
     def available_tools: () -> Array[Tool]
 

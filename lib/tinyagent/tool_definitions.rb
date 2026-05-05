@@ -8,7 +8,7 @@ module Tinyagent
     autoload :Think, 'tinyagent/tool_definitions/think'
     autoload :BotHelp, 'tinyagent/tool_definitions/bot_help'
 
-    # @rbs request: Request
+    # @rbs request: untyped
     def self.builtins(request:) #: Array[Base]
       [
         Think,

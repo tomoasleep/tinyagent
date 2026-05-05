@@ -37,7 +37,7 @@ module Tinyagent
 
       @spinner: Bubbles::Spinner
 
-      @command_palette: Bubbles::List[untyped]
+      @command_palette: Bubbles::List
 
       @palette_filter_input: Bubbles::TextInput
 
@@ -45,11 +45,11 @@ module Tinyagent
 
       @model_filter_input: Bubbles::TextInput
 
-      @provider_palette: Bubbles::List[untyped]?
+      @provider_palette: Bubbles::List?
 
       @selected_provider: String?
 
-      @model_palette: Bubbles::List[untyped]?
+      @model_palette: Bubbles::List?
 
       # @rbs thread: Tinyagent::Thread?
       def initialize: (?thread: Tinyagent::Thread?) -> void
@@ -102,9 +102,9 @@ module Tinyagent
 
       def model_select_overlay_view: () -> String
 
-      # @rbs list: Bubbles::List[untyped]
+      # @rbs list: Bubbles::List
       # @rbs filter_input: Bubbles::TextInput
-      def generic_overlay_view: (Bubbles::List[untyped] list, Bubbles::TextInput filter_input) -> String
+      def generic_overlay_view: (Bubbles::List list, Bubbles::TextInput filter_input) -> String
 
       def open_palette: () -> Array[untyped]
 

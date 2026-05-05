@@ -10,8 +10,8 @@ module Tinyagent
     autoload :Usage, 'tinyagent/commands/usage'
     autoload :PromptCommand, 'tinyagent/commands/prompt_command'
 
-    # @rbs request: Request
-    def self.builtins(request:) #: Array[Commands::BuiltinBase]
+    # @rbs request: untyped
+    def self.builtins(request:) #: Array[untyped]
       [
         Commands::Clear,
         Commands::Compact,

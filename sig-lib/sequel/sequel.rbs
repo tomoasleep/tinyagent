@@ -1,0 +1,61 @@
+module Sequel
+  def self.sqlite: (?untyped opts) -> untyped
+
+  def self.extension: (*Symbol exts) -> untyped
+
+  def self.migration: () { () -> void } -> untyped
+
+  CURRENT_TIMESTAMP: untyped
+
+  class Database
+    def run: (untyped sql) -> untyped
+  end
+
+  class Model
+    def self.db: () -> Database
+    def self.db=: (Database db) -> Database
+    def self.def_Model: (untyped mod) -> untyped
+    def self.set_db: (untyped db) -> untyped
+    def self.one_to_one: (Symbol name, **untyped opts) -> void
+    def self.one_to_many: (Symbol name, **untyped opts) -> void
+    def self.many_to_one: (Symbol name, **untyped opts) -> void
+    def self.plugin: (untyped plugin, **untyped opts) -> void
+    def self.create: (**untyped opts) -> instance
+    def self.[] : (untyped pk) -> instance?
+    def self.where: (**untyped opts) -> untyped
+    def self.first: (**untyped opts) -> instance?
+    def self.all: () -> Array[instance]
+    def self.dataset: () -> untyped
+    def self.columns: () -> Array[Symbol]
+
+    def id: () -> untyped
+    def save: () -> void
+    def delete: () -> void
+    def refresh: () -> void
+    def update: (**untyped opts) -> void
+    def values: () -> ::Hash[Symbol, untyped]
+
+    def []: (untyped name) -> untyped
+    def []=: (untyped name, untyped value) -> untyped
+    def method_missing: (Symbol name, *untyped args, **untyped kwargs) -> untyped
+  end
+
+  class Migration
+    def change: () -> void
+    def create_table: (Symbol name) { () -> void } -> void
+    def add_column: (untyped table, untyped name, untyped type, **untyped opts) -> void
+    def drop_table: (*Symbol names) -> void
+    def primary_key: (Symbol name, **untyped opts) -> void
+    def foreign_key: (Symbol name, untyped table, **untyped opts) -> void
+    def String: (Symbol name, **untyped opts) -> void
+    def Integer: (Symbol name, **untyped opts) -> void
+    def DateTime: (Symbol name, **untyped opts) -> void
+    def Text: (Symbol name, **untyped opts) -> void
+    def column: (Symbol name, untyped type, **untyped opts) -> void
+    def index: (*untyped cols, **untyped opts) -> void
+  end
+
+  class Migrator
+    def self.run: (untyped db, untyped dir, **untyped opts) -> void
+  end
+end

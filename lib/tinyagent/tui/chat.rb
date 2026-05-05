@@ -40,13 +40,13 @@ module Tinyagent
       # @rbs @status_message: String
       # @rbs @text_input: Bubbles::TextInput
       # @rbs @spinner: Bubbles::Spinner
-      # @rbs @command_palette: Bubbles::List[untyped]
+      # @rbs @command_palette: Bubbles::List
       # @rbs @palette_filter_input: Bubbles::TextInput
       # @rbs @provider_filter_input: Bubbles::TextInput
       # @rbs @model_filter_input: Bubbles::TextInput
-      # @rbs @provider_palette: Bubbles::List[untyped]?
+      # @rbs @provider_palette: Bubbles::List?
       # @rbs @selected_provider: String?
-      # @rbs @model_palette: Bubbles::List[untyped]?
+      # @rbs @model_palette: Bubbles::List?
 
       # @rbs thread: Tinyagent::Thread?
       def initialize(thread: nil) #: void
@@ -338,7 +338,7 @@ module Tinyagent
         generic_overlay_view(list, filter)
       end
 
-      # @rbs list: Bubbles::List[untyped]
+      # @rbs list: Bubbles::List
       # @rbs filter_input: Bubbles::TextInput
       def generic_overlay_view(list, filter_input) #: String
         inner_lines = []

@@ -20,7 +20,7 @@ module Tinyagent
       @tools = tools
     end
 
-    def complete(&) #: Response
+    def complete(&) #: LLM::Response
       loop do
         response = llm.complete(
           messages:,
@@ -71,7 +71,7 @@ module Tinyagent
       callback&.call({ type: :tool_response, tool:, tool_response:, message: })
     end
 
-    # @rbs response: Response
+    # @rbs response: LLM::Response
     # @rbs &callback: ? (Hash[Symbol, untyped]) -> void
     def on_response(response, &callback) #: void
       callback&.call({ type: :response, response: })

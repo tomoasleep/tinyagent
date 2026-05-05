@@ -31,7 +31,7 @@ module Tinyagent
 
   extend Settings::Accessor
 
-  Model = Class.new(Sequel::Model) do
+  class Model < Sequel::Model
     # This block intentionally left blank
   end
   Model.def_Model(self)

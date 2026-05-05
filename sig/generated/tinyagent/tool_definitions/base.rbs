@@ -36,10 +36,10 @@ module Tinyagent
       # Return true if you want the tool not to produce call logs in the chat.
       def silent?: () -> boolish
 
-      attr_reader request: Request
+      attr_reader request: untyped
 
-      # @rbs request: Request
-      def initialize: (request: Request) -> void
+      # @rbs request: untyped
+      def initialize: (request: untyped) -> void
 
       # @abstract
       # @rbs arguments: Hash[String, untyped]
