@@ -6,7 +6,7 @@ RSpec.describe Tinyagent::HttpMcpClient do
   let(:base_url) { 'http://localhost:5000' }
 
   describe '#initialize' do
-    it 'stores base_url and headers' do
+    it 'stores base_url and headers', :aggregate_failures do
       client = described_class.new(url: base_url, headers: { 'X-Api-Key' => 'key123' })
       expect(client.base_url).to eq(base_url)
       expect(client.headers).to eq({ 'X-Api-Key' => 'key123' })
@@ -28,7 +28,7 @@ RSpec.describe Tinyagent::HttpMcpClient do
       stub_mcp_initialize(base_url: base_url, session_id: 'session-123')
     end
 
-    it 'sends initialize request and stores session id' do
+    it 'sends initialize request and stores session id', :aggregate_failures do
       client = described_class.new(url: base_url)
       result = client.initialize_session
       expect(result).to eq('session-123')
@@ -58,7 +58,7 @@ RSpec.describe Tinyagent::HttpMcpClient do
                           ])
     end
 
-    it 'returns an array of tools' do
+    it 'returns an array of tools', :aggregate_failures do
       client = described_class.new(url: base_url)
       tools = client.list_tools
       expect(tools.length).to eq(2)

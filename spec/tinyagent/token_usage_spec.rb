@@ -2,7 +2,7 @@
 
 RSpec.describe Tinyagent::TokenUsage do
   describe '#initialize' do
-    it 'stores token counts' do
+    it 'stores token counts', :aggregate_failures do
       usage = described_class.new(
         prompt_tokens: 10,
         completion_tokens: 5,
@@ -82,7 +82,7 @@ RSpec.describe Tinyagent::TokenUsage do
   end
 
   describe '#to_h' do
-    it 'returns a hash with all fields' do
+    it 'returns a hash with all fields', :aggregate_failures do
       usage = described_class.new(
         prompt_tokens: 10,
         completion_tokens: 5,

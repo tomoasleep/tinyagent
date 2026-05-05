@@ -2,7 +2,7 @@
 
 RSpec.describe Tinyagent::Tool do
   describe '#initialize' do
-    it 'stores name, title, description, and input_schema' do
+    it 'stores name, title, description, and input_schema', :aggregate_failures do
       tool = described_class.new(
         name: 'calculator',
         title: 'Calculator',
@@ -26,7 +26,7 @@ RSpec.describe Tinyagent::Tool do
       expect(tool.on_call).not_to be_nil
     end
 
-    it 'defaults silent to false' do
+    it 'defaults silent to false', :aggregate_failures do
       tool = described_class.new(
         name: 'test', title: 'Test', description: 'Test', input_schema: {}
       )

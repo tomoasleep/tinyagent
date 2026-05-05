@@ -77,7 +77,7 @@ RSpec.describe Tinyagent::ModelsDev::Catalog do
 
   describe '#cached_fetch' do
     context 'when cache does not exist' do
-      it 'fetches from API and writes cache' do
+      it 'fetches from API and writes cache', :aggregate_failures do
         result = catalog.cached_fetch
         expect(result).to eq(stub_response)
         expect(File).to exist(cache_path)
@@ -91,7 +91,7 @@ RSpec.describe Tinyagent::ModelsDev::Catalog do
         File.write(cache_path, JSON.dump({ 'data' => { 'cached' => true }, 'fetched_at' => Time.now.to_i }))
       end
 
-      it 'returns cached data without hitting the API' do
+      it 'returns cached data without hitting the API', :aggregate_failures do
         allow(catalog).to receive(:fetch)
         result = catalog.cached_fetch
         expect(result).to eq({ 'cached' => true })
@@ -127,7 +127,7 @@ RSpec.describe Tinyagent::ModelsDev::Catalog do
   end
 
   describe '#models_for' do
-    it 'returns models for the given provider' do
+    it 'returns models for the given provider', :aggregate_failures do
       models = catalog.models_for('openai')
       expect(models.keys).to contain_exactly('gpt-4o')
       expect(models['gpt-4o']['name']).to eq('GPT-4o')

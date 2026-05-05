@@ -20,7 +20,7 @@ RSpec.describe Tinyagent::Message do
   end
 
   describe '.create' do
-    it 'creates a message with role and content' do
+    it 'creates a message with role and content', :aggregate_failures do
       msg = create_message(role: :user, content: 'Hello')
 
       expect(msg).to be_exists
@@ -69,7 +69,7 @@ RSpec.describe Tinyagent::Message do
   end
 
   describe '#tool_call_id / #tool_name / #tool_arguments' do
-    it 'returns tool call details from associated tool call' do
+    it 'returns tool call details from associated tool call', :aggregate_failures do
       msg = create_message(role: :assistant, content: '')
       Tinyagent::ToolCall.create(
         message_id: msg.id,
@@ -84,7 +84,7 @@ RSpec.describe Tinyagent::Message do
       expect(msg.tool_arguments).to eq({ 'url' => 'https://example.com' })
     end
 
-    it 'returns nil when no tool calls' do
+    it 'returns nil when no tool calls', :aggregate_failures do
       msg = create_message(role: :user, content: 'Hi')
 
       expect(msg.tool_call_id).to be_nil
@@ -94,7 +94,7 @@ RSpec.describe Tinyagent::Message do
   end
 
   describe '#token_usage' do
-    it 'returns TokenUsage object when token data is present' do
+    it 'returns TokenUsage object when token data is present', :aggregate_failures do
       msg = create_message(
         role: :assistant,
         content: 'Hi',
@@ -119,7 +119,7 @@ RSpec.describe Tinyagent::Message do
   end
 
   describe '.from_llm_response' do
-    it 'creates a tool response message with associated tool call' do
+    it 'creates a tool response message with associated tool call', :aggregate_failures do
       tool = Tinyagent::Tool.new(
         name: 'calculator',
         title: 'Calculator',
@@ -143,7 +143,7 @@ RSpec.describe Tinyagent::Message do
   end
 
   describe '#to_h' do
-    it 'returns hash representation' do
+    it 'returns hash representation', :aggregate_failures do
       msg = create_message(role: :user, content: 'Hello')
 
       h = msg.to_h
@@ -151,7 +151,7 @@ RSpec.describe Tinyagent::Message do
       expect(h[:content]).to eq('Hello')
     end
 
-    it 'returns nil for optional fields' do
+    it 'returns nil for optional fields', :aggregate_failures do
       msg = create_message(role: :user, content: 'Hello')
 
       h = msg.to_h

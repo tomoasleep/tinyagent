@@ -93,7 +93,7 @@ RSpec.describe Tinyagent::Tui::Chat do
         expect(chat.state).to eq(:thinking)
       end
 
-      it 'adds user message to thread on submit' do
+      it 'adds user message to thread on submit', :aggregate_failures do
         submit_text(chat, 'Hi')
         expect(thread.messages.last.role).to eq(:user)
         expect(thread.messages.last.content).to eq('Hi')
@@ -101,7 +101,7 @@ RSpec.describe Tinyagent::Tui::Chat do
     end
 
     describe 'window resize' do
-      it 'updates viewport dimensions' do
+      it 'updates viewport dimensions', :aggregate_failures do
         chat.update(resize(120, 40))
         expect(chat.viewport.width).to eq(120)
         expect(chat.viewport.height).to eq(37)
@@ -129,7 +129,7 @@ RSpec.describe Tinyagent::Tui::Chat do
   describe 'slash commands' do
     before { chat.init }
 
-    it 'clears thread on /clear' do
+    it 'clears thread on /clear', :aggregate_failures do
       thread.add_message(role: :user, content: 'Hello')
       chat.update(key('i'))
       submit_text(chat, '/clear')
@@ -137,7 +137,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(chat.state).to eq(:idle)
     end
 
-    it 'shows usage on /usage' do
+    it 'shows usage on /usage', :aggregate_failures do
       thread.add_message(
         role: :assistant,
         content: 'Hi',
@@ -173,14 +173,14 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(chat.state).to eq(:idle)
     end
 
-    it 'toggles palette on ctrl+p' do
+    it 'toggles palette on ctrl+p', :aggregate_failures do
       chat.update(key('ctrl+p'))
       expect(chat.state).to eq(:palette)
       chat.update(key('ctrl+p'))
       expect(chat.state).to eq(:idle)
     end
 
-    it 'executes clear command from palette' do
+    it 'executes clear command from palette', :aggregate_failures do
       thread.add_message(role: :user, content: 'Hello')
       chat.update(key('ctrl+p'))
       chat.update(key('enter'))
@@ -188,7 +188,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(chat.state).to eq(:idle)
     end
 
-    it 'executes usage command from palette and shows tokens' do
+    it 'executes usage command from palette and shows tokens', :aggregate_failures do
       thread.add_message(
         role: :assistant,
         content: 'Hi',
@@ -203,7 +203,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(chat.view).to include('15')
     end
 
-    it 'navigates and executes compact command from palette' do
+    it 'navigates and executes compact command from palette', :aggregate_failures do
       chat.update(key('ctrl+p'))
       chat.update(key('down'))
       chat.update(key('enter'))
@@ -217,7 +217,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(cmd).to be_a(Bubbletea::QuitCommand)
     end
 
-    it 'renders palette overlay on top of viewport content' do
+    it 'renders palette overlay on top of viewport content', :aggregate_failures do
       chat.update(key('ctrl+p'))
       view = chat.view
       plain_lines = view.split("\n").map { |l| Bubbles::ANSI.strip(l).rstrip }
@@ -228,7 +228,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(overlay_lines).not_to be_empty
     end
 
-    it 'shows viewport text alongside palette border' do
+    it 'shows viewport text alongside palette border', :aggregate_failures do
       chat.update(key('ctrl+p'))
       plain_lines = chat.view.split("\n").map { |l| Bubbles::ANSI.strip(l).rstrip }
 
@@ -237,7 +237,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(plain_lines.any? { |l| l.include?('esc to close') }).to be true
     end
 
-    it 'has separator and help bar below overlay' do
+    it 'has separator and help bar below overlay', :aggregate_failures do
       chat.update(key('ctrl+p'))
       view = chat.view
       plain_lines = view.split("\n").map { |l| Bubbles::ANSI.strip(l).rstrip }
@@ -247,7 +247,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(plain_lines[22]).to include('esc')
     end
 
-    it 'shows palette-specific help bar instead of status bar' do
+    it 'shows palette-specific help bar instead of status bar', :aggregate_failures do
       chat.update(key('ctrl+p'))
       view = chat.view
       expect(view).to include('navigate')
@@ -261,7 +261,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(chat.state).to eq(:palette)
     end
 
-    it 'filters commands with fuzzy matching' do
+    it 'filters commands with fuzzy matching', :aggregate_failures do
       chat.update(key('ctrl+p'))
       type_text(chat, 'cl')
       items = chat.instance_variable_get(:@command_palette).visible_items
@@ -269,7 +269,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(items.first[:title]).to eq('clear')
     end
 
-    it 'resets filter on palette reopen' do
+    it 'resets filter on palette reopen', :aggregate_failures do
       chat.update(key('ctrl+p'))
       type_text(chat, 'cl')
       chat.update(key('esc'))
@@ -287,7 +287,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(items.length).to eq(3)
     end
 
-    it 'executes filtered command' do
+    it 'executes filtered command', :aggregate_failures do
       thread.add_message(role: :user, content: 'Hello')
       chat.update(key('ctrl+p'))
       type_text(chat, 'cl')
@@ -300,7 +300,7 @@ RSpec.describe Tinyagent::Tui::Chat do
   describe 'completion' do
     before { chat.init }
 
-    it 'quits on ctrl+c while thinking' do
+    it 'quits on ctrl+c while thinking', :aggregate_failures do
       chat.update(key('i'))
       submit_text(chat, 'Hi')
       expect(chat.state).to eq(:thinking)
@@ -309,7 +309,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(cmd).to be_a(Bubbletea::QuitCommand)
     end
 
-    it 'returns to idle on CompletionDoneMessage' do
+    it 'returns to idle on CompletionDoneMessage', :aggregate_failures do
       chat.update(key('i'))
       submit_text(chat, 'Hi')
       expect(chat.state).to eq(:thinking)
@@ -318,7 +318,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(chat.state).to eq(:idle)
     end
 
-    it 'returns to idle on CompletionErrorMessage' do
+    it 'returns to idle on CompletionErrorMessage', :aggregate_failures do
       chat.update(key('i'))
       submit_text(chat, 'Hi')
       expect(chat.state).to eq(:thinking)

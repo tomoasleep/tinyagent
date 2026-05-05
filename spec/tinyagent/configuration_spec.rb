@@ -57,7 +57,7 @@ RSpec.describe Tinyagent::Configuration do
   end
 
   describe '#provider_config' do
-    it 'returns config for the given provider' do
+    it 'returns config for the given provider', :aggregate_failures do
       File.write(config_path, JSON.dump({
                                           'providers' => {
                                             'openai' => { 'api_key' => 'sk-test', 'base_url' => 'https://custom.openai.com' }
@@ -74,7 +74,7 @@ RSpec.describe Tinyagent::Configuration do
   end
 
   describe '#set_provider_config' do
-    it 'saves provider config to config file' do
+    it 'saves provider config to config file', :aggregate_failures do
       configuration.set_provider_config('openai', api_key: 'sk-new', base_url: 'https://api.openai.com/v1')
       config = JSON.parse(File.read(config_path))
       expect(config['providers']['openai']['api_key']).to eq('sk-new')

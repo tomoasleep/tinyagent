@@ -11,7 +11,7 @@ RSpec.describe Tinyagent::Thread do
   end
 
   describe '#add_message' do
-    it 'adds a message to the thread' do
+    it 'adds a message to the thread', :aggregate_failures do
       msg = thread.add_message(role: :user, content: 'Hello')
 
       expect(msg).to be_a(Tinyagent::Message)
@@ -20,7 +20,7 @@ RSpec.describe Tinyagent::Thread do
       expect(thread.messages.count).to eq(1)
     end
 
-    it 'adds multiple messages in order' do
+    it 'adds multiple messages in order', :aggregate_failures do
       thread.add_message(role: :user, content: 'First')
       thread.add_message(role: :assistant, content: 'Second')
 

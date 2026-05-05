@@ -40,7 +40,7 @@ RSpec.describe Tinyagent::LLM::Provider do
   describe '#available_models' do
     let(:catalog) { instance_double(Tinyagent::ModelsDev::Catalog) }
 
-    it 'fetches models for this provider from catalog' do
+    it 'fetches models for this provider from catalog', :aggregate_failures do
       allow(catalog).to receive(:models_for).with('openrouter').and_return(
         { 'mistral' => { 'name' => 'Mistral' } }
       )

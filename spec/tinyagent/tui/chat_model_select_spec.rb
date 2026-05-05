@@ -70,7 +70,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(chat.state).to eq(:model_select)
     end
 
-    it 'saves configuration and returns to idle after model chosen' do
+    it 'saves configuration and returns to idle after model chosen', :aggregate_failures do
       select_provider_and_model(chat)
       expect(configuration).to have_received(:current_provider=).with('openrouter')
       expect(configuration).to have_received(:current_model=).with('mistral')

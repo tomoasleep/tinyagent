@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Changed
+
+- Resolve RSpec/MultipleExpectations offenses by adding `aggregate_failures` to affected examples
+
 ### Added
 
 - Add `TinyAgent/DescriptionWording` custom RuboCop cop to disallow specific wording patterns in RSpec `context`, `describe`, and `it` descriptions

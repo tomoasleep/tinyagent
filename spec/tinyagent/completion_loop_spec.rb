@@ -38,7 +38,7 @@ RSpec.describe Tinyagent::CompletionLoop do
         )
       end
 
-      it 'builds an LLM::OpenAI with the configured provider and model' do
+      it 'builds an LLM::OpenAI with the configured provider and model', :aggregate_failures do
         loop = described_class.new(thread:, configuration:)
         llm = loop.llm
         expect(llm).to be_a(Tinyagent::LLM::OpenAI)
@@ -57,7 +57,7 @@ RSpec.describe Tinyagent::CompletionLoop do
         allow(configuration).to receive(:provider_config).with('unknown').and_return({})
       end
 
-      it 'falls back to default OpenAI provider' do
+      it 'falls back to default OpenAI provider', :aggregate_failures do
         loop = described_class.new(thread:, configuration:)
         llm = loop.llm
         expect(llm).to be_a(Tinyagent::LLM::OpenAI)

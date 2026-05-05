@@ -17,14 +17,14 @@ RSpec.describe Tinyagent::Agent do
   end
 
   describe '#initialize' do
-    it 'sets llm, messages, and tools' do
+    it 'sets llm, messages, and tools', :aggregate_failures do
       agent = described_class.new(llm: llm, messages: [], tools: [tool])
       expect(agent.llm).to eq(llm)
       expect(agent.messages).to eq([])
       expect(agent.tools).to eq([tool])
     end
 
-    it 'defaults messages and tools to empty arrays' do
+    it 'defaults messages and tools to empty arrays', :aggregate_failures do
       agent = described_class.new(llm: llm)
       expect(agent.messages).to eq([])
       expect(agent.tools).to eq([])
@@ -49,7 +49,7 @@ RSpec.describe Tinyagent::Agent do
         )
       end
 
-      it 'returns a response' do
+      it 'returns a response', :aggregate_failures do
         agent = described_class.new(llm: llm, messages: messages)
         response = agent.complete
         expect(response).to be_a(Tinyagent::LLM::Response)
