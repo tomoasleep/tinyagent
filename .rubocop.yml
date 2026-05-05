@@ -1,3 +1,8 @@
+inherit_from: .rubocop_todo.yml
+inherit_mode:
+  merge:
+    - Exclude
+
 # The behavior of RuboCop can be controlled via the .rubocop.yml
 # configuration file. It makes it possible to enable/disable
 # certain cops (checks) and to alter their behavior if they accept
@@ -38,12 +43,13 @@ RSpec/ExampleLength:
   Max: 7
   CountAsOne: ["array", "heredoc", "method_call"]
   Exclude:
-    - 'spec/e2e/**/*'
-
-RSpec/MultipleMemoizedHelpers:
-  Enabled: false
+    - "spec/e2e/**/*"
 
 RSpec/MultipleExpectations:
+  Exclude:
+    - "spec/e2e/**/*"
+
+RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
 RSpec/NestedGroups:
@@ -52,6 +58,10 @@ RSpec/NestedGroups:
 RSpec/SpecFilePathFormat:
   CustomTransform:
     OpenAI: openai
+
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/e2e/**/*"
 
 Style/CommentedKeyword:
   Enabled: false # because of RBS annotations
@@ -64,23 +74,5 @@ Style/Documentation:
 Style/RedundantBegin:
   Enabled: false # because of Steep annotations
 
-RSpec/DescribeClass:
-  Exclude:
-    - 'spec/e2e/**/*'
-
-RSpec/NoExpectationExample:
-  Exclude:
-    - 'spec/e2e/**/*'
-
-RSpec/ContextWording:
-  Exclude:
-    - 'spec/e2e/**/*'
-
-Style/GlobalVars:
-  Exclude:
-    - 'spec/e2e/**/*'
-    - 'spec/support/e2e/**/*'
-
-Style/SpecialGlobalVars:
-  Exclude:
-    - 'spec/e2e/**/*'
+Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: true
