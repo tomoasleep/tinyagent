@@ -11,5 +11,6 @@ target :lib do
   library 'json'
   library 'net-http'
   library 'optparse'
+  library 'securerandom'
   library 'shellwords'
 end

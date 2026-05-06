@@ -45,11 +45,11 @@ module Tinyagent
 
       @model_filter_input: Bubbles::TextInput
 
-      @provider_palette: Bubbles::List?
+      @provider_palette: Bubbles::List
 
       @selected_provider: String?
 
-      @model_palette: Bubbles::List?
+      @model_palette: Bubbles::List
 
       # @rbs thread: Tinyagent::Thread?
       def initialize: (?thread: Tinyagent::Thread?) -> void

@@ -10,7 +10,7 @@ module Tinyagent
       :tool_arguments  #: Hash[String, untyped]?
     )
       def call_tool #: String?
-        tool&.call(tool_arguments)
+        tool&.call(tool_arguments || {})
       end
     end
   end

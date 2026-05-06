@@ -29,18 +29,20 @@ module Tinyagent
         on_response(response, &)
         on_new_message(response.message, &)
 
-        if response.tool
-          on_tool_call(tool: response.tool, tool_arguments: response.tool_arguments, &)
+        if (tool = response.tool)
+          tool_arguments = response.tool_arguments || {}
+          tool_call_id = response.tool_call_id || ''
+          on_tool_call(tool:, tool_arguments:, &)
           messages << response.message
 
           tool_response = response.call_tool || 'no return value'
           tool_response_message = Message.from_llm_response(
-            tool: response.tool,
-            tool_call_id: response.tool_call_id,
-            tool_arguments: response.tool_arguments,
+            tool:,
+            tool_call_id:,
+            tool_arguments:,
             tool_response:
           )
-          on_tool_response(tool: response.tool, tool_response:, message: tool_response_message, &)
+          on_tool_response(tool:, tool_response:, message: tool_response_message, &)
           messages << tool_response_message
         else
           messages << response.message

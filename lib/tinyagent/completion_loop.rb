@@ -31,14 +31,14 @@ module Tinyagent
       )
     end
 
-    # @rbs provider_id: Symbol
+    # @rbs provider_id: String
     def build_provider(provider_id) #: LLM::Provider
       catalog = ModelsDev::Catalog.new
       provider_data = catalog.openai_compatible_providers[provider_id.to_s]
 
       unless provider_data
         return LLM::Provider.new(
-          id: provider_id,
+          id: provider_id.to_sym,
           name: provider_id,
           base_url: ENV.fetch('OPENAI_BASE_URL', nil),
           api_key_env: 'OPENAI_API_KEY'
@@ -47,7 +47,7 @@ module Tinyagent
 
       config = configuration.provider_config(provider_id)
       LLM::Provider.new(
-        id: provider_id,
+        id: provider_id.to_sym,
         name: provider_data['name'],
         base_url: config['base_url'] || provider_data['api'],
         api_key: config['api_key'],
@@ -55,7 +55,7 @@ module Tinyagent
       )
     rescue StandardError
       LLM::Provider.new(
-        id: provider_id,
+        id: provider_id.to_sym,
         name: provider_id,
         base_url: ENV.fetch('OPENAI_BASE_URL', nil),
         api_key_env: 'OPENAI_API_KEY'

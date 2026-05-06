@@ -1,0 +1,20 @@
+module Tinyagent
+  module Commands
+    class Base
+      # @rbs request: untyped
+      def initialize: (request: untyped) -> void
+    end
+
+    class BuiltinBase < Base
+    end
+
+    class Clear < BuiltinBase
+    end
+
+    class Compact < BuiltinBase
+    end
+
+    class Usage < BuiltinBase
+    end
+  end
+end

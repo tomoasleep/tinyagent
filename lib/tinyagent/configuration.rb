@@ -39,7 +39,7 @@ module Tinyagent
 
     # @rbs provider_id: Symbol | String
     def provider_config(provider_id) #: Hash[String, untyped]
-      config.fetch('providers', {}).fetch(provider_id.to_s, {})
+      config.fetch('providers', _ = {}).fetch(provider_id.to_s, _ = {})
     end
 
     # @rbs provider_id: Symbol | String

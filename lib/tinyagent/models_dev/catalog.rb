@@ -54,7 +54,7 @@ module Tinyagent
         provider = providers[provider_id.to_s]
         return {} unless provider
 
-        provider.fetch('models', {})
+        provider.fetch('models', _ = {})
       end
 
       private

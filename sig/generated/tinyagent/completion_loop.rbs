@@ -19,8 +19,8 @@ module Tinyagent
 
     def build_llm: () -> LLM::OpenAI
 
-    # @rbs provider_id: Symbol
-    def build_provider: (Symbol provider_id) -> LLM::Provider
+    # @rbs provider_id: String
+    def build_provider: (String provider_id) -> LLM::Provider
 
     def completion_loop: () -> void
 

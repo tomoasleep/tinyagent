@@ -174,10 +174,11 @@ module Tinyagent
         )
 
         if tool_call && tool_arguments
+          args = tool_arguments #: Hash[String, untyped]
           msg.associate_tool_call(
             api_id: tool_call.id,
             name: tool&.name || 'unknown',
-            arguments: tool_arguments || {}
+            arguments: args
           )
         end
 

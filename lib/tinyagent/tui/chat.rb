@@ -44,9 +44,9 @@ module Tinyagent
       # @rbs @palette_filter_input: Bubbles::TextInput
       # @rbs @provider_filter_input: Bubbles::TextInput
       # @rbs @model_filter_input: Bubbles::TextInput
-      # @rbs @provider_palette: Bubbles::List?
+      # @rbs @provider_palette: Bubbles::List
       # @rbs @selected_provider: String?
-      # @rbs @model_palette: Bubbles::List?
+      # @rbs @model_palette: Bubbles::List
 
       # @rbs thread: Tinyagent::Thread?
       def initialize(thread: nil) #: void
@@ -78,6 +78,8 @@ module Tinyagent
         @model_filter_input.prompt = ''
         @model_filter_input.placeholder = 'Type to filter...'
         @model_filter_input.width = PALETTE_WIDTH - 6
+        @provider_palette = Bubbles::List.new([], width: 0)
+        @model_palette = Bubbles::List.new([], width: 0)
         refresh_viewport
       end
 
@@ -104,7 +106,7 @@ module Tinyagent
       end
 
       def view #: String
-        lines = []
+        lines = [] #: Array[String]
 
         lines << case @state
                  when :palette
@@ -161,25 +163,26 @@ module Tinyagent
 
       # @rbs message: Bubbletea::KeyMessage
       def handle_key(message) #: Array[untyped]
-        case message.to_s
-        when 'ctrl+c'
-          [self, Bubbletea.quit]
-        else
-          case @state
-          when :idle
-            handle_idle_key(message)
-          when :input
-            handle_input_key(message)
-          when :palette
-            handle_palette_key(message)
-          when :provider_select
-            handle_provider_select_key(message)
-          when :model_select
-            handle_model_select_key(message)
-          when :thinking
-            [self, nil]
-          end
-        end
+        result = case message.to_s
+                 when 'ctrl+c'
+                   [self, Bubbletea.quit]
+                 else
+                   case @state
+                   when :idle
+                     handle_idle_key(message)
+                   when :input
+                     handle_input_key(message)
+                   when :palette
+                     handle_palette_key(message)
+                   when :provider_select
+                     handle_provider_select_key(message)
+                   when :model_select
+                     handle_model_select_key(message)
+                   when :thinking
+                     [self, nil]
+                   end
+                 end
+        result || [self, nil]
       end
 
       # @rbs message: Bubbletea::KeyMessage
@@ -225,6 +228,7 @@ module Tinyagent
           close_palette
         when 'enter'
           execute_palette_command
+          [self, nil]
         when 'up', 'k'
           @command_palette.select_prev
           [self, nil]
@@ -245,6 +249,7 @@ module Tinyagent
           close_provider_select
         when 'enter'
           execute_provider_select
+          [self, nil]
         when 'up', 'k'
           @provider_palette.select_prev
           [self, nil]
@@ -265,6 +270,7 @@ module Tinyagent
           close_model_select
         when 'enter'
           execute_model_select
+          [self, nil]
         when 'up', 'k'
           @model_palette.select_prev
           [self, nil]
@@ -301,7 +307,7 @@ module Tinyagent
 
       def filter_models #: void
         query = @model_filter_input.value.strip
-        models = all_model_items
+        models = all_model_items(@selected_provider || '')
         if query.empty?
           @model_palette.items = models
         else
@@ -341,7 +347,7 @@ module Tinyagent
       # @rbs list: Bubbles::List
       # @rbs filter_input: Bubbles::TextInput
       def generic_overlay_view(list, filter_input) #: String
-        inner_lines = []
+        inner_lines = [] #: Array[String]
         inner_lines << filter_input.view
         inner_lines << list.view
         inner_lines << Lipgloss::Style.new.foreground('241').render('esc to close')
@@ -375,8 +381,8 @@ module Tinyagent
           break if target_y >= vp_lines.length
 
           plain = Bubbles::ANSI.strip(vp_lines[target_y]).ljust(@width)
-          dim_left = dim_style.render(plain[0, overlay_x])
-          dim_right = dim_style.render(plain[overlay_x + palette_w, @width - overlay_x - palette_w])
+          dim_left = dim_style.render(plain[0, overlay_x] || '')
+          dim_right = dim_style.render(plain[overlay_x + palette_w, @width - overlay_x - palette_w] || '')
           vp_lines[target_y] = dim_left + pl + dim_right
         end
 
@@ -444,7 +450,7 @@ module Tinyagent
         @state = :model_select
         @model_filter_input.focus
         @model_filter_input.reset
-        models = all_model_items(@selected_provider)
+        models = all_model_items(@selected_provider || '')
         @model_palette = Bubbles::List.new(models, width: PALETTE_WIDTH - 6, height: [models.length, 10].min)
         @model_palette.show_title = false
         @model_palette.show_filter = false
@@ -464,9 +470,10 @@ module Tinyagent
       def execute_model_select #: void
         item = @model_palette.selected_item
         config = Tinyagent::Configuration.new
-        config.current_provider = @selected_provider
+        provider = @selected_provider || ''
+        config.current_provider = provider
         config.current_model = item[:key]
-        @status_message = "Model set to #{@selected_provider}/#{item[:key]}"
+        @status_message = "Model set to #{provider}/#{item[:key]}"
         refresh_viewport
         close_model_select
       end
@@ -609,7 +616,7 @@ module Tinyagent
       end
 
       def status_bar #: String
-        parts = []
+        parts = [] #: Array[String]
         parts << @status_message if @status_message && !@status_message.empty?
 
         usage = @thread.token_usage

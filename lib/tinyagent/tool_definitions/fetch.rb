@@ -119,7 +119,7 @@ module Tinyagent
       # @rbs content: String
       def extract_readable_content(content) #: String
         document = Readability::Document.new(content)
-        document.content
+        document.content || ''
       end
     end
   end

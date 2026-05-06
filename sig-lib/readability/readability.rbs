@@ -1,0 +1,8 @@
+module Readability
+  class Document
+    # @rbs content: String
+    def initialize: (String content, ?untyped options) -> void
+    def content: () -> String?
+    def title: () -> String?
+  end
+end

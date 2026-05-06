@@ -31,6 +31,7 @@ module Sequel
     def id: () -> untyped
     def save: () -> void
     def delete: () -> void
+    def destroy: () -> void
     def refresh: () -> void
     def update: (**untyped opts) -> void
     def values: () -> ::Hash[Symbol, untyped]

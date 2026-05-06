@@ -1,0 +1,17 @@
+module RuboCop
+  module Cop
+    module TinyAgent
+      class DescriptionWording < ::RuboCop::Cop::Base
+        def rspec_description: (RuboCop::AST::Node node) { (RuboCop::AST::Node) -> void } -> untyped?
+      end
+    end
+  end
+end
+
+module RuboCop
+  module AST
+    class Node
+      def value: () -> untyped
+    end
+  end
+end

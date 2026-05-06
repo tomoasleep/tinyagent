@@ -50,7 +50,7 @@ module Tinyagent
 
       clear
       add_message(role: :system, content: "Previous conversation summary: #{summary}")
-      add_message(role: :assistant, content: last_assistant_message.content) if last_assistant_message&.tool_call?
+      add_message(role: :assistant, content: last_assistant_message&.content || '') if last_assistant_message&.tool_call?
     end
 
     # @rbs llm: LLM::OpenAI
@@ -63,7 +63,7 @@ module Tinyagent
       )
 
       response = llm.complete(messages: [summary_prompt, *messages])
-      response.message.content
+      response.message.content || ''
     end
 
     def tools #: Array[Tool]

@@ -8,7 +8,7 @@ module Tinyagent
     def parsed_arguments #: untyped?
       return nil unless arguments
 
-      JSON.parse(arguments)
+      JSON.parse(arguments || '{}')
     end
   end
 end

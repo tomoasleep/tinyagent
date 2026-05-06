@@ -30,11 +30,13 @@ module Tinyagent
 
     def token_usage #: TokenUsage?
       return nil unless token_usage_total_tokens
+      return nil unless token_usage_prompt_tokens
+      return nil unless token_usage_completion_tokens
 
       TokenUsage.new(
-        prompt_tokens: token_usage_prompt_tokens,
-        completion_tokens: token_usage_completion_tokens,
-        total_tokens: token_usage_total_tokens,
+        prompt_tokens: token_usage_prompt_tokens || 0,
+        completion_tokens: token_usage_completion_tokens || 0,
+        total_tokens: token_usage_total_tokens || 0,
         token_limit: token_usage_token_limit
       )
     end

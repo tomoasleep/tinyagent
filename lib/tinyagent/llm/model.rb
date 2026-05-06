@@ -4,7 +4,9 @@ module Tinyagent
   module LLM
     # Represents an LLM model with metadata like context limit and tool support.
     class Model
-      attr_reader :name, :context_limit, :supports_tools #: String, Integer?, boolish
+      attr_reader :name #: String
+      attr_reader :context_limit #: Integer?
+      attr_reader :supports_tools #: boolish
 
       # @rbs name: String
       # @rbs context_limit: Integer?
@@ -19,7 +21,7 @@ module Tinyagent
         context_limit || Tinyagent.settings.max_tokens || 128_000
       end
 
-      def supports_tools? #: bool
+      def supports_tools? #: boolish
         supports_tools
       end
     end
