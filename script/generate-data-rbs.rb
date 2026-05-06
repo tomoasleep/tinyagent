@@ -9,9 +9,10 @@ require 'fileutils'
 # Process Ruby files to generate RBS definitions for Data classes
 class Processor
   Source = Data.define(
-    :file,       #: untyped
-    :content,    #: untyped
-    :prism_node  #: untyped
+    :file,        #: untyped
+    :content,     #: untyped
+    :prism_node,  #: untyped
+    :comments     #: untyped
   )
   RbsOutput = Data.define(
     :origin_source,  #: untyped
@@ -43,7 +44,7 @@ class Processor
 
       parsed = Prism.parse(content)
 
-      Source.new(file:, content:, prism_node: parsed.value)
+      Source.new(file:, content:, prism_node: parsed.value, comments: parsed.comments)
     end
   end
 
@@ -70,11 +71,12 @@ end
 # Generate RBS definitions for Data classes found in Ruby files
 class DataClassRbsGenerator
   DataClass = Data.define(
-    :name,        #: untyped
-    :namespace,   #: untyped
-    :full_name,   #: untyped
-    :attributes,  #: untyped
-    :file         #: untyped
+    :name,              #: untyped
+    :namespace,         #: untyped
+    :full_name,         #: untyped
+    :attributes,        #: untyped
+    :typed_attributes,  #: untyped
+    :file               #: untyped
   )
 
   # @rbs source: Processor::Source
@@ -118,11 +120,13 @@ class DataClassRbsGenerator
       if data_class?(node)
         attributes = extract_data_attributes(node)
         if attributes
+          typed_attrs = extract_typed_attributes(node)
           @data_classes << DataClass.new(
             name: class_name,
             namespace: namespace.dup,
             full_name: [*namespace, class_name].join('::'),
             attributes: attributes,
+            typed_attributes: typed_attrs,
             file: source.file
           )
         end
@@ -177,6 +181,34 @@ class DataClassRbsGenerator
       end
 
       attributes.empty? ? nil : attributes
+    end
+
+    def extract_typed_attributes(node)
+      return {} unless node.superclass.is_a?(Prism::CallNode)
+      return {} unless node.superclass.arguments
+
+      comment_map = build_comment_map
+
+      typed = {}
+      node.superclass.arguments.arguments.each do |arg|
+        next unless arg.is_a?(Prism::SymbolNode)
+
+        type = comment_map[arg.location.start_line]
+        typed[arg.value.to_s] = type if type
+      end
+      typed
+    end
+
+    def build_comment_map
+      source.comments.each_with_object({}) do |comment, map|
+        text = comment.location.slice
+        next unless text.start_with?('#:')
+
+        type_annotation = text.delete_prefix('#:').strip
+        next if type_annotation.empty?
+
+        map[comment.location.start_line] = type_annotation
+      end
     end
 
     # @rbs new_namespace: String?
@@ -237,20 +269,24 @@ class DataClassRbsGenerator
 
     def generate_class_rbs(data_class, indent_level)
       content = []
-      content << indent("class #{data_class.name} < Data", level: indent_level)
+      content << indent("class #{data_class.name}", level: indent_level)
 
       data_class.attributes.each do |attr|
-        content << indent("def #{attr}: () -> untyped", level: indent_level + 1)
+        type = data_class.typed_attributes[attr] || 'untyped'
+        content << indent("def #{attr}: () -> #{type}", level: indent_level + 1)
       end
 
-      content << indent("def initialize: (#{generate_initialize_signature(data_class.attributes)}) -> void", level: indent_level + 1)
+      content << indent("def initialize: (#{generate_initialize_signature(data_class)}) -> void", level: indent_level + 1)
       content << indent('end', level: indent_level)
 
       content.join("\n")
     end
 
-    def generate_initialize_signature(attributes)
-      attributes.map { |attr| "#{attr}: untyped" }.join(', ')
+    def generate_initialize_signature(data_class)
+      data_class.attributes.map do |attr|
+        type = data_class.typed_attributes[attr] || 'untyped'
+        "#{attr}: #{type}"
+      end.join(', ')
     end
 
     def indent(string, level:)

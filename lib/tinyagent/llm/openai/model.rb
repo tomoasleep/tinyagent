@@ -17,7 +17,7 @@ module Tinyagent
           if name.include?('gpt-5')
             400_000
           else
-            AiAgent.settings.max_tokens || 128_000
+            Tinyagent.settings.max_tokens || 128_000
           end
         end
       end

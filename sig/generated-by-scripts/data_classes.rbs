@@ -3,12 +3,12 @@
 
 module Tinyagent
   module LLM
-    class Response < Data
-      def message: () -> untyped
-      def tool: () -> untyped
-      def tool_call_id: () -> untyped
-      def tool_arguments: () -> untyped
-      def initialize: (message: untyped, tool: untyped, tool_call_id: untyped, tool_arguments: untyped) -> void
+    class Response
+      def message: () -> Message
+      def tool: () -> Tinyagent::Tool?
+      def tool_call_id: () -> String?
+      def tool_arguments: () -> Hash[String, untyped]?
+      def initialize: (message: Message, tool: Tinyagent::Tool?, tool_call_id: String?, tool_arguments: Hash[String, untyped]?) -> void
     end
 
   end

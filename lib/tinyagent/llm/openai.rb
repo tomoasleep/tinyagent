@@ -65,17 +65,17 @@ module Tinyagent
           case message.role
           when :system
             ::OpenAI::Models::Chat::ChatCompletionSystemMessageParam.new(
-              role: :system, content: message.content
+              role: :system, content: message.content || ''
             )
           when :user
             ::OpenAI::Models::Chat::ChatCompletionUserMessageParam.new(
-              role: :user, content: message.content
+              role: :user, content: message.content || ''
             )
           when :assistant
             if message.tool_call?
               tool_calls = [
                 ::OpenAI::Models::Chat::ChatCompletionMessageFunctionToolCall.new(
-                  id: message.tool_call_id,
+                  id: message.tool_call_id || raise('tool_call_id is required for assistant tool call'),
                   type: :function,
                   function: ::OpenAI::Models::Chat::ChatCompletionMessageFunctionToolCall::Function.new(
                     name: message.tool_name || 'unknown_tool',
@@ -100,8 +100,8 @@ module Tinyagent
           when :tool
             ::OpenAI::Models::Chat::ChatCompletionToolMessageParam.new(
               role: :tool,
-              tool_call_id: message.tool_call_id || 'unknown_tool_call_id',
-              content: message.content
+              tool_call_id: message.tool_call_id || raise('tool_call_id is required for tool message'),
+              content: message.content || ''
             )
           else
             raise "Unknown message role: #{message.role}"
@@ -177,7 +177,7 @@ module Tinyagent
           msg.associate_tool_call(
             api_id: tool_call.id,
             name: tool&.name || 'unknown',
-            arguments: tool_arguments
+            arguments: tool_arguments || {}
           )
         end
 
