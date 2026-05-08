@@ -11,6 +11,7 @@
 
 ### Added
 
+- Add `UPDATE_SNAPSHOT` env var to auto-update `match_screen` heredoc snapshots after E2E test suite
 - Add `script/generate-schema-model-rbs.rb` to auto-generate RBS type definitions for Sequel model columns and `initialize` from database schema
 - Add `rake rbs:script` integration for the new schema model RBS generator
 

@@ -44,10 +44,12 @@ RSpec/ExampleLength:
   CountAsOne: ["array", "heredoc", "method_call"]
   Exclude:
     - "spec/e2e/**/*"
+    - "spec/support/**/*"
 
 RSpec/MultipleExpectations:
   Exclude:
     - "spec/e2e/**/*"
+    - "spec/support/**/*"
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false

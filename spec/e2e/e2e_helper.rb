@@ -8,6 +8,7 @@ require 'webmock'
 require_relative '../support/e2e/aimock_helper'
 require_relative '../support/e2e/tuistory_helper'
 require_relative '../support/e2e/matchers/match_screen'
+require_relative '../support/snapshot_helper'
 
 WebMock.allow_net_connect!
 

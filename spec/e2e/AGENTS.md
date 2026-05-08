@@ -49,6 +49,21 @@ end
 
 So you can write the literal values in the expected screen and they will be normalized on both sides.
 
+### Updating snapshots
+
+When the UI changes and snapshots need updating, run:
+
+```bash
+UPDATE_SNAPSHOT=1 bundle exec rspec spec/e2e/ --tag type:e2e
+```
+
+This will:
+1. Run all E2E tests (always passing the `match_screen` assertions)
+2. After the suite finishes, rewrite the heredoc content in each spec file with the actual screen output
+3. Print a summary of updated snapshots
+
+Review the changes with `git diff` before committing.
+
 ### Screen size
 
 Use `let(:screen_size)` to set terminal dimensions per example group. Choose a size that fits the content without excessive blank lines:
