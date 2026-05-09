@@ -50,7 +50,7 @@ RSpec.describe ScreenMatching do
         expect(actual).to match_screen(expected)
       end
 
-      it 'records snapshot update data', :aggregate_failures do
+      it 'records snapshot update data when screens differ', :aggregate_failures do
         actual = 'actual screen content'
         expected = 'expected'
         expect(actual).to match_screen(expected)
@@ -59,6 +59,12 @@ RSpec.describe ScreenMatching do
         expect(update[:actual]).to eq('actual screen content')
         expect(update[:file]).to include('screen_matching_spec.rb')
         expect(update[:line]).to be_a(Integer)
+      end
+
+      it 'does not record snapshot when screens match' do
+        content = 'same screen'
+        expect(content).to match_screen(content)
+        expect(described_class.snapshot_updates).to be_empty
       end
     end
   end

@@ -79,7 +79,7 @@ module ScreenMatching
 
       if ENV['UPDATE_SNAPSHOT']
         location = caller_locations.find { |l| l.absolute_path&.include?('/spec/') }
-        if location
+        if location && @actual_normalized != @expected_normalized
           ScreenMatching.snapshot_updates << {
             file: location.absolute_path,
             line: location.lineno,
