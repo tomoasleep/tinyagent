@@ -1,0 +1,39 @@
+# Generated from lib/tinyagent/tui/chat/chat_viewport.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    class Chat
+      # Renders chat messages into viewport content string.
+      # Manages message state via Bubbletea::Model.
+      class ChatViewport
+        include Bubbletea::Model
+
+        @messages: Array[untyped]
+
+        # Message sent to refresh the viewport with new messages.
+        class RefreshMessagesMessage < Bubbletea::Message
+          attr_reader messages: Array[untyped]
+
+          # @rbs messages: Array[untyped]
+          def initialize: (Array[untyped] messages) -> void
+        end
+
+        def initialize: () -> void
+
+        def init: () -> Array[untyped]
+
+        # @rbs message: Bubbletea::Message
+        def update: (Bubbletea::Message message) -> Array[untyped]
+
+        def view: () -> String
+
+        private
+
+        # @rbs msg: untyped
+        def format_message: (untyped msg) -> String
+
+        def help_text: () -> String
+      end
+    end
+  end
+end

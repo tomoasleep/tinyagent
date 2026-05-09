@@ -25,7 +25,7 @@ module Tinyagent
     end
 
     def clear #: void
-      messages.each do |msg|
+      messages_dataset.all.each do |msg|
         msg.tool_calls.each(&:destroy)
         msg.destroy
       end
@@ -36,12 +36,12 @@ module Tinyagent
     end
 
     def token_usage #: TokenUsage?
-      messages.reverse_each.find(&:token_usage)&.token_usage
+      messages_dataset.reverse(:id).all.find(&:token_usage)&.token_usage
     end
 
     # @rbs llm: LLM::OpenAI
     def compact(llm:) #: void
-      msgs = messages
+      msgs = messages_dataset.all
       return if msgs.empty?
 
       last_assistant_message = msgs.reverse.find { |m| m.role == :assistant }
@@ -55,6 +55,7 @@ module Tinyagent
 
     # @rbs llm: LLM::OpenAI
     def summarize(llm:) #: String
+      msgs = messages_dataset.all
       summary_prompt = Message.new(
         role_id: Message::ROLES[:system],
         content: <<~TEXT
@@ -62,7 +63,7 @@ module Tinyagent
         TEXT
       )
 
-      response = llm.complete(messages: [summary_prompt, *messages])
+      response = llm.complete(messages: [summary_prompt, *msgs])
       response.message.content || ''
     end
 

@@ -4,6 +4,10 @@ require 'bubbletea'
 require 'bubbles'
 require 'lipgloss'
 
+require_relative 'chat/chat_viewport'
+require_relative 'chat/palette_component'
+require_relative 'chat/status_bar'
+
 module Tinyagent
   module Tui
     # Interactive chat TUI built on Bubbletea Elm Architecture.
@@ -27,27 +31,14 @@ module Tinyagent
       attr_reader :thread #: Tinyagent::Thread
       attr_reader :viewport #: Bubbles::Viewport
 
-      COMMANDS = [
-        { title: 'clear', key: :clear },
-        { title: 'compact', key: :compact },
-        { title: 'usage', key: :usage },
-        { title: 'change model', key: :change_model }
-      ].freeze
-
-      PALETTE_WIDTH = 36
-
       # @rbs @width: Integer
       # @rbs @height: Integer
       # @rbs @status_message: String
       # @rbs @text_input: Bubbles::TextInput
       # @rbs @spinner: Bubbles::Spinner
-      # @rbs @command_palette: Bubbles::List
-      # @rbs @palette_filter_input: Bubbles::TextInput
-      # @rbs @provider_filter_input: Bubbles::TextInput
-      # @rbs @model_filter_input: Bubbles::TextInput
-      # @rbs @provider_palette: Bubbles::List
-      # @rbs @selected_provider: String?
-      # @rbs @model_palette: Bubbles::List
+      # @rbs @chat_viewport: ChatViewport
+      # @rbs @palette_component: PaletteComponent
+      # @rbs @status_bar_component: StatusBar
 
       # @rbs thread: Tinyagent::Thread?
       def initialize(thread: nil) #: void
@@ -61,26 +52,9 @@ module Tinyagent
         @text_input.width = @width - 2
         @text_input.placeholder = 'Type a message...'
         @spinner = Bubbles::Spinner.new
-        @command_palette = Bubbles::List.new(COMMANDS.dup, width: PALETTE_WIDTH - 6, height: COMMANDS.length)
-        @command_palette.show_title = false
-        @command_palette.show_filter = false
-        @command_palette.show_pagination = false
-        @command_palette.show_status_bar = false
-        @command_palette.fill_height = false
-        @palette_filter_input = Bubbles::TextInput.new
-        @palette_filter_input.prompt = ''
-        @palette_filter_input.placeholder = 'Type to filter...'
-        @palette_filter_input.width = PALETTE_WIDTH - 6
-        @provider_filter_input = Bubbles::TextInput.new
-        @provider_filter_input.prompt = ''
-        @provider_filter_input.placeholder = 'Type to filter...'
-        @provider_filter_input.width = PALETTE_WIDTH - 6
-        @model_filter_input = Bubbles::TextInput.new
-        @model_filter_input.prompt = ''
-        @model_filter_input.placeholder = 'Type to filter...'
-        @model_filter_input.width = PALETTE_WIDTH - 6
-        @provider_palette = Bubbles::List.new([], width: 0)
-        @model_palette = Bubbles::List.new([], width: 0)
+        @chat_viewport = ChatViewport.new
+        @palette_component = PaletteComponent.new
+        @status_bar_component = StatusBar.new
         refresh_viewport
       end
 
@@ -90,60 +64,90 @@ module Tinyagent
 
       # @rbs message: Bubbletea::Message
       def update(message) #: Array[untyped]
-        case message
-        when Bubbletea::WindowSizeMessage
-          handle_resize(message)
-        when Bubbletea::KeyMessage
-          handle_key(message)
-        when Bubbles::Spinner::TickMessage
-          handle_spinner_tick(message)
-        when CompletionDoneMessage
-          handle_completion_done
-        when CompletionErrorMessage
-          handle_completion_error(message)
+        if palette_active?
+          return [self, Bubbletea.quit] if message.is_a?(Bubbletea::KeyMessage) && message.to_s == 'ctrl+c'
+
+          _, cmd = @palette_component.update(message)
+          if cmd.is_a?(PaletteComponent::CommandSelectedMessage)
+            @state = :idle
+            handle_palette_command(cmd.key)
+            [self, nil]
+          elsif cmd.is_a?(PaletteComponent::ModelSelectedMessage)
+            @state = :idle
+            config = Tinyagent::Configuration.new
+            config.current_provider = cmd.provider
+            config.current_model = cmd.model
+            @status_message = "Model set to #{cmd.provider}/#{cmd.model}"
+            refresh_viewport
+            [self, nil]
+          elsif @palette_component.closed?
+            @state = :idle
+            refresh_viewport
+            [self, nil]
+          elsif @palette_component.provider_select_state?
+            @state = :provider_select
+            [self, cmd]
+          elsif @palette_component.model_select_state?
+            @state = :model_select
+            [self, cmd]
+          else
+            @state = :palette
+            [self, cmd]
+          end
         else
-          [self, nil]
+          case message
+          when Bubbletea::WindowSizeMessage
+            handle_resize(message)
+          when Bubbletea::KeyMessage
+            handle_key(message)
+          when Bubbles::Spinner::TickMessage
+            handle_spinner_tick(message)
+          when CompletionDoneMessage
+            handle_completion_done
+          when CompletionErrorMessage
+            handle_completion_error(message)
+          else
+            [self, nil]
+          end
         end
       end
 
       def view #: String
         lines = [] #: Array[String]
 
-        lines << case @state
-                 when :palette
-                   palette_overlay_view
-                 when :provider_select, :model_select
-                   model_select_overlay_view
-                 else
-                   viewport.view
-                 end
+        main_content = if palette_active?
+                         @palette_component.view(@viewport.view, @width, @height)
+                       else
+                         @viewport.view
+                       end
+        lines << main_content
 
         separator = Lipgloss::Style.new.foreground('240').render('─' * @width)
         lines << separator
 
-        case @state
-        when :input
-          lines << @text_input.view
-        when :palette
-          lines << Lipgloss::Style.new.foreground('241').render('↑↓ navigate | enter: execute | esc: close')
-        when :provider_select
-          lines << Lipgloss::Style.new.foreground('241').render('↑↓ navigate | enter: choose provider | esc: close')
-        when :model_select
-          lines << Lipgloss::Style.new.foreground('241').render('↑↓ navigate | enter: choose model | esc: close')
-        when :thinking
-          spinner_view = "#{@spinner.view} Thinking..."
-          lines << Lipgloss::Style.new.foreground('205').render(spinner_view)
-        else
-          help = status_bar
-          lines << help
-        end
+        bottom_line = case @state
+                      when :input
+                        @text_input.view
+                      when :palette, :provider_select, :model_select
+                        Lipgloss::Style.new.foreground('241').render(@palette_component.help_text)
+                      when :thinking
+                        spinner_view = "#{@spinner.view} Thinking..."
+                        Lipgloss::Style.new.foreground('205').render(spinner_view)
+                      else
+                        @status_bar_component.view
+                      end
+        lines << bottom_line
 
         lines.join("\n")
       end
 
       def refresh_viewport #: void
-        content = build_messages_content
-        @viewport.content = content
+        @chat_viewport, _cmd = @chat_viewport.update(ChatViewport::RefreshMessagesMessage.new(@thread.messages_dataset.all))
+        config = Tinyagent::Configuration.new
+        @status_bar_component, _cmd = @status_bar_component.update(StatusBar::UpdateStatusMessage.new(@status_message))
+        @status_bar_component, _cmd = @status_bar_component.update(StatusBar::UpdateModelInfoMessage.new(config.current_provider, config.current_model))
+        @status_bar_component, _cmd = @status_bar_component.update(StatusBar::UpdateTokenUsageMessage.new(@thread.token_usage))
+        @viewport.content = @chat_viewport.view
         @viewport.goto_bottom unless @viewport.at_bottom?
       end
 
@@ -156,8 +160,6 @@ module Tinyagent
         @viewport.width = @width
         @viewport.height = [@height - 3, 1].max
         @text_input.width = [@width - 2, 1].max
-        @command_palette.width = PALETTE_WIDTH - 6
-        @palette_filter_input.width = PALETTE_WIDTH - 6
         refresh_viewport
         [self, nil]
       end
@@ -173,12 +175,6 @@ module Tinyagent
                      handle_idle_key(message)
                    when :input
                      handle_input_key(message)
-                   when :palette
-                     handle_palette_key(message)
-                   when :provider_select
-                     handle_provider_select_key(message)
-                   when :model_select
-                     handle_model_select_key(message)
                    when :thinking
                      [self, nil]
                    end
@@ -210,211 +206,27 @@ module Tinyagent
           @text_input.blur
           @text_input.reset
           open_palette
+        when 'enter'
+          submit_message
         else
           @text_input, cmd = @text_input.update(message)
-          if message.enter?
-            submit_message
-          else
-            [self, cmd]
-          end
-        end
-      end
-
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_palette_key(message) #: Array[untyped]
-        case message.to_s
-        when 'esc', 'ctrl+p'
-          close_palette
-        when 'enter'
-          execute_palette_command
-          [self, nil]
-        when 'up', 'k'
-          @command_palette.select_prev
-          [self, nil]
-        when 'down', 'j'
-          @command_palette.select_next
-          [self, nil]
-        else
-          @palette_filter_input, cmd = @palette_filter_input.update(message)
-          filter_commands
           [self, cmd]
         end
-      end
-
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_provider_select_key(message) #: Array[untyped]
-        case message.to_s
-        when 'esc'
-          close_provider_select
-        when 'enter'
-          execute_provider_select
-          [self, nil]
-        when 'up', 'k'
-          @provider_palette.select_prev
-          [self, nil]
-        when 'down', 'j'
-          @provider_palette.select_next
-          [self, nil]
-        else
-          @provider_filter_input, cmd = @provider_filter_input.update(message)
-          filter_providers
-          [self, cmd]
-        end
-      end
-
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_model_select_key(message) #: Array[untyped]
-        case message.to_s
-        when 'esc'
-          close_model_select
-        when 'enter'
-          execute_model_select
-          [self, nil]
-        when 'up', 'k'
-          @model_palette.select_prev
-          [self, nil]
-        when 'down', 'j'
-          @model_palette.select_next
-          [self, nil]
-        else
-          @model_filter_input, cmd = @model_filter_input.update(message)
-          filter_models
-          [self, cmd]
-        end
-      end
-
-      def filter_commands #: void
-        query = @palette_filter_input.value.strip
-        if query.empty?
-          @command_palette.items = COMMANDS.dup
-        else
-          filtered = COMMANDS.select { |cmd| fuzzy_match?(query, cmd[:title]) }
-          @command_palette.items = filtered
-        end
-      end
-
-      def filter_providers #: void
-        query = @provider_filter_input.value.strip
-        providers = all_provider_items
-        if query.empty?
-          @provider_palette.items = providers
-        else
-          filtered = providers.select { |p| fuzzy_match?(query, p[:title]) }
-          @provider_palette.items = filtered
-        end
-      end
-
-      def filter_models #: void
-        query = @model_filter_input.value.strip
-        models = all_model_items(@selected_provider || '')
-        if query.empty?
-          @model_palette.items = models
-        else
-          filtered = models.select { |m| fuzzy_match?(query, m[:title]) }
-          @model_palette.items = filtered
-        end
-      end
-
-      def all_provider_items #: Array[untyped]
-        catalog = ModelsDev::Catalog.new
-        catalog.openai_compatible_providers.map do |id, data|
-          { title: data['name'] || id, key: id }
-        end
-      end
-
-      # @rbs query: String
-      # @rbs target: String
-      def fuzzy_match?(query, target) #: bool
-        return true if query.empty?
-
-        query = query.downcase
-        target = target.downcase
-        idx = -1
-        query.each_char.all? { |c| idx = target.index(c, idx + 1) }
-      end
-
-      def palette_overlay_view #: String
-        generic_overlay_view(@command_palette, @palette_filter_input)
-      end
-
-      def model_select_overlay_view #: String
-        list = @state == :provider_select ? @provider_palette : @model_palette
-        filter = @state == :provider_select ? @provider_filter_input : @model_filter_input
-        generic_overlay_view(list, filter)
-      end
-
-      # @rbs list: Bubbles::List
-      # @rbs filter_input: Bubbles::TextInput
-      def generic_overlay_view(list, filter_input) #: String
-        viewport_height = [@height - 3, 1].max
-        max_list_height = [viewport_height - 4, 1].max
-        list.height = [list.visible_items.length, max_list_height].min
-
-        inner_lines = [] #: Array[String]
-        inner_lines << filter_input.view
-        inner_lines << list.view
-        inner_lines << Lipgloss::Style.new.foreground('241').render('esc to close')
-        inner = inner_lines.join("\n")
-
-        box_style = Lipgloss::Style.new
-                                   .border(Lipgloss::ROUNDED_BORDER)
-                                   .padding(0, 2)
-                                   .width(PALETTE_WIDTH)
-
-        palette_box = box_style.render(inner)
-        palette_w = Lipgloss.width(palette_box)
-        palette_h = Lipgloss.height(palette_box)
-
-        viewport_content = @viewport.view
-        vp_lines = viewport_content.split("\n")
-
-        vp_lines << '' while vp_lines.length < viewport_height
-
-        overlay_x = [(@width - palette_w) / 2, 0].max
-
-        last_content_line = vp_lines.rindex { |l| Bubbles::ANSI.strip(l).strip != '' }
-        overlay_y = last_content_line ? [last_content_line - palette_h + 2, 0].max : 0
-        max_y = [viewport_height - palette_h, 0].max
-        overlay_y = [overlay_y, max_y].min
-
-        dim_style = Lipgloss::Style.new.foreground('244')
-
-        palette_lines = palette_box.split("\n")
-        palette_lines.each_with_index do |pl, i|
-          target_y = overlay_y + i
-          break if target_y >= vp_lines.length
-
-          plain = Bubbles::ANSI.strip(vp_lines[target_y]).ljust(@width)
-          dim_left = dim_style.render(plain[0, overlay_x] || '')
-          dim_right = dim_style.render(plain[overlay_x + palette_w, @width - overlay_x - palette_w] || '')
-          vp_lines[target_y] = dim_left + pl + dim_right
-        end
-
-        vp_lines.join("\n")
       end
 
       def open_palette #: Array[untyped]
         @state = :palette
-        @palette_filter_input.focus
-        @palette_filter_input.reset
-        @command_palette.items = COMMANDS.dup
-        @command_palette.select(0)
+        @palette_component.open
         [self, nil]
       end
 
-      def close_palette #: Array[untyped]
-        @state = :idle
-        @palette_filter_input.blur
-        [self, nil]
+      def palette_active? #: bool
+        %i[palette provider_select model_select].include?(@state)
       end
 
-      def execute_palette_command #: void
-        item = @command_palette.selected_item
-        case item[:key]
-        when :change_model
-          close_palette
-          open_provider_select
-          return
+      # @rbs key: Symbol
+      def handle_palette_command(key) #: void
+        case key
         when :clear
           @thread.clear
           @status_message = 'Cleared.'
@@ -424,74 +236,6 @@ module Tinyagent
           handle_usage_command
         end
         refresh_viewport
-        close_palette
-      end
-
-      def open_provider_select #: Array[untyped]
-        @state = :provider_select
-        @provider_filter_input.focus
-        @provider_filter_input.reset
-        providers = all_provider_items
-        @provider_palette = Bubbles::List.new(providers, width: PALETTE_WIDTH - 6, height: [providers.length, 10].min)
-        @provider_palette.show_title = false
-        @provider_palette.show_filter = false
-        @provider_palette.show_pagination = false
-        @provider_palette.show_status_bar = false
-        @provider_palette.fill_height = false
-        @provider_palette.select(0)
-        [self, nil]
-      end
-
-      def close_provider_select #: Array[untyped]
-        @state = :idle
-        @provider_filter_input.blur
-        [self, nil]
-      end
-
-      def execute_provider_select #: untyped
-        item = @provider_palette.selected_item
-        @selected_provider = item[:key]
-        open_model_select
-      end
-
-      def open_model_select #: Array[untyped]
-        @state = :model_select
-        @model_filter_input.focus
-        @model_filter_input.reset
-        models = all_model_items(@selected_provider || '')
-        @model_palette = Bubbles::List.new(models, width: PALETTE_WIDTH - 6, height: [models.length, 10].min)
-        @model_palette.show_title = false
-        @model_palette.show_filter = false
-        @model_palette.show_pagination = false
-        @model_palette.show_status_bar = false
-        @model_palette.fill_height = false
-        @model_palette.select(0)
-        [self, nil]
-      end
-
-      def close_model_select #: Array[untyped]
-        @state = :idle
-        @model_filter_input.blur
-        [self, nil]
-      end
-
-      def execute_model_select #: void
-        item = @model_palette.selected_item
-        config = Tinyagent::Configuration.new
-        provider = @selected_provider || ''
-        config.current_provider = provider
-        config.current_model = item[:key]
-        @status_message = "Model set to #{provider}/#{item[:key]}"
-        refresh_viewport
-        close_model_select
-      end
-
-      # @rbs provider_id: String
-      def all_model_items(provider_id) #: Array[untyped]
-        catalog = ModelsDev::Catalog.new
-        catalog.models_for(provider_id).map do |id, data|
-          { title: data['name'] || id, key: id }
-        end
       end
 
       def enter_input_mode #: Array[untyped]
@@ -585,55 +329,6 @@ module Tinyagent
         @status_message = "Error: #{message.error.message}"
         refresh_viewport
         [self, nil]
-      end
-
-      def build_messages_content #: String
-        messages = @thread.messages_dataset.all
-        return help_text if messages.empty?
-
-        messages.map { |msg| format_message(msg) }.join("\n")
-      end
-
-      # @rbs msg: untyped
-      def format_message(msg) #: String
-        case msg.role
-        when :user
-          "You: #{msg.content}"
-        when :assistant
-          "Assistant: #{msg.content}"
-        when :tool
-          tool_name = msg.tool_name || 'tool'
-          content = msg.content.to_s
-          content = "#{content[0..197]}..." if content.length > 200
-          "\u2699 #{tool_name}\n  #{content}"
-        else
-          msg.content.to_s
-        end
-      end
-
-      def help_text #: String
-        <<~TEXT
-          Welcome to tinyagent chat!
-
-          Press i to enter input mode
-          Press Ctrl+P to open command palette
-          Press q or Ctrl+C to quit
-          Use /clear, /compact, /usage for commands
-        TEXT
-      end
-
-      def status_bar #: String
-        parts = [] #: Array[String]
-        parts << @status_message if @status_message && !@status_message.empty?
-
-        usage = @thread.token_usage
-        parts << "tokens:#{usage.total_tokens}" if usage
-
-        config = Tinyagent::Configuration.new
-        parts << "model:#{config.current_provider}/#{config.current_model}"
-
-        bar = parts.join(' | ')
-        Lipgloss::Style.new.foreground('241').render(bar)
       end
     end
   end

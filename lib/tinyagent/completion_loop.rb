@@ -82,7 +82,7 @@ module Tinyagent
           if msg.tool_calls.any?
             msg.tool_calls.each do |tc|
               Tinyagent::ToolCall.create(
-                message_id: thread.messages.last.id,
+                message_id: thread.messages_dataset.last.id,
                 api_id: tc.api_id,
                 name: tc.name,
                 arguments: tc.arguments
@@ -104,7 +104,7 @@ module Tinyagent
     def agent #: Agent
       Agent.new(
         llm:,
-        messages: thread.messages,
+        messages: thread.messages_dataset.all,
         tools:
       )
     end

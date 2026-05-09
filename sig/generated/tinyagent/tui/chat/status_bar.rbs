@@ -1,0 +1,59 @@
+# Generated from lib/tinyagent/tui/chat/status_bar.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    class Chat
+      # Renders status bar and help text.
+      # Manages status state via Bubbletea::Model.
+      class StatusBar
+        include Bubbletea::Model
+
+        @status_message: String
+
+        @provider: String
+
+        @model: String
+
+        @token_usage: Tinyagent::TokenUsage?
+
+        # Message sent to update the status message.
+        class UpdateStatusMessage < Bubbletea::Message
+          attr_reader status_message: String
+
+          # @rbs status_message: String
+          def initialize: (String status_message) -> void
+        end
+
+        # Message sent to update model/provider info.
+        class UpdateModelInfoMessage < Bubbletea::Message
+          attr_reader provider: String
+
+          attr_reader model: String
+
+          # @rbs provider: String
+          # @rbs model: String
+          def initialize: (String provider, String model) -> void
+        end
+
+        # Message sent to update token usage.
+        class UpdateTokenUsageMessage < Bubbletea::Message
+          attr_reader token_usage: Tinyagent::TokenUsage?
+
+          # @rbs token_usage: Tinyagent::TokenUsage?
+          def initialize: (Tinyagent::TokenUsage? token_usage) -> void
+        end
+
+        def initialize: () -> void
+
+        def init: () -> Array[untyped]
+
+        # @rbs message: Bubbletea::Message
+        def update: (Bubbletea::Message message) -> Array[untyped]
+
+        def view: () -> String
+
+        def help_text: () -> String
+      end
+    end
+  end
+end

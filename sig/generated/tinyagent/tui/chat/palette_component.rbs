@@ -1,0 +1,133 @@
+# Generated from lib/tinyagent/tui/chat/palette_component.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    class Chat
+      # Manages palette state transitions and rendering.
+      # Includes command palette, provider selection, and model selection.
+      class PaletteComponent
+        include Bubbletea::Model
+
+        @palette_view: PaletteView
+
+        @model_palette: Bubbles::List
+
+        @provider_palette: Bubbles::List
+
+        @model_filter_input: Bubbles::TextInput
+
+        @provider_filter_input: Bubbles::TextInput
+
+        @palette_filter_input: Bubbles::TextInput
+
+        @command_palette: Bubbles::List
+
+        @state: Symbol
+
+        # Message sent when palette is closed without action.
+        class PaletteClosedMessage < Bubbletea::Message
+        end
+
+        # Message sent when a command is selected.
+        class CommandSelectedMessage < Bubbletea::Message
+          attr_reader key: Symbol
+
+          # @rbs key: Symbol
+          def initialize: (Symbol key) -> void
+        end
+
+        # Message sent when a model is selected.
+        class ModelSelectedMessage < Bubbletea::Message
+          attr_reader provider: String
+
+          attr_reader model: String
+
+          # @rbs provider: String
+          # @rbs model: String
+          def initialize: (String provider, String model) -> void
+        end
+
+        COMMANDS: untyped
+
+        PALETTE_WIDTH: ::Integer
+
+        attr_reader selected_provider: String?
+
+        attr_reader selected_model: String?
+
+        attr_reader selected_command_key: Symbol?
+
+        def initialize: () -> void
+
+        def init: () -> Array[untyped]
+
+        # @rbs message: Bubbletea::Message
+        def update: (Bubbletea::Message message) -> Array[untyped]
+
+        def open: () -> void
+
+        # @rbs viewport_content: String
+        # @rbs width: Integer
+        # @rbs height: Integer
+        def view: (String viewport_content, Integer width, Integer height) -> String
+
+        def help_text: () -> String
+
+        def closed?: () -> bool
+
+        def command_state?: () -> bool
+
+        def provider_select_state?: () -> bool
+
+        def model_select_state?: () -> bool
+
+        def filter_input_focused?: () -> bool
+
+        def selected_index: () -> Integer
+
+        def filtered_items: () -> Array[untyped]
+
+        private
+
+        # @rbs message: Bubbletea::KeyMessage
+        def handle_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+
+        # @rbs message: Bubbletea::KeyMessage
+        def handle_command_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+
+        # @rbs message: Bubbletea::KeyMessage
+        def handle_provider_select_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+
+        # @rbs message: Bubbletea::KeyMessage
+        def handle_model_select_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+
+        def execute_command: () -> Array[untyped]
+
+        def execute_provider_select: () -> Array[untyped]
+
+        def execute_model_select: () -> Array[untyped]
+
+        def open_provider_select: () -> void
+
+        def open_model_select: () -> void
+
+        def close: () -> void
+
+        def filter_commands: () -> void
+
+        def filter_providers: () -> void
+
+        def filter_models: () -> void
+
+        def all_provider_items: () -> Array[untyped]
+
+        # @rbs provider_id: String
+        def all_model_items: (String provider_id) -> Array[untyped]
+
+        # @rbs query: String
+        # @rbs target: String
+        def fuzzy_match?: (String query, String target) -> bool
+      end
+    end
+  end
+end

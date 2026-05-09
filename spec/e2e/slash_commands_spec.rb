@@ -46,17 +46,17 @@ RSpec.describe 'slash commands', type: :e2e do
 
     session.wait_for_text('Cleared.', timeout: 5)
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
-      Assistant: reply
+      Welcome to tinyagent chat!
 
-
-
-
-
+      Press i to enter input mode
+      Press Ctrl+P to open command palette
+      Press q or Ctrl+C to quit
+      Use /clear, /compact, /usage for commands
 
 
 
       ───────────────────────────────────────────────────────────────────────────────
-      Cleared. | tokens:0 | model:openai/gpt-5-nano
+      Cleared. | model:openai/gpt-5-nano
     SCREEN
   end
 

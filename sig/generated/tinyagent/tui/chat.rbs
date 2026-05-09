@@ -23,33 +23,21 @@ module Tinyagent
 
       attr_reader viewport: Bubbles::Viewport
 
-      COMMANDS: untyped
+      @status_bar_component: StatusBar
 
-      PALETTE_WIDTH: ::Integer
+      @palette_component: PaletteComponent
 
-      @width: Integer
-
-      @height: Integer
-
-      @status_message: String
-
-      @text_input: Bubbles::TextInput
+      @chat_viewport: ChatViewport
 
       @spinner: Bubbles::Spinner
 
-      @command_palette: Bubbles::List
+      @text_input: Bubbles::TextInput
 
-      @palette_filter_input: Bubbles::TextInput
+      @status_message: String
 
-      @provider_filter_input: Bubbles::TextInput
+      @height: Integer
 
-      @model_filter_input: Bubbles::TextInput
-
-      @provider_palette: Bubbles::List
-
-      @selected_provider: String?
-
-      @model_palette: Bubbles::List
+      @width: Integer
 
       # @rbs thread: Tinyagent::Thread?
       def initialize: (?thread: Tinyagent::Thread?) -> void
@@ -77,55 +65,12 @@ module Tinyagent
       # @rbs message: Bubbletea::KeyMessage
       def handle_input_key: (Bubbletea::KeyMessage message) -> Array[untyped]
 
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_palette_key: (Bubbletea::KeyMessage message) -> Array[untyped]
-
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_provider_select_key: (Bubbletea::KeyMessage message) -> Array[untyped]
-
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_model_select_key: (Bubbletea::KeyMessage message) -> Array[untyped]
-
-      def filter_commands: () -> void
-
-      def filter_providers: () -> void
-
-      def filter_models: () -> void
-
-      def all_provider_items: () -> Array[untyped]
-
-      # @rbs query: String
-      # @rbs target: String
-      def fuzzy_match?: (String query, String target) -> bool
-
-      def palette_overlay_view: () -> String
-
-      def model_select_overlay_view: () -> String
-
-      # @rbs list: Bubbles::List
-      # @rbs filter_input: Bubbles::TextInput
-      def generic_overlay_view: (Bubbles::List list, Bubbles::TextInput filter_input) -> String
-
       def open_palette: () -> Array[untyped]
 
-      def close_palette: () -> Array[untyped]
+      def palette_active?: () -> bool
 
-      def execute_palette_command: () -> void
-
-      def open_provider_select: () -> Array[untyped]
-
-      def close_provider_select: () -> Array[untyped]
-
-      def execute_provider_select: () -> untyped
-
-      def open_model_select: () -> Array[untyped]
-
-      def close_model_select: () -> Array[untyped]
-
-      def execute_model_select: () -> void
-
-      # @rbs provider_id: String
-      def all_model_items: (String provider_id) -> Array[untyped]
+      # @rbs key: Symbol
+      def handle_palette_command: (Symbol key) -> void
 
       def enter_input_mode: () -> Array[untyped]
 
@@ -148,15 +93,6 @@ module Tinyagent
 
       # @rbs message: CompletionErrorMessage
       def handle_completion_error: (CompletionErrorMessage message) -> Array[untyped]
-
-      def build_messages_content: () -> String
-
-      # @rbs msg: untyped
-      def format_message: (untyped msg) -> String
-
-      def help_text: () -> String
-
-      def status_bar: () -> String
     end
   end
 end

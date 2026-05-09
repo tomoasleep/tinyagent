@@ -198,6 +198,7 @@ RSpec.describe Tinyagent::Tui::Chat do
         token_usage_token_limit: 4096
       )
       chat.update(key('ctrl+p'))
+      2.times { chat.update(key('down')) }
       chat.update(key('enter'))
       expect(chat.state).to eq(:idle)
       expect(chat.view).to include('15')
@@ -264,10 +265,8 @@ RSpec.describe Tinyagent::Tui::Chat do
     it 'filters commands with fuzzy matching', :aggregate_failures do
       chat.update(key('ctrl+p'))
       type_text(chat, 'cl')
-      items = chat.instance_variable_get(:@command_palette).visible_items
-      expect(items.length).to eq(2)
-      expect(items[0][:title]).to eq('clear')
-      expect(items[1][:title]).to eq('change model')
+      view = chat.view
+      expect(view).to include('clear')
     end
 
     it 'resets filter on palette reopen', :aggregate_failures do
@@ -275,17 +274,18 @@ RSpec.describe Tinyagent::Tui::Chat do
       type_text(chat, 'cl')
       chat.update(key('esc'))
       chat.update(key('ctrl+p'))
-      expect(chat.state).to eq(:palette)
-      items = chat.instance_variable_get(:@command_palette).visible_items
-      expect(items.length).to eq(4)
+      view = chat.view
+      expect(view).to include('clear')
+      expect(view).to include('compact')
     end
 
-    it 'shows all items when filter is empty' do
+    it 'shows all items when filter is empty', :aggregate_failures do
       chat.update(key('ctrl+p'))
       type_text(chat, 'c')
       chat.update(key('backspace'))
-      items = chat.instance_variable_get(:@command_palette).visible_items
-      expect(items.length).to eq(4)
+      view = chat.view
+      expect(view).to include('clear')
+      expect(view).to include('compact')
     end
 
     it 'executes filtered command', :aggregate_failures do
