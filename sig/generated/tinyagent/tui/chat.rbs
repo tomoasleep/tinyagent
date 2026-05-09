@@ -31,7 +31,7 @@ module Tinyagent
 
       @spinner: Bubbles::Spinner
 
-      @text_input: Bubbles::TextInput
+      @text_input: Bubbles::TextArea
 
       @status_message: String
 

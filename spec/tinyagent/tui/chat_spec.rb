@@ -24,6 +24,16 @@ RSpec.describe Tinyagent::Tui::Chat do
       chat = described_class.new
       expect(chat.thread).to be_a(Tinyagent::Thread)
     end
+
+    it 'initializes text area instance' do
+      text_input = chat.instance_variable_get(:@text_input)
+      expect(text_input).to be_a(Bubbles::TextArea)
+    end
+
+    it 'initializes text area with placeholder' do
+      text_input = chat.instance_variable_get(:@text_input)
+      expect(text_input.placeholder).to eq('Send a message...')
+    end
   end
 
   describe '#init' do
@@ -104,7 +114,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       it 'updates viewport dimensions', :aggregate_failures do
         chat.update(resize(120, 40))
         expect(chat.viewport.width).to eq(120)
-        expect(chat.viewport.height).to eq(37)
+        expect(chat.viewport.height).to eq(35)
       end
     end
   end

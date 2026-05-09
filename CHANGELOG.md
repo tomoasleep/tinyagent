@@ -2,6 +2,13 @@
 
 ### Changed
 
+- Replace `Bubbles::TextInput` with `Bubbles::TextArea` in Chat TUI for multi-line input support
+- Add sender color styling (purple for "You:", cyan for "Assistant:", yellow for tools) to chat messages in viewport
+- Add word wrapping for chat messages based on viewport width
+- Update Chat TUI layout to accommodate TextArea height in viewport calculation
+
+### Changed
+
 - Fix `Tui::Chat` palette state handling, message submission, and thread-backed status updates after the chat component split
 - Move model change from Ctrl+M keybinding to Command Palette (`change model` command)
 - E2E テストを `include` チェックから画面全体のスナップショット比較 (`match_screen`) に移行しました

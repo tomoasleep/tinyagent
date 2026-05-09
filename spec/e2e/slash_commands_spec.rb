@@ -22,8 +22,6 @@ RSpec.describe 'slash commands', type: :e2e do
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
-
-
       ───────────────────────────────────────────────────────────────────────────────
       No token usage data. | model:openai/gpt-5-nano
     SCREEN
@@ -53,8 +51,6 @@ RSpec.describe 'slash commands', type: :e2e do
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
-
-
       ───────────────────────────────────────────────────────────────────────────────
       Cleared. | model:openai/gpt-5-nano
     SCREEN
@@ -76,8 +72,6 @@ RSpec.describe 'slash commands', type: :e2e do
       Press Ctrl+P to open command palette
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
-
-
 
       ───────────────────────────────────────────────────────────────────────────────
       Compact not yet available. | model:openai/gpt-5-nano

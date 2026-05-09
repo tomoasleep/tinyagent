@@ -34,7 +34,7 @@ module Tinyagent
       # @rbs @width: Integer
       # @rbs @height: Integer
       # @rbs @status_message: String
-      # @rbs @text_input: Bubbles::TextInput
+      # @rbs @text_input: Bubbles::TextArea
       # @rbs @spinner: Bubbles::Spinner
       # @rbs @chat_viewport: ChatViewport
       # @rbs @palette_component: PaletteComponent
@@ -47,12 +47,13 @@ module Tinyagent
         @width = 80
         @height = 24
         @status_message = ''
-        @viewport = Bubbles::Viewport.new(width: @width, height: @height - 3)
-        @text_input = Bubbles::TextInput.new
-        @text_input.width = @width - 2
-        @text_input.placeholder = 'Type a message...'
+        @viewport = Bubbles::Viewport.new(width: @width, height: @height - 5)
+        @text_input = Bubbles::TextArea.new(width: @width - 2, height: 3)
+        @text_input.placeholder = 'Send a message...'
+        @text_input.show_line_numbers = false
+        @text_input.prompt = '┃ '
         @spinner = Bubbles::Spinner.new
-        @chat_viewport = ChatViewport.new
+        @chat_viewport = ChatViewport.new(width: @width)
         @palette_component = PaletteComponent.new
         @status_bar_component = StatusBar.new
         refresh_viewport
@@ -142,6 +143,7 @@ module Tinyagent
       end
 
       def refresh_viewport #: void
+        @chat_viewport = ChatViewport.new(width: @width)
         @chat_viewport, _cmd = @chat_viewport.update(ChatViewport::RefreshMessagesMessage.new(@thread.messages_dataset.all))
         config = Tinyagent::Configuration.new
         @status_bar_component, _cmd = @status_bar_component.update(StatusBar::UpdateStatusMessage.new(@status_message))
@@ -158,7 +160,7 @@ module Tinyagent
         @width = message.width
         @height = message.height
         @viewport.width = @width
-        @viewport.height = [@height - 3, 1].max
+        @viewport.height = [@height - @text_input.height - 2, 1].max
         @text_input.width = [@width - 2, 1].max
         refresh_viewport
         [self, nil]

@@ -24,8 +24,6 @@ RSpec.describe 'chat message exchange', type: :e2e do
 
 
 
-
-
       ───────────────────────────────────────────────────────────────────────────────
       model:openai/gpt-5-nano
     SCREEN

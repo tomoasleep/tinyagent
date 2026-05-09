@@ -45,8 +45,6 @@ RSpec.describe 'command palette', type: :e2e do
 
 
 
-
-
       ───────────────────────────────────────────────────────────────────────────────
       model:openai/gpt-5-nano
     SCREEN
@@ -68,8 +66,6 @@ RSpec.describe 'command palette', type: :e2e do
       Press Ctrl+P to open command palette
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
-
-
 
 
 
@@ -95,8 +91,6 @@ RSpec.describe 'command palette', type: :e2e do
       Press Ctrl+P to open command palette
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
-
-
 
 
 
@@ -143,8 +137,6 @@ RSpec.describe 'command palette', type: :e2e do
       Press Ctrl+P to open command palette
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
-
-
 
 
 

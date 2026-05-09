@@ -16,8 +16,6 @@ RSpec.describe 'startup', type: :e2e do
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
-
-
       ───────────────────────────────────────────────────────────────────────────────
       model:openai/gpt-5-nano
     SCREEN

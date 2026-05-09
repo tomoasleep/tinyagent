@@ -10,6 +10,14 @@ module Tinyagent
 
         @messages: Array[untyped]
 
+        @width: Integer
+
+        USER_STYLE: Lipgloss::Style
+
+        ASSISTANT_STYLE: Lipgloss::Style
+
+        TOOL_STYLE: Lipgloss::Style
+
         # Message sent to refresh the viewport with new messages.
         class RefreshMessagesMessage < Bubbletea::Message
           attr_reader messages: Array[untyped]
@@ -18,7 +26,8 @@ module Tinyagent
           def initialize: (Array[untyped] messages) -> void
         end
 
-        def initialize: () -> void
+        # @rbs width: Integer
+        def initialize: (?width: Integer) -> void
 
         def init: () -> Array[untyped]
 
@@ -28,6 +37,9 @@ module Tinyagent
         def view: () -> String
 
         private
+
+        # @rbs lines: Array[String]
+        def wrap_lines: (Array[String] lines) -> Array[String]
 
         # @rbs msg: untyped
         def format_message: (untyped msg) -> String
