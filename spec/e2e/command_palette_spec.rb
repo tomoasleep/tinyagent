@@ -12,13 +12,13 @@ RSpec.describe 'command palette', type: :e2e do
     session.wait_for_text('clear', timeout: 5)
 
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
-      Welcome to tinyagent chat!
-                           ╭────────────────────────────────────╮
-      Press i to enter inpu│  Type to filter...                 │
-      Press Ctrl+P to open │  > clear                           │
-      Press Ctrl+M to chang│    compact                         │
+      Welcome to tinyagent ╭────────────────────────────────────╮
+                           │  Type to filter...                 │
+      Press i to enter inpu│  > clear                           │
+      Press Ctrl+P to open │    compact                         │
       Press q or Ctrl+C to │    usage                           │
-      Use /clear, /compact,│  esc to close                      │
+      Use /clear, /compact,│    change model                    │
+                           │  esc to close                      │
                            ╰────────────────────────────────────╯
 
 
@@ -40,9 +40,9 @@ RSpec.describe 'command palette', type: :e2e do
 
       Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press Ctrl+M to change model
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
+
 
 
 
@@ -66,9 +66,9 @@ RSpec.describe 'command palette', type: :e2e do
 
       Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press Ctrl+M to change model
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
+
 
 
 
@@ -93,9 +93,9 @@ RSpec.describe 'command palette', type: :e2e do
 
       Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press Ctrl+M to change model
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
+
 
 
 
@@ -114,13 +114,13 @@ RSpec.describe 'command palette', type: :e2e do
 
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
-
-      Press i to enter input mode
-      Press Ctrl+P to open ╭────────────────────────────────────╮
-      Press Ctrl+M to chang│  cl                                │
-      Press q or Ctrl+C to │  > clear                           │
+                           ╭────────────────────────────────────╮
+      Press i to enter inpu│  cl                                │
+      Press Ctrl+P to open │  > clear                           │
+      Press q or Ctrl+C to │    change model                    │
       Use /clear, /compact,│  esc to close                      │
                            ╰────────────────────────────────────╯
+
 
 
 
@@ -141,9 +141,9 @@ RSpec.describe 'command palette', type: :e2e do
 
       Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press Ctrl+M to change model
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
+
 
 
 

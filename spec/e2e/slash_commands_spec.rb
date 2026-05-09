@@ -19,9 +19,9 @@ RSpec.describe 'slash commands', type: :e2e do
 
       Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press Ctrl+M to change model
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
+
 
 
       ───────────────────────────────────────────────────────────────────────────────
@@ -45,7 +45,6 @@ RSpec.describe 'slash commands', type: :e2e do
     session.press('enter')
 
     session.wait_for_text('Cleared.', timeout: 5)
-
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Assistant: reply
 
@@ -75,9 +74,9 @@ RSpec.describe 'slash commands', type: :e2e do
 
       Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press Ctrl+M to change model
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
+
 
 
       ───────────────────────────────────────────────────────────────────────────────

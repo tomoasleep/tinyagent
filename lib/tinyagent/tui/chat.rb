@@ -30,7 +30,8 @@ module Tinyagent
       COMMANDS = [
         { title: 'clear', key: :clear },
         { title: 'compact', key: :compact },
-        { title: 'usage', key: :usage }
+        { title: 'usage', key: :usage },
+        { title: 'change model', key: :change_model }
       ].freeze
 
       PALETTE_WIDTH = 36
@@ -194,8 +195,6 @@ module Tinyagent
           enter_input_mode
         when 'ctrl+p'
           open_palette
-        when 'ctrl+m'
-          open_provider_select
         else
           @viewport, cmd = @viewport.update(message)
           [self, cmd]
@@ -347,6 +346,10 @@ module Tinyagent
       # @rbs list: Bubbles::List
       # @rbs filter_input: Bubbles::TextInput
       def generic_overlay_view(list, filter_input) #: String
+        viewport_height = [@height - 3, 1].max
+        max_list_height = [viewport_height - 4, 1].max
+        list.height = [list.visible_items.length, max_list_height].min
+
         inner_lines = [] #: Array[String]
         inner_lines << filter_input.view
         inner_lines << list.view
@@ -365,13 +368,14 @@ module Tinyagent
         viewport_content = @viewport.view
         vp_lines = viewport_content.split("\n")
 
-        viewport_height = [@height - 3, 1].max
         vp_lines << '' while vp_lines.length < viewport_height
 
         overlay_x = [(@width - palette_w) / 2, 0].max
 
         last_content_line = vp_lines.rindex { |l| Bubbles::ANSI.strip(l).strip != '' }
         overlay_y = last_content_line ? [last_content_line - palette_h + 2, 0].max : 0
+        max_y = [viewport_height - palette_h, 0].max
+        overlay_y = [overlay_y, max_y].min
 
         dim_style = Lipgloss::Style.new.foreground('244')
 
@@ -407,6 +411,10 @@ module Tinyagent
       def execute_palette_command #: void
         item = @command_palette.selected_item
         case item[:key]
+        when :change_model
+          close_palette
+          open_provider_select
+          return
         when :clear
           @thread.clear
           @status_message = 'Cleared.'
@@ -609,7 +617,6 @@ module Tinyagent
 
           Press i to enter input mode
           Press Ctrl+P to open command palette
-          Press Ctrl+M to change model
           Press q or Ctrl+C to quit
           Use /clear, /compact, /usage for commands
         TEXT

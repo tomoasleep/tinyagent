@@ -13,9 +13,9 @@ RSpec.describe 'startup', type: :e2e do
 
       Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press Ctrl+M to change model
       Press q or Ctrl+C to quit
       Use /clear, /compact, /usage for commands
+
 
 
       ───────────────────────────────────────────────────────────────────────────────

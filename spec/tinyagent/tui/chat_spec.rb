@@ -265,8 +265,9 @@ RSpec.describe Tinyagent::Tui::Chat do
       chat.update(key('ctrl+p'))
       type_text(chat, 'cl')
       items = chat.instance_variable_get(:@command_palette).visible_items
-      expect(items.length).to eq(1)
-      expect(items.first[:title]).to eq('clear')
+      expect(items.length).to eq(2)
+      expect(items[0][:title]).to eq('clear')
+      expect(items[1][:title]).to eq('change model')
     end
 
     it 'resets filter on palette reopen', :aggregate_failures do
@@ -276,7 +277,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       chat.update(key('ctrl+p'))
       expect(chat.state).to eq(:palette)
       items = chat.instance_variable_get(:@command_palette).visible_items
-      expect(items.length).to eq(3)
+      expect(items.length).to eq(4)
     end
 
     it 'shows all items when filter is empty' do
@@ -284,16 +285,26 @@ RSpec.describe Tinyagent::Tui::Chat do
       type_text(chat, 'c')
       chat.update(key('backspace'))
       items = chat.instance_variable_get(:@command_palette).visible_items
-      expect(items.length).to eq(3)
+      expect(items.length).to eq(4)
     end
 
     it 'executes filtered command', :aggregate_failures do
       thread.add_message(role: :user, content: 'Hello')
       chat.update(key('ctrl+p'))
-      type_text(chat, 'cl')
+      type_text(chat, 'cle')
       chat.update(key('enter'))
       expect(thread.messages_dataset.all).to be_empty
       expect(chat.state).to eq(:idle)
+    end
+
+    it 'clamps overlay to fit within viewport bounds' do
+      chat.update(resize(80, 10))
+      chat.update(key('ctrl+p'))
+      view_lines = chat.view.split("\n")
+      viewport_line_count = view_lines.length - 2
+      overlay_lines = view_lines[0, viewport_line_count]
+      has_border = overlay_lines.any? { |l| Bubbles::ANSI.strip(l).include?('╰') }
+      expect(has_border).to be true
     end
   end
 

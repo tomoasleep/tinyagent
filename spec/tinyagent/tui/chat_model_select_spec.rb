@@ -50,22 +50,28 @@ RSpec.describe Tinyagent::Tui::Chat do
     allow(configuration).to receive(:current_model=)
   end
 
-  describe 'model selection' do
+  describe 'model selection via command palette' do
     before { chat.init }
 
-    it 'opens provider selection on ctrl+m' do
-      chat.update(key('ctrl+m'))
+    it 'opens provider selection from change model command' do
+      chat.update(key('ctrl+p'))
+      type_text(chat, 'ch')
+      chat.update(key('enter'))
       expect(chat.state).to eq(:provider_select)
     end
 
     it 'closes provider selection on esc' do
-      chat.update(key('ctrl+m'))
+      chat.update(key('ctrl+p'))
+      type_text(chat, 'ch')
+      chat.update(key('enter'))
       chat.update(key('esc'))
       expect(chat.state).to eq(:idle)
     end
 
     it 'transitions to model selection after provider chosen' do
-      chat.update(key('ctrl+m'))
+      chat.update(key('ctrl+p'))
+      type_text(chat, 'ch')
+      chat.update(key('enter'))
       chat.update(key('enter'))
       expect(chat.state).to eq(:model_select)
     end

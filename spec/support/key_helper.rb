@@ -36,7 +36,9 @@ module KeyHelper
   end
 
   def select_provider_and_model(chat)
-    chat.update(key('ctrl+m'))
+    chat.update(key('ctrl+p'))
+    type_text(chat, 'ch')
+    chat.update(key('enter'))
     chat.update(key('down'))
     chat.update(key('enter'))
     chat.update(key('enter'))
