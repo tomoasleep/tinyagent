@@ -8,7 +8,6 @@ RSpec.describe 'slash commands', type: :e2e do
   it 'shows usage info on /usage when no data' do
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
-    session.press('i')
     session.type('/usage')
     session.press('enter')
 
@@ -17,13 +16,16 @@ RSpec.describe 'slash commands', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
 
-      Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press q or Ctrl+C to quit
+      Press Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
+
+
       ───────────────────────────────────────────────────────────────────────────────
-      No token usage data. | model:openai/gpt-5-nano
+      No token usage data.
+      ┃ Send a message...
+      model:openai/gpt-5-nano
     SCREEN
   end
 
@@ -32,13 +34,11 @@ RSpec.describe 'slash commands', type: :e2e do
 
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
-    session.press('i')
     session.type('test message')
     session.press('enter')
 
     session.wait_for_text('reply', timeout: 10)
 
-    session.press('i')
     session.type('/clear')
     session.press('enter')
 
@@ -46,20 +46,22 @@ RSpec.describe 'slash commands', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
 
-      Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press q or Ctrl+C to quit
+      Press Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
+
+
       ───────────────────────────────────────────────────────────────────────────────
-      Cleared. | model:openai/gpt-5-nano
+      Cleared.
+      ┃ Send a message...
+      model:openai/gpt-5-nano
     SCREEN
   end
 
   it 'shows compact not available on /compact' do
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
-    session.press('i')
     session.type('/compact')
     session.press('enter')
 
@@ -68,13 +70,16 @@ RSpec.describe 'slash commands', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
 
-      Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press q or Ctrl+C to quit
+      Press Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
+
+
       ───────────────────────────────────────────────────────────────────────────────
-      Compact not yet available. | model:openai/gpt-5-nano
+      Compact not yet available.
+      ┃ Send a message...
+      model:openai/gpt-5-nano
     SCREEN
   end
 end

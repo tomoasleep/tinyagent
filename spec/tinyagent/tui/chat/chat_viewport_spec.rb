@@ -27,8 +27,8 @@ RSpec.describe Tinyagent::Tui::Chat::ChatViewport do
     context 'with empty messages' do
       it 'returns help text', :aggregate_failures do
         expect(viewport.view).to include('Welcome to tinyagent chat!')
-        expect(viewport.view).to include('Press i to enter input mode')
-        expect(viewport.view).to include('Press Ctrl+P to open command palette')
+        expect(viewport.view).to include('Ctrl+P')
+        expect(viewport.view).to include('Ctrl+C')
       end
     end
 

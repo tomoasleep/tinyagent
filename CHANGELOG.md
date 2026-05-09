@@ -2,6 +2,13 @@
 
 ### Changed
 
+- Restore a separate chat footer layout: status messages render above the input, the input prompt keeps its vertical bar, and model info moves to the final line
+- Remove input mode: text input is now always available in the chat TUI. Press Enter to send, Escape to clear input
+- Remove `q` key quit; use Ctrl+C to quit
+- Show status info (model, tokens, status messages) in the text input prompt instead of a separate status bar
+
+### Changed
+
 - Replace `Bubbles::TextInput` with `Bubbles::TextArea` in Chat TUI for multi-line input support
 - Add sender color styling (purple for "You:", cyan for "Assistant:", yellow for tools) to chat messages in viewport
 - Add word wrapping for chat messages based on viewport width

@@ -52,6 +52,10 @@ module Tinyagent
         @text_input.placeholder = 'Send a message...'
         @text_input.show_line_numbers = false
         @text_input.prompt = '┃ '
+        @text_input.prompt_style = Lipgloss::Style.new.foreground('209')
+        @text_input.end_of_buffer_character = ''
+        @text_input.height = 1
+        @text_input.focus
         @spinner = Bubbles::Spinner.new
         @chat_viewport = ChatViewport.new(width: @width)
         @palette_component = PaletteComponent.new
@@ -126,18 +130,19 @@ module Tinyagent
         separator = Lipgloss::Style.new.foreground('240').render('─' * @width)
         lines << separator
 
-        bottom_line = case @state
-                      when :input
-                        @text_input.view
-                      when :palette, :provider_select, :model_select
-                        Lipgloss::Style.new.foreground('241').render(@palette_component.help_text)
-                      when :thinking
-                        spinner_view = "#{@spinner.view} Thinking..."
-                        Lipgloss::Style.new.foreground('205').render(spinner_view)
-                      else
-                        @status_bar_component.view
-                      end
-        lines << bottom_line
+        case @state
+        when :palette, :provider_select, :model_select
+          lines << Lipgloss::Style.new.foreground('241').render(@palette_component.help_text)
+        when :thinking
+          spinner_view = "#{@spinner.view} Thinking..."
+          lines << Lipgloss::Style.new.foreground('205').render(spinner_view)
+          lines << @status_bar_component.footer_view
+        else
+          status_line = @status_bar_component.status_view
+          lines << status_line if status_visible?
+          lines << @text_input.view
+          lines << @status_bar_component.footer_view
+        end
 
         lines.join("\n")
       end
@@ -149,6 +154,8 @@ module Tinyagent
         @status_bar_component, _cmd = @status_bar_component.update(StatusBar::UpdateStatusMessage.new(@status_message))
         @status_bar_component, _cmd = @status_bar_component.update(StatusBar::UpdateModelInfoMessage.new(config.current_provider, config.current_model))
         @status_bar_component, _cmd = @status_bar_component.update(StatusBar::UpdateTokenUsageMessage.new(@thread.token_usage))
+        @viewport.height = [@height - bottom_reserved_height, 1].max
+        update_text_input_prompt
         @viewport.content = @chat_viewport.view
         @viewport.goto_bottom unless @viewport.at_bottom?
       end
@@ -160,7 +167,7 @@ module Tinyagent
         @width = message.width
         @height = message.height
         @viewport.width = @width
-        @viewport.height = [@height - @text_input.height - 2, 1].max
+        @viewport.height = [@height - bottom_reserved_height, 1].max
         @text_input.width = [@width - 2, 1].max
         refresh_viewport
         [self, nil]
@@ -175,8 +182,6 @@ module Tinyagent
                    case @state
                    when :idle
                      handle_idle_key(message)
-                   when :input
-                     handle_input_key(message)
                    when :thinking
                      [self, nil]
                    end
@@ -187,26 +192,10 @@ module Tinyagent
       # @rbs message: Bubbletea::KeyMessage
       def handle_idle_key(message) #: Array[untyped]
         case message.to_s
-        when 'q'
-          [self, Bubbletea.quit]
-        when 'i'
-          enter_input_mode
-        when 'ctrl+p'
-          open_palette
-        else
-          @viewport, cmd = @viewport.update(message)
-          [self, cmd]
-        end
-      end
-
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_input_key(message) #: Array[untyped]
-        case message.to_s
         when 'esc'
-          exit_input_mode
-        when 'ctrl+p'
-          @text_input.blur
           @text_input.reset
+          [self, nil]
+        when 'ctrl+p'
           open_palette
         when 'enter'
           submit_message
@@ -240,23 +229,9 @@ module Tinyagent
         refresh_viewport
       end
 
-      def enter_input_mode #: Array[untyped]
-        @state = :input
-        @status_message = ''
-        @text_input.focus
-        [self, nil]
-      end
-
-      def exit_input_mode #: Array[untyped]
-        @state = :idle
-        @text_input.blur
-        @text_input.reset
-        [self, nil]
-      end
-
       def submit_message #: untyped
         text = @text_input.value.strip
-        return exit_input_mode if text.empty?
+        return [self, nil] if text.empty?
 
         if text.start_with?('/')
           handle_slash_command(text)
@@ -278,8 +253,8 @@ module Tinyagent
         else
           @status_message = "Unknown command: #{text}"
         end
+        @text_input.reset
         refresh_viewport
-        exit_input_mode
       end
 
       def handle_usage_command #: void
@@ -295,7 +270,6 @@ module Tinyagent
       def send_user_message(text) #: Array[untyped]
         @thread.add_message(role: :user, content: text)
         @text_input.reset
-        @text_input.blur
         @state = :thinking
         refresh_viewport
 
@@ -331,6 +305,25 @@ module Tinyagent
         @status_message = "Error: #{message.error.message}"
         refresh_viewport
         [self, nil]
+      end
+
+      def update_text_input_prompt #: void
+        @text_input.prompt = '┃ '
+      end
+
+      def bottom_reserved_height #: Integer
+        case @state
+        when :palette, :provider_select, :model_select
+          2
+        when :thinking
+          3
+        else
+          @text_input.height + (status_visible? ? 3 : 2)
+        end
+      end
+
+      def status_visible? #: bool
+        !Bubbles::ANSI.strip(@status_bar_component.status_view).empty?
       end
     end
   end

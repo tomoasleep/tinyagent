@@ -14,10 +14,10 @@ RSpec.describe 'command palette', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent ╭────────────────────────────────────╮
                            │  Type to filter...                 │
-      Press i to enter inpu│  > clear                           │
-      Press Ctrl+P to open │    compact                         │
-      Press q or Ctrl+C to │    usage                           │
-      Use /clear, /compact,│    change model                    │
+      Press Ctrl+P to open │  > clear                           │
+      Press Ctrl+C to quit │    compact                         │
+      Use /clear, /compact,│    usage                           │
+                           │    change model                    │
                            │  esc to close                      │
                            ╰────────────────────────────────────╯
 
@@ -38,14 +38,17 @@ RSpec.describe 'command palette', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
 
-      Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press q or Ctrl+C to quit
+      Press Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
 
 
+
+
+
       ───────────────────────────────────────────────────────────────────────────────
+      ┃ Send a message...
       model:openai/gpt-5-nano
     SCREEN
   end
@@ -62,15 +65,18 @@ RSpec.describe 'command palette', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
 
-      Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press q or Ctrl+C to quit
+      Press Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
 
 
+
+
       ───────────────────────────────────────────────────────────────────────────────
-      Cleared. | model:openai/gpt-5-nano
+      Cleared.
+      ┃ Send a message...
+      model:openai/gpt-5-nano
     SCREEN
   end
 
@@ -87,15 +93,18 @@ RSpec.describe 'command palette', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
 
-      Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press q or Ctrl+C to quit
+      Press Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
 
 
+
+
       ───────────────────────────────────────────────────────────────────────────────
-      Compact not yet available. | model:openai/gpt-5-nano
+      Compact not yet available.
+      ┃ Send a message...
+      model:openai/gpt-5-nano
     SCREEN
   end
 
@@ -107,13 +116,13 @@ RSpec.describe 'command palette', type: :e2e do
     session.type('cl')
 
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
-      Welcome to tinyagent chat!
-                           ╭────────────────────────────────────╮
-      Press i to enter inpu│  cl                                │
+      Welcome to tinyagent ╭────────────────────────────────────╮
+                           │  cl                                │
       Press Ctrl+P to open │  > clear                           │
-      Press q or Ctrl+C to │    change model                    │
+      Press Ctrl+C to quit │    change model                    │
       Use /clear, /compact,│  esc to close                      │
                            ╰────────────────────────────────────╯
+
 
 
 
@@ -133,14 +142,17 @@ RSpec.describe 'command palette', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
 
-      Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press q or Ctrl+C to quit
+      Press Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
 
 
+
+
+
       ───────────────────────────────────────────────────────────────────────────────
+      ┃ Send a message...
       model:openai/gpt-5-nano
     SCREEN
   end

@@ -53,47 +53,46 @@ RSpec.describe Tinyagent::Tui::Chat do
       chat.init
       expect(chat.view).to include('Ctrl+P')
     end
+
+    it 'renders model info on the final line, separate from the input prompt', :aggregate_failures do
+      chat.init
+      plain_lines = chat.view.split("\n").map { |line| Bubbles::ANSI.strip(line).rstrip }
+      separator_index = plain_lines.rindex { |line| line.start_with?('──') }
+
+      expect(plain_lines[-1]).to include('model:openai/')
+      expect(plain_lines[separator_index + 1]).to include('┃')
+      expect(plain_lines[separator_index + 1]).to include('Send a message...')
+      expect(plain_lines[separator_index + 1]).not_to include('model:')
+    end
+
+    it 'renders status text on its own line above the input prompt', :aggregate_failures do
+      chat.init
+      submit_text(chat, '/clear')
+      plain_lines = chat.view.split("\n").map { |line| Bubbles::ANSI.strip(line).rstrip }
+
+      expect(plain_lines[-3]).to include('Cleared.')
+      expect(plain_lines[-2]).to include('┃')
+      expect(plain_lines[-2]).not_to include('Cleared.')
+    end
   end
 
   describe 'state transitions' do
     before { chat.init }
 
     describe 'idle state' do
-      it 'transitions to input on i key' do
-        _model, _cmd = chat.update(key('i'))
-        expect(chat.state).to eq(:input)
-      end
-
-      it 'quits on q key' do
-        _model, cmd = chat.update(key('q'))
-        expect(cmd).to be_a(Bubbletea::QuitCommand)
-      end
-
       it 'quits on ctrl+c' do
         _model, cmd = chat.update(key('ctrl+c'))
         expect(cmd).to be_a(Bubbletea::QuitCommand)
       end
 
-      it 'passes keys to viewport for scrolling' do
-        _model, _cmd = chat.update(key('up'))
-        expect(chat.state).to eq(:idle)
-      end
-    end
-
-    describe 'input state' do
-      before { chat.update(key('i')) }
-
-      it 'quits on ctrl+c' do
-        _model, cmd = chat.update(key('ctrl+c'))
-        expect(cmd).to be_a(Bubbletea::QuitCommand)
-      end
-
-      it 'returns to idle on escape' do
+      it 'resets text input on escape' do
+        type_text(chat, 'hello')
         chat.update(key('esc'))
-        expect(chat.state).to eq(:idle)
+        text_input = chat.instance_variable_get(:@text_input)
+        expect(text_input.value).to eq('')
       end
 
-      it 'returns to idle on empty enter' do
+      it 'stays idle on empty enter' do
         chat.update(key('enter'))
         expect(chat.state).to eq(:idle)
       end
@@ -108,13 +107,19 @@ RSpec.describe Tinyagent::Tui::Chat do
         expect(thread.messages.last.role).to eq(:user)
         expect(thread.messages.last.content).to eq('Hi')
       end
+
+      it 'passes text input keys to text area' do
+        _model, _cmd = chat.update(key('h'))
+        text_input = chat.instance_variable_get(:@text_input)
+        expect(text_input.value).to include('h')
+      end
     end
 
     describe 'window resize' do
       it 'updates viewport dimensions', :aggregate_failures do
         chat.update(resize(120, 40))
         expect(chat.viewport.width).to eq(120)
-        expect(chat.viewport.height).to eq(35)
+        expect(chat.viewport.height).to eq(37)
       end
     end
   end
@@ -141,7 +146,6 @@ RSpec.describe Tinyagent::Tui::Chat do
 
     it 'clears thread on /clear', :aggregate_failures do
       thread.add_message(role: :user, content: 'Hello')
-      chat.update(key('i'))
       submit_text(chat, '/clear')
       expect(thread.messages_dataset.all).to be_empty
       expect(chat.state).to eq(:idle)
@@ -156,14 +160,12 @@ RSpec.describe Tinyagent::Tui::Chat do
         token_usage_total_tokens: 15,
         token_usage_token_limit: 4096
       )
-      chat.update(key('i'))
       submit_text(chat, '/usage')
       expect(chat.view).to include('15')
       expect(chat.state).to eq(:idle)
     end
 
     it 'ignores unknown slash commands' do
-      chat.update(key('i'))
       submit_text(chat, '/xyz')
       expect(chat.state).to eq(:idle)
     end
@@ -243,7 +245,7 @@ RSpec.describe Tinyagent::Tui::Chat do
       chat.update(key('ctrl+p'))
       plain_lines = chat.view.split("\n").map { |l| Bubbles::ANSI.strip(l).rstrip }
 
-      expect(plain_lines[2]).to start_with('Press i to enter inpu')
+      expect(plain_lines[2]).to start_with('Press Ctrl+P to open')
       expect(plain_lines.any? { |l| l.include?('│') && l.include?('clear') }).to be true
       expect(plain_lines.any? { |l| l.include?('esc to close') }).to be true
     end
@@ -264,12 +266,6 @@ RSpec.describe Tinyagent::Tui::Chat do
       expect(view).to include('navigate')
       expect(view).to include('enter: execute')
       expect(view).not_to include('i:input')
-    end
-
-    it 'opens palette from input mode' do
-      chat.update(key('i'))
-      chat.update(key('ctrl+p'))
-      expect(chat.state).to eq(:palette)
     end
 
     it 'filters commands with fuzzy matching', :aggregate_failures do
@@ -322,7 +318,6 @@ RSpec.describe Tinyagent::Tui::Chat do
     before { chat.init }
 
     it 'quits on ctrl+c while thinking', :aggregate_failures do
-      chat.update(key('i'))
       submit_text(chat, 'Hi')
       expect(chat.state).to eq(:thinking)
 
@@ -331,7 +326,6 @@ RSpec.describe Tinyagent::Tui::Chat do
     end
 
     it 'returns to idle on CompletionDoneMessage', :aggregate_failures do
-      chat.update(key('i'))
       submit_text(chat, 'Hi')
       expect(chat.state).to eq(:thinking)
 
@@ -340,7 +334,6 @@ RSpec.describe Tinyagent::Tui::Chat do
     end
 
     it 'returns to idle on CompletionErrorMessage', :aggregate_failures do
-      chat.update(key('i'))
       submit_text(chat, 'Hi')
       expect(chat.state).to eq(:thinking)
 

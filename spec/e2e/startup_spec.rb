@@ -11,12 +11,15 @@ RSpec.describe 'startup', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent chat!
 
-      Press i to enter input mode
       Press Ctrl+P to open command palette
-      Press q or Ctrl+C to quit
+      Press Ctrl+C to quit
       Use /clear, /compact, /usage for commands
 
+
+
+
       ───────────────────────────────────────────────────────────────────────────────
+      ┃ Send a message...
       model:openai/gpt-5-nano
     SCREEN
   end

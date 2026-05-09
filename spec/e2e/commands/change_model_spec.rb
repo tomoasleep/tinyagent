@@ -20,10 +20,10 @@ RSpec.describe 'change model command', type: :e2e do
     expect(session.snapshot(trim: true)).to match_screen(<<~SCREEN)
       Welcome to tinyagent ╭────────────────────────────────────╮
                            │  Type to filter...                 │
-      Press i to enter inpu│  > 302.AI                          │
-      Press Ctrl+P to open │    Alibaba                         │
-      Press q or Ctrl+C to │    Scaleway                        │
-      Use /clear, /compact,│    NanoGPT                         │
+      Press Ctrl+P to open │  > 302.AI                          │
+      Press Ctrl+C to quit │    Alibaba                         │
+      Use /clear, /compact,│    Scaleway                        │
+                           │    NanoGPT                         │
                            │    Abacus                          │
                            │    SiliconFlow (China)             │
                            │    submodel                        │

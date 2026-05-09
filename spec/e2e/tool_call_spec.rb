@@ -28,7 +28,6 @@ RSpec.describe 'tool call flow', type: :e2e do
 
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
-    session.press('i')
     session.type('What is 2+2?')
     session.press('enter')
 

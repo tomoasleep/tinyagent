@@ -88,9 +88,8 @@ module Tinyagent
           <<~TEXT
             Welcome to tinyagent chat!
 
-            Press i to enter input mode
             Press Ctrl+P to open command palette
-            Press q or Ctrl+C to quit
+            Press Ctrl+C to quit
             Use /clear, /compact, /usage for commands
           TEXT
         end

@@ -10,7 +10,6 @@ RSpec.describe 'chat message exchange', type: :e2e do
 
     session.wait_for_text('Welcome to tinyagent chat!', timeout: 10)
 
-    session.press('i')
     session.type('Hello')
     session.press('enter')
 
@@ -24,7 +23,10 @@ RSpec.describe 'chat message exchange', type: :e2e do
 
 
 
+
+
       ───────────────────────────────────────────────────────────────────────────────
+      ┃ Send a message...
       model:openai/gpt-5-nano
     SCREEN
   end

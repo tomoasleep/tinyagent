@@ -79,24 +79,46 @@ module Tinyagent
 
         def view #: String
           parts = [] #: Array[String]
-          token_usage = @token_usage
-          parts << @status_message if @status_message && !@status_message.empty?
-          parts << "tokens:#{token_usage.total_tokens}" if token_usage
-          parts << "model:#{@provider}/#{@model}"
+          status_text = plain_status_text
+          footer_text = plain_footer_text
 
-          bar = parts.join(' | ')
-          Lipgloss::Style.new.foreground('241').render(bar)
+          parts << status_text unless status_text.empty?
+          parts << footer_text unless footer_text.empty?
+
+          Lipgloss::Style.new.foreground('241').render(parts.join(' | '))
+        end
+
+        def status_view #: String
+          Lipgloss::Style.new.foreground('241').render(plain_status_text)
+        end
+
+        def footer_view #: String
+          Lipgloss::Style.new.foreground('241').render(plain_footer_text)
         end
 
         def help_text #: String
           <<~TEXT
             Welcome to tinyagent chat!
 
-            Press i to enter input mode
             Press Ctrl+P to open command palette
-            Press q or Ctrl+C to quit
+            Press Ctrl+C to quit
             Use /clear, /compact, /usage for commands
           TEXT
+        end
+
+        private
+
+        def plain_status_text #: String
+          parts = [] #: Array[String]
+          token_usage = @token_usage
+          parts << @status_message if @status_message && !@status_message.empty?
+          parts << "tokens:#{token_usage.total_tokens}" if token_usage
+
+          parts.join(' | ')
+        end
+
+        def plain_footer_text #: String
+          "model:#{@provider}/#{@model}"
         end
       end
     end

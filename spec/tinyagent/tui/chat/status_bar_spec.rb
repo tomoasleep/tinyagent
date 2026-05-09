@@ -78,6 +78,28 @@ RSpec.describe Tinyagent::Tui::Chat::StatusBar do
     end
   end
 
+  describe '#status_view' do
+    it 'renders status text without model info', :aggregate_failures do
+      bar.update(described_class::UpdateStatusMessage.new('Done.'))
+      bar.update(described_class::UpdateTokenUsageMessage.new(
+                   Tinyagent::TokenUsage.new(prompt_tokens: 60, completion_tokens: 40, total_tokens: 100)
+                 ))
+
+      expect(bar.status_view).to include('Done. | tokens:100')
+      expect(bar.status_view).not_to include('model:')
+    end
+  end
+
+  describe '#footer_view' do
+    it 'renders provider and model without status text', :aggregate_failures do
+      bar.update(described_class::UpdateStatusMessage.new('Done.'))
+      bar.update(described_class::UpdateModelInfoMessage.new('anthropic', 'claude-3'))
+
+      expect(bar.footer_view).to include('model:anthropic/claude-3')
+      expect(bar.footer_view).not_to include('Done.')
+    end
+  end
+
   describe '#help_text' do
     it 'returns a string' do
       expect(bar.help_text).to be_a(String)
@@ -88,7 +110,11 @@ RSpec.describe Tinyagent::Tui::Chat::StatusBar do
     end
 
     it 'includes key bindings' do
-      expect(bar.help_text).to include('Press i to enter input mode')
+      expect(bar.help_text).to include('Press Ctrl+C to quit')
+    end
+
+    it 'includes ctrl+p' do
+      expect(bar.help_text).to include('Ctrl+P')
     end
 
     it 'includes slash commands' do

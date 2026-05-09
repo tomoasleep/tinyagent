@@ -8,13 +8,13 @@ module Tinyagent
       class StatusBar
         include Bubbletea::Model
 
-        @status_message: String
-
-        @provider: String
+        @token_usage: Tinyagent::TokenUsage?
 
         @model: String
 
-        @token_usage: Tinyagent::TokenUsage?
+        @provider: String
+
+        @status_message: String
 
         # Message sent to update the status message.
         class UpdateStatusMessage < Bubbletea::Message
@@ -52,7 +52,17 @@ module Tinyagent
 
         def view: () -> String
 
+        def status_view: () -> String
+
+        def footer_view: () -> String
+
         def help_text: () -> String
+
+        private
+
+        def plain_status_text: () -> String
+
+        def plain_footer_text: () -> String
       end
     end
   end

@@ -62,19 +62,12 @@ module Tinyagent
       # @rbs message: Bubbletea::KeyMessage
       def handle_idle_key: (Bubbletea::KeyMessage message) -> Array[untyped]
 
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_input_key: (Bubbletea::KeyMessage message) -> Array[untyped]
-
       def open_palette: () -> Array[untyped]
 
       def palette_active?: () -> bool
 
       # @rbs key: Symbol
       def handle_palette_command: (Symbol key) -> void
-
-      def enter_input_mode: () -> Array[untyped]
-
-      def exit_input_mode: () -> Array[untyped]
 
       def submit_message: () -> untyped
 
@@ -93,6 +86,12 @@ module Tinyagent
 
       # @rbs message: CompletionErrorMessage
       def handle_completion_error: (CompletionErrorMessage message) -> Array[untyped]
+
+      def update_text_input_prompt: () -> void
+
+      def bottom_reserved_height: () -> Integer
+
+      def status_visible?: () -> bool
     end
   end
 end
