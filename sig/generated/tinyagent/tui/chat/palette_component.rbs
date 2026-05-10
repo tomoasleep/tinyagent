@@ -6,30 +6,30 @@ module Tinyagent
       # Manages palette state transitions and rendering.
       # Includes command palette, provider selection, and model selection.
       class PaletteComponent
-        include Bubbletea::Model
+        include Tinyagent::Tui::Model
 
         @palette_view: PaletteView
 
-        @model_palette: Bubbles::List
+        @model_palette: Tinyagent::Tui::List
 
-        @provider_palette: Bubbles::List
+        @provider_palette: Tinyagent::Tui::List
 
-        @model_filter_input: Bubbles::TextInput
+        @model_filter_input: Tinyagent::Tui::TextInput
 
-        @provider_filter_input: Bubbles::TextInput
+        @provider_filter_input: Tinyagent::Tui::TextInput
 
-        @palette_filter_input: Bubbles::TextInput
+        @palette_filter_input: Tinyagent::Tui::TextInput
 
-        @command_palette: Bubbles::List
+        @command_palette: Tinyagent::Tui::List
 
         @state: Symbol
 
         # Message sent when palette is closed without action.
-        class PaletteClosedMessage < Bubbletea::Message
+        class PaletteClosedMessage < Tinyagent::Tui::Message
         end
 
         # Message sent when a command is selected.
-        class CommandSelectedMessage < Bubbletea::Message
+        class CommandSelectedMessage < Tinyagent::Tui::Message
           attr_reader key: Symbol
 
           # @rbs key: Symbol
@@ -37,7 +37,7 @@ module Tinyagent
         end
 
         # Message sent when a model is selected.
-        class ModelSelectedMessage < Bubbletea::Message
+        class ModelSelectedMessage < Tinyagent::Tui::Message
           attr_reader provider: String
 
           attr_reader model: String
@@ -61,10 +61,10 @@ module Tinyagent
 
         def init: () -> Array[untyped]
 
-        # @rbs message: Bubbletea::Message
-        def update: (Bubbletea::Message message) -> Array[untyped]
+        # @rbs message: Tinyagent::Tui::Message
+        def update: (Tinyagent::Tui::Message message) -> Array[untyped]
 
-        def open: () -> void
+        def open: () -> Symbol?
 
         # @rbs viewport_content: String
         # @rbs width: Integer
@@ -89,17 +89,17 @@ module Tinyagent
 
         private
 
-        # @rbs message: Bubbletea::KeyMessage
-        def handle_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+        # @rbs message: Tinyagent::Tui::KeyMessage
+        def handle_key: (Tinyagent::Tui::KeyMessage message) -> Array[untyped]
 
-        # @rbs message: Bubbletea::KeyMessage
-        def handle_command_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+        # @rbs message: Tinyagent::Tui::KeyMessage
+        def handle_command_key: (Tinyagent::Tui::KeyMessage message) -> Array[untyped]
 
-        # @rbs message: Bubbletea::KeyMessage
-        def handle_provider_select_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+        # @rbs message: Tinyagent::Tui::KeyMessage
+        def handle_provider_select_key: (Tinyagent::Tui::KeyMessage message) -> Array[untyped]
 
-        # @rbs message: Bubbletea::KeyMessage
-        def handle_model_select_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+        # @rbs message: Tinyagent::Tui::KeyMessage
+        def handle_model_select_key: (Tinyagent::Tui::KeyMessage message) -> Array[untyped]
 
         def execute_command: () -> Array[untyped]
 
@@ -107,22 +107,22 @@ module Tinyagent
 
         def execute_model_select: () -> Array[untyped]
 
-        def open_provider_select: () -> void
+        def open_provider_select: () -> Integer
 
-        def open_model_select: () -> void
+        def open_model_select: () -> Integer
 
-        def close: () -> void
+        def close: () -> bool
 
-        def filter_commands: () -> void
+        def filter_commands: () -> Array[untyped]
 
-        def filter_providers: () -> void
+        def filter_providers: () -> Array[untyped]
 
-        def filter_models: () -> void
+        def filter_models: () -> Array[untyped]
 
-        def all_provider_items: () -> Array[untyped]
+        def all_provider_items: () -> Array[Hash[Symbol, String]]
 
         # @rbs provider_id: String
-        def all_model_items: (String provider_id) -> Array[untyped]
+        def all_model_items: (String provider_id) -> Array[Hash[Symbol, String]]
 
         # @rbs query: String
         # @rbs target: String

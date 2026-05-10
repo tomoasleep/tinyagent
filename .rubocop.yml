@@ -36,6 +36,9 @@ Layout/LeadingCommentSpace:
   AllowRBSInlineAnnotation: true
   AllowSteepAnnotation: true
 
+Lint/EmptyClass:
+  Enabled: false
+
 Metrics:
   Enabled: false
 

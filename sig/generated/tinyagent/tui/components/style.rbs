@@ -1,0 +1,72 @@
+# Generated from lib/tinyagent/tui/components/style.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Terminal styling helper for color, width, padding, and bordered boxes.
+    class Style
+      ROUNDED_BORDER: ::Symbol
+
+      @pastel: untyped
+
+      @width_value: Integer?
+
+      @padding_left: Integer
+
+      @padding_bottom: Integer
+
+      @padding_right: Integer
+
+      @padding_top: Integer
+
+      @border_type: Symbol?
+
+      @foreground_color: String?
+
+      def initialize: () -> void
+
+      # @rbs color: String
+      def foreground: (String color) -> Style
+
+      # @rbs type: Symbol
+      def border: (Symbol type) -> Style
+
+      # @rbs top: Integer
+      # @rbs right: Integer
+      # @rbs bottom: Integer?
+      # @rbs left: Integer?
+      def padding: (Integer top, Integer right, ?Integer? bottom, ?Integer? left) -> Style
+
+      # @rbs width_value: Integer
+      def width: (Integer width_value) -> Style
+
+      # @rbs text: String
+      def render: (String text) -> String
+
+      # @rbs text: String
+      def self.width: (String text) -> Integer
+
+      # @rbs text: String
+      def self.height: (String text) -> Integer
+
+      private
+
+      # @rbs text: String
+      def apply_foreground: (String text) -> String
+
+      # @rbs text: String
+      # @rbs width: Integer
+      def wrap_text: (String text, Integer width) -> String
+
+      # @rbs line: String, width: Integer
+      # @rbs width: Integer
+      def wrap_line: (String line, Integer width) -> Array[String]
+
+      # @rbs text: String
+      def apply_box: (String text) -> String
+
+      # @rbs lines: Array[String], inner_width: Integer
+      # @rbs inner_width: Integer
+      def render_rounded_box: (Array[String] lines, Integer inner_width) -> String
+    end
+  end
+end

@@ -1,0 +1,9 @@
+# Generated from lib/tinyagent/tui/core/message.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Base message type for the custom Elm-style TUI update loop.
+    class Message
+    end
+  end
+end

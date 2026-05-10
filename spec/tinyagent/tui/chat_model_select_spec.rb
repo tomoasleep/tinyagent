@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'bubbletea'
-require 'bubbles'
+require 'tinyagent/tui/core'
+require 'tinyagent/tui/chat'
 require_relative '../../support/key_helper'
 
 RSpec.describe Tinyagent::Tui::Chat do

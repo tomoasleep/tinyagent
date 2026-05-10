@@ -4,9 +4,9 @@ module Tinyagent
   module Tui
     class Chat
       # Renders status bar and help text.
-      # Manages status state via Bubbletea::Model.
+      # Manages status state via Tinyagent::Tui::Model.
       class StatusBar
-        include Bubbletea::Model
+        include Tinyagent::Tui::Model
 
         @token_usage: Tinyagent::TokenUsage?
 
@@ -17,7 +17,7 @@ module Tinyagent
         @status_message: String
 
         # Message sent to update the status message.
-        class UpdateStatusMessage < Bubbletea::Message
+        class UpdateStatusMessage < Tinyagent::Tui::Message
           attr_reader status_message: String
 
           # @rbs status_message: String
@@ -25,7 +25,7 @@ module Tinyagent
         end
 
         # Message sent to update model/provider info.
-        class UpdateModelInfoMessage < Bubbletea::Message
+        class UpdateModelInfoMessage < Tinyagent::Tui::Message
           attr_reader provider: String
 
           attr_reader model: String
@@ -36,7 +36,7 @@ module Tinyagent
         end
 
         # Message sent to update token usage.
-        class UpdateTokenUsageMessage < Bubbletea::Message
+        class UpdateTokenUsageMessage < Tinyagent::Tui::Message
           attr_reader token_usage: Tinyagent::TokenUsage?
 
           # @rbs token_usage: Tinyagent::TokenUsage?
@@ -47,8 +47,8 @@ module Tinyagent
 
         def init: () -> Array[untyped]
 
-        # @rbs message: Bubbletea::Message
-        def update: (Bubbletea::Message message) -> Array[untyped]
+        # @rbs message: Tinyagent::Tui::Message
+        def update: (Tinyagent::Tui::Message message) -> Array[untyped]
 
         def view: () -> String
 

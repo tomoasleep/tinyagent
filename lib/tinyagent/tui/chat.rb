@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'bubbletea'
-require 'bubbles'
-require 'lipgloss'
+require 'tinyagent/tui/core'
+require 'tinyagent/tui/components'
 
 require_relative 'chat/chat_viewport'
 require_relative 'chat/palette_component'
@@ -10,14 +9,14 @@ require_relative 'chat/status_bar'
 
 module Tinyagent
   module Tui
-    # Interactive chat TUI built on Bubbletea Elm Architecture.
+    # Interactive chat TUI built on custom Elm Architecture.
     class Chat
-      include Bubbletea::Model
+      include Tinyagent::Tui::Model
 
-      class CompletionDoneMessage < Bubbletea::Message; end
+      class CompletionDoneMessage < Tinyagent::Tui::Message; end
 
       # Error message sent when the LLM completion fails.
-      class CompletionErrorMessage < Bubbletea::Message
+      class CompletionErrorMessage < Tinyagent::Tui::Message
         attr_reader :error #: Exception
 
         # @rbs error: Exception
@@ -29,13 +28,13 @@ module Tinyagent
 
       attr_reader :state #: Symbol
       attr_reader :thread #: Tinyagent::Thread
-      attr_reader :viewport #: Bubbles::Viewport
+      attr_reader :viewport #: Tinyagent::Tui::Viewport
 
       # @rbs @width: Integer
       # @rbs @height: Integer
       # @rbs @status_message: String
-      # @rbs @text_input: Bubbles::TextArea
-      # @rbs @spinner: Bubbles::Spinner
+      # @rbs @text_input: Tinyagent::Tui::TextInput
+      # @rbs @spinner: Tinyagent::Tui::Spinner
       # @rbs @chat_viewport: ChatViewport
       # @rbs @palette_component: PaletteComponent
       # @rbs @status_bar_component: StatusBar
@@ -47,16 +46,14 @@ module Tinyagent
         @width = 80
         @height = 24
         @status_message = ''
-        @viewport = Bubbles::Viewport.new(width: @width, height: @height - 5)
-        @text_input = Bubbles::TextArea.new(width: @width - 2, height: 3)
+        @viewport = Tinyagent::Tui::Viewport.new(width: @width, height: @height - 5)
+        @text_input = Tinyagent::Tui::TextInput.new
         @text_input.placeholder = 'Send a message...'
-        @text_input.show_line_numbers = false
         @text_input.prompt = '┃ '
-        @text_input.prompt_style = Lipgloss::Style.new.foreground('209')
-        @text_input.end_of_buffer_character = ''
-        @text_input.height = 1
+        @text_input.prompt_style = Tinyagent::Tui::Style.new.foreground('209')
+        @text_input.width = @width - 2
         @text_input.focus
-        @spinner = Bubbles::Spinner.new
+        @spinner = Tinyagent::Tui::Spinner.new
         @chat_viewport = ChatViewport.new(width: @width)
         @palette_component = PaletteComponent.new
         @status_bar_component = StatusBar.new
@@ -64,13 +61,13 @@ module Tinyagent
       end
 
       def init #: Array[untyped]
-        [self, Bubbletea.enter_alt_screen]
+        [self, Tinyagent::Tui::Commands.enter_alt_screen]
       end
 
-      # @rbs message: Bubbletea::Message
+      # @rbs message: Tinyagent::Tui::Message
       def update(message) #: Array[untyped]
         if palette_active?
-          return [self, Bubbletea.quit] if message.is_a?(Bubbletea::KeyMessage) && message.to_s == 'ctrl+c'
+          return [self, Tinyagent::Tui::Commands.quit] if message.is_a?(Tinyagent::Tui::KeyMessage) && message.to_s == 'ctrl+c'
 
           _, cmd = @palette_component.update(message)
           if cmd.is_a?(PaletteComponent::CommandSelectedMessage)
@@ -101,11 +98,11 @@ module Tinyagent
           end
         else
           case message
-          when Bubbletea::WindowSizeMessage
+          when Tinyagent::Tui::WindowSizeMessage
             handle_resize(message)
-          when Bubbletea::KeyMessage
+          when Tinyagent::Tui::KeyMessage
             handle_key(message)
-          when Bubbles::Spinner::TickMessage
+          when Tinyagent::Tui::Spinner::TickMessage
             handle_spinner_tick(message)
           when CompletionDoneMessage
             handle_completion_done
@@ -118,7 +115,7 @@ module Tinyagent
       end
 
       def view #: String
-        lines = [] #: Array[String]
+        lines = []
 
         main_content = if palette_active?
                          @palette_component.view(@viewport.view, @width, @height)
@@ -127,15 +124,15 @@ module Tinyagent
                        end
         lines << main_content
 
-        separator = Lipgloss::Style.new.foreground('240').render('─' * @width)
+        separator = Tinyagent::Tui::Style.new.foreground('240').render('─' * @width)
         lines << separator
 
         case @state
         when :palette, :provider_select, :model_select
-          lines << Lipgloss::Style.new.foreground('241').render(@palette_component.help_text)
+          lines << Tinyagent::Tui::Style.new.foreground('241').render(@palette_component.help_text)
         when :thinking
           spinner_view = "#{@spinner.view} Thinking..."
-          lines << Lipgloss::Style.new.foreground('205').render(spinner_view)
+          lines << Tinyagent::Tui::Style.new.foreground('205').render(spinner_view)
           lines << @status_bar_component.footer_view
         else
           status_line = @status_bar_component.status_view
@@ -158,11 +155,12 @@ module Tinyagent
         update_text_input_prompt
         @viewport.content = @chat_viewport.view
         @viewport.goto_bottom unless @viewport.at_bottom?
+        nil
       end
 
       private
 
-      # @rbs message: Bubbletea::WindowSizeMessage
+      # @rbs message: Tinyagent::Tui::WindowSizeMessage
       def handle_resize(message) #: Array[untyped]
         @width = message.width
         @height = message.height
@@ -173,11 +171,11 @@ module Tinyagent
         [self, nil]
       end
 
-      # @rbs message: Bubbletea::KeyMessage
+      # @rbs message: Tinyagent::Tui::KeyMessage
       def handle_key(message) #: Array[untyped]
         result = case message.to_s
                  when 'ctrl+c'
-                   [self, Bubbletea.quit]
+                   [self, Tinyagent::Tui::Commands.quit]
                  else
                    case @state
                    when :idle
@@ -189,7 +187,7 @@ module Tinyagent
         result || [self, nil]
       end
 
-      # @rbs message: Bubbletea::KeyMessage
+      # @rbs message: Tinyagent::Tui::KeyMessage
       def handle_idle_key(message) #: Array[untyped]
         case message.to_s
         when 'esc'
@@ -227,14 +225,16 @@ module Tinyagent
           handle_usage_command
         end
         refresh_viewport
+        nil
       end
 
-      def submit_message #: untyped
+      def submit_message #: Array[untyped]
         text = @text_input.value.strip
         return [self, nil] if text.empty?
 
         if text.start_with?('/')
           handle_slash_command(text)
+          [self, nil]
         else
           send_user_message(text)
         end
@@ -255,9 +255,10 @@ module Tinyagent
         end
         @text_input.reset
         refresh_viewport
+        nil
       end
 
-      def handle_usage_command #: void
+      def handle_usage_command #: String
         usage = @thread.token_usage
         @status_message = if usage
                             "Tokens: #{usage.total_tokens} (prompt: #{usage.prompt_tokens}, completion: #{usage.completion_tokens})"
@@ -284,10 +285,10 @@ module Tinyagent
           CompletionDoneMessage.new
         }
 
-        [self, Bubbletea.batch(cmd, @spinner.tick)]
+        [self, Tinyagent::Tui::Commands.batch([cmd])]
       end
 
-      # @rbs message: Bubbles::Spinner::TickMessage
+      # @rbs message: Tinyagent::Tui::Spinner::TickMessage
       def handle_spinner_tick(message) #: Array[untyped]
         @spinner, cmd = @spinner.update(message)
         [self, cmd]
@@ -307,7 +308,7 @@ module Tinyagent
         [self, nil]
       end
 
-      def update_text_input_prompt #: void
+      def update_text_input_prompt #: String
         @text_input.prompt = '┃ '
       end
 
@@ -318,12 +319,12 @@ module Tinyagent
         when :thinking
           3
         else
-          @text_input.height + (status_visible? ? 3 : 2)
+          @text_input.view.split("\n").length + (status_visible? ? 3 : 2)
         end
       end
 
       def status_visible? #: bool
-        !Bubbles::ANSI.strip(@status_bar_component.status_view).empty?
+        !Tinyagent::Tui::Ansi.strip(@status_bar_component.status_view).empty?
       end
     end
   end

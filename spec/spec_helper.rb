@@ -4,12 +4,13 @@ require 'bundler/setup'
 require 'tinyagent'
 require 'webmock/rspec'
 
+# Run migrations before loading models
+Tinyagent::Migrations.run
+
 # Load factory methods and mock helpers
 require_relative 'support/factories'
 require_relative 'support/mocks'
 require_relative 'support/key_helper'
-
-Tinyagent::Migrations.run
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

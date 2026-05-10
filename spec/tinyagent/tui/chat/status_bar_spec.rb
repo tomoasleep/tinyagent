@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'tinyagent/tui/core'
+require 'tinyagent/tui/chat'
 
 RSpec.describe Tinyagent::Tui::Chat::StatusBar do
   let(:bar) { described_class.new }

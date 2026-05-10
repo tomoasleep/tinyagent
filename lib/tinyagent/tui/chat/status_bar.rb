@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'lipgloss'
-require 'bubbletea'
+require 'tinyagent/tui/core'
+require 'tinyagent/tui/components'
 
 module Tinyagent
   module Tui
     class Chat
       # Renders status bar and help text.
-      # Manages status state via Bubbletea::Model.
+      # Manages status state via Tinyagent::Tui::Model.
       class StatusBar
-        include Bubbletea::Model
+        include Tinyagent::Tui::Model
 
         # @rbs @status_message: String
         # @rbs @provider: String
@@ -17,7 +17,7 @@ module Tinyagent
         # @rbs @token_usage: Tinyagent::TokenUsage?
 
         # Message sent to update the status message.
-        class UpdateStatusMessage < Bubbletea::Message
+        class UpdateStatusMessage < Tinyagent::Tui::Message
           attr_reader :status_message #: String
 
           # @rbs status_message: String
@@ -28,7 +28,7 @@ module Tinyagent
         end
 
         # Message sent to update model/provider info.
-        class UpdateModelInfoMessage < Bubbletea::Message
+        class UpdateModelInfoMessage < Tinyagent::Tui::Message
           attr_reader :provider #: String
           attr_reader :model #: String
 
@@ -42,7 +42,7 @@ module Tinyagent
         end
 
         # Message sent to update token usage.
-        class UpdateTokenUsageMessage < Bubbletea::Message
+        class UpdateTokenUsageMessage < Tinyagent::Tui::Message
           attr_reader :token_usage #: Tinyagent::TokenUsage?
 
           # @rbs token_usage: Tinyagent::TokenUsage?
@@ -63,7 +63,7 @@ module Tinyagent
           [self, nil]
         end
 
-        # @rbs message: Bubbletea::Message
+        # @rbs message: Tinyagent::Tui::Message
         def update(message) #: Array[untyped]
           case message
           when UpdateStatusMessage
@@ -78,22 +78,22 @@ module Tinyagent
         end
 
         def view #: String
-          parts = [] #: Array[String]
+          parts = []
           status_text = plain_status_text
           footer_text = plain_footer_text
 
           parts << status_text unless status_text.empty?
           parts << footer_text unless footer_text.empty?
 
-          Lipgloss::Style.new.foreground('241').render(parts.join(' | '))
+          Tinyagent::Tui::Style.new.foreground('241').render(parts.join(' | '))
         end
 
         def status_view #: String
-          Lipgloss::Style.new.foreground('241').render(plain_status_text)
+          Tinyagent::Tui::Style.new.foreground('241').render(plain_status_text)
         end
 
         def footer_view #: String
-          Lipgloss::Style.new.foreground('241').render(plain_footer_text)
+          Tinyagent::Tui::Style.new.foreground('241').render(plain_footer_text)
         end
 
         def help_text #: String
@@ -109,7 +109,7 @@ module Tinyagent
         private
 
         def plain_status_text #: String
-          parts = [] #: Array[String]
+          parts = []
           token_usage = @token_usage
           parts << @status_message if @status_message && !@status_message.empty?
           parts << "tokens:#{token_usage.total_tokens}" if token_usage

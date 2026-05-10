@@ -1,0 +1,50 @@
+# Generated from lib/tinyagent/tui/core/key_message.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Keyboard input message used by the custom TUI runtime.
+    class KeyMessage < Message
+      KEY_ENTER: ::String
+
+      KEY_ESC: ::String
+
+      KEY_UP: ::String
+
+      KEY_DOWN: ::String
+
+      KEY_TAB: ::String
+
+      KEY_BACKSPACE: ::String
+
+      KEY_CTRL_C: ::String
+
+      KEY_CTRL_P: ::String
+
+      KEY_NULL: ::String
+
+      KEY_RUNES: ::String
+
+      attr_reader key_type: String
+
+      attr_reader runes: Array[Integer]
+
+      attr_reader alt: bool
+
+      attr_reader name: String?
+
+      # @rbs key_type: String
+      # @rbs runes: Array[Integer]
+      # @rbs alt: bool
+      # @rbs name: String?
+      def initialize: (key_type: String, ?runes: Array[Integer], ?alt: bool, ?name: String?) -> void
+
+      # @rbs key_type: String
+      # @rbs runes: Array[Integer]
+      # @rbs alt: bool
+      # @rbs name: String?
+      def self.create: (key_type: String, ?runes: Array[Integer], ?alt: bool, ?name: String?) -> KeyMessage
+
+      def to_s: () -> String
+    end
+  end
+end

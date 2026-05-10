@@ -2,6 +2,16 @@
 
 ### Changed
 
+- Replace charm-ruby dependencies (bubbletea, bubbles, lipgloss) with tty gem ecosystem (pastel, tty-cursor, tty-screen, tty-spinner) and custom implementations
+- Implement custom Elm Architecture framework (Tinyagent::Tui::Model, Message, KeyMessage, etc.) replacing Bubbletea
+- Implement custom UI components (Viewport, TextInput, List, Spinner, Style, Ansi) replacing Bubbles and Lipgloss
+- Implement custom TUI event loop (Tinyagent::Tui::Program) replacing Bubbletea.run
+- Add unicode-display_width dependency for proper CJK character width calculation
+- Remove charm gem dependency
+- Fix custom TUI keyboard handling and palette overlay layout so command palette and change-model E2E flows work reliably again
+
+### Changed
+
 - Restore a separate chat footer layout: status messages render above the input, the input prompt keeps its vertical bar, and model info moves to the final line
 - Remove input mode: text input is now always available in the chat TUI. Press Enter to send, Escape to clear input
 - Remove `q` key quit; use Ctrl+C to quit

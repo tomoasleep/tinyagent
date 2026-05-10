@@ -30,7 +30,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'event_stream_parser', '~> 1.0'
   spec.add_dependency 'openai', '~> 0.59.0'
 
-  spec.add_dependency 'charm'
   spec.add_dependency 'dry-cli'
+  spec.add_dependency 'pastel'
   spec.add_dependency 'sequel'
+  spec.add_dependency 'tty-cursor'
+  spec.add_dependency 'tty-screen'
+  spec.add_dependency 'tty-spinner'
+  spec.add_dependency 'unicode-display_width'
 end

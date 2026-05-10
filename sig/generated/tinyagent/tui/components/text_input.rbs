@@ -1,0 +1,42 @@
+# Generated from lib/tinyagent/tui/components/text_input.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Single-line terminal text input with a movable cursor.
+    class TextInput
+      attr_accessor width: Integer
+
+      attr_accessor placeholder: String
+
+      attr_accessor prompt: String
+
+      @focused: bool
+
+      @cursor_pos: Integer
+
+      @pastel: untyped
+
+      def initialize: () -> void
+
+      attr_reader value: String
+
+      # @rbs val: String
+      def value=: (String val) -> String
+
+      def focus: () -> bool
+
+      def blur: () -> bool
+
+      def focused?: () -> bool
+
+      def reset: () -> Integer
+
+      attr_writer prompt_style: Style?
+
+      # @rbs message: KeyMessage
+      def update: (KeyMessage message) -> Array[untyped]
+
+      def view: () -> String
+    end
+  end
+end

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'bubbletea'
-require 'bubbles'
-require 'lipgloss'
+require 'tinyagent/tui/core'
+require 'tinyagent/tui/components'
 require_relative 'palette_view'
 
 module Tinyagent
@@ -11,22 +10,22 @@ module Tinyagent
       # Manages palette state transitions and rendering.
       # Includes command palette, provider selection, and model selection.
       class PaletteComponent
-        include Bubbletea::Model
+        include Tinyagent::Tui::Model
 
         # @rbs @state: Symbol
-        # @rbs @command_palette: Bubbles::List
-        # @rbs @palette_filter_input: Bubbles::TextInput
-        # @rbs @provider_filter_input: Bubbles::TextInput
-        # @rbs @model_filter_input: Bubbles::TextInput
-        # @rbs @provider_palette: Bubbles::List
-        # @rbs @model_palette: Bubbles::List
+        # @rbs @command_palette: Tinyagent::Tui::List
+        # @rbs @palette_filter_input: Tinyagent::Tui::TextInput
+        # @rbs @provider_filter_input: Tinyagent::Tui::TextInput
+        # @rbs @model_filter_input: Tinyagent::Tui::TextInput
+        # @rbs @provider_palette: Tinyagent::Tui::List
+        # @rbs @model_palette: Tinyagent::Tui::List
         # @rbs @palette_view: PaletteView
 
         # Message sent when palette is closed without action.
-        class PaletteClosedMessage < Bubbletea::Message; end
+        class PaletteClosedMessage < Tinyagent::Tui::Message; end
 
         # Message sent when a command is selected.
-        class CommandSelectedMessage < Bubbletea::Message
+        class CommandSelectedMessage < Tinyagent::Tui::Message
           attr_reader :key #: Symbol
 
           # @rbs key: Symbol
@@ -37,7 +36,7 @@ module Tinyagent
         end
 
         # Message sent when a model is selected.
-        class ModelSelectedMessage < Bubbletea::Message
+        class ModelSelectedMessage < Tinyagent::Tui::Message
           attr_reader :provider #: String
           attr_reader :model #: String
 
@@ -65,21 +64,21 @@ module Tinyagent
 
         def initialize #: void
           @state = :closed
-          @command_palette = Bubbles::List.new([], width: 0)
-          @palette_filter_input = Bubbles::TextInput.new
+          @command_palette = Tinyagent::Tui::List.new([], width: 0, height: 0)
+          @palette_filter_input = Tinyagent::Tui::TextInput.new
           @palette_filter_input.prompt = ''
           @palette_filter_input.placeholder = 'Type to filter...'
           @palette_filter_input.width = PALETTE_WIDTH - 6
-          @provider_filter_input = Bubbles::TextInput.new
+          @provider_filter_input = Tinyagent::Tui::TextInput.new
           @provider_filter_input.prompt = ''
           @provider_filter_input.placeholder = 'Type to filter...'
           @provider_filter_input.width = PALETTE_WIDTH - 6
-          @model_filter_input = Bubbles::TextInput.new
+          @model_filter_input = Tinyagent::Tui::TextInput.new
           @model_filter_input.prompt = ''
           @model_filter_input.placeholder = 'Type to filter...'
           @model_filter_input.width = PALETTE_WIDTH - 6
-          @provider_palette = Bubbles::List.new([], width: 0)
-          @model_palette = Bubbles::List.new([], width: 0)
+          @provider_palette = Tinyagent::Tui::List.new([], width: 0, height: 0)
+          @model_palette = Tinyagent::Tui::List.new([], width: 0, height: 0)
           @selected_provider = nil
           @selected_model = nil
           @selected_command_key = nil
@@ -90,21 +89,21 @@ module Tinyagent
           [self, nil]
         end
 
-        # @rbs message: Bubbletea::Message
+        # @rbs message: Tinyagent::Tui::Message
         def update(message) #: Array[untyped]
           case message
-          when Bubbletea::KeyMessage
+          when Tinyagent::Tui::KeyMessage
             handle_key(message)
           else
             [self, nil]
           end
         end
 
-        def open #: void
+        def open #: Symbol?
           @state = :command
           @palette_filter_input.focus
           @palette_filter_input.reset
-          @command_palette = Bubbles::List.new(COMMANDS.dup, width: PALETTE_WIDTH - 6, height: COMMANDS.length)
+          @command_palette = Tinyagent::Tui::List.new(COMMANDS.dup, width: PALETTE_WIDTH - 6, height: COMMANDS.length)
           @command_palette.show_title = false
           @command_palette.show_filter = false
           @command_palette.show_pagination = false
@@ -202,7 +201,7 @@ module Tinyagent
 
         private
 
-        # @rbs message: Bubbletea::KeyMessage
+        # @rbs message: Tinyagent::Tui::KeyMessage
         def handle_key(message) #: Array[untyped]
           case @state
           when :command
@@ -216,7 +215,7 @@ module Tinyagent
           end
         end
 
-        # @rbs message: Bubbletea::KeyMessage
+        # @rbs message: Tinyagent::Tui::KeyMessage
         def handle_command_key(message) #: Array[untyped]
           case message.to_s
           when 'esc', 'ctrl+p'
@@ -237,7 +236,7 @@ module Tinyagent
           end
         end
 
-        # @rbs message: Bubbletea::KeyMessage
+        # @rbs message: Tinyagent::Tui::KeyMessage
         def handle_provider_select_key(message) #: Array[untyped]
           case message.to_s
           when 'esc'
@@ -258,7 +257,7 @@ module Tinyagent
           end
         end
 
-        # @rbs message: Bubbletea::KeyMessage
+        # @rbs message: Tinyagent::Tui::KeyMessage
         def handle_model_select_key(message) #: Array[untyped]
           case message.to_s
           when 'esc'
@@ -307,12 +306,12 @@ module Tinyagent
           [self, ModelSelectedMessage.new(provider, item[:key])]
         end
 
-        def open_provider_select #: void
+        def open_provider_select #: Integer
           @state = :provider_select
           @provider_filter_input.focus
           @provider_filter_input.reset
           providers = all_provider_items
-          @provider_palette = Bubbles::List.new(providers, width: PALETTE_WIDTH - 6, height: [providers.length, 10].min)
+          @provider_palette = Tinyagent::Tui::List.new(providers, width: PALETTE_WIDTH - 6, height: [providers.length, 10].min)
           @provider_palette.show_title = false
           @provider_palette.show_filter = false
           @provider_palette.show_pagination = false
@@ -321,12 +320,12 @@ module Tinyagent
           @provider_palette.select(0)
         end
 
-        def open_model_select #: void
+        def open_model_select #: Integer
           @state = :model_select
           @model_filter_input.focus
           @model_filter_input.reset
           models = all_model_items(@selected_provider || '')
-          @model_palette = Bubbles::List.new(models, width: PALETTE_WIDTH - 6, height: [models.length, 10].min)
+          @model_palette = Tinyagent::Tui::List.new(models, width: PALETTE_WIDTH - 6, height: [models.length, 10].min)
           @model_palette.show_title = false
           @model_palette.show_filter = false
           @model_palette.show_pagination = false
@@ -335,14 +334,14 @@ module Tinyagent
           @model_palette.select(0)
         end
 
-        def close #: void
+        def close #: bool
           @state = :closed
           @palette_filter_input.blur
           @provider_filter_input.blur
           @model_filter_input.blur
         end
 
-        def filter_commands #: void
+        def filter_commands #: Array[untyped]
           query = @palette_filter_input.value.strip
           if query.empty?
             @command_palette.items = COMMANDS.dup
@@ -352,7 +351,7 @@ module Tinyagent
           end
         end
 
-        def filter_providers #: void
+        def filter_providers #: Array[untyped]
           query = @provider_filter_input.value.strip
           providers = all_provider_items
           if query.empty?
@@ -363,7 +362,7 @@ module Tinyagent
           end
         end
 
-        def filter_models #: void
+        def filter_models #: Array[untyped]
           query = @model_filter_input.value.strip
           models = all_model_items(@selected_provider || '')
           if query.empty?
@@ -374,7 +373,7 @@ module Tinyagent
           end
         end
 
-        def all_provider_items #: Array[untyped]
+        def all_provider_items #: Array[Hash[Symbol, String]]
           catalog = ModelsDev::Catalog.new
           catalog.openai_compatible_providers.map do |id, data|
             { title: data['name'] || id, key: id }
@@ -382,7 +381,7 @@ module Tinyagent
         end
 
         # @rbs provider_id: String
-        def all_model_items(provider_id) #: Array[untyped]
+        def all_model_items(provider_id) #: Array[Hash[Symbol, String]]
           catalog = ModelsDev::Catalog.new
           catalog.models_for(provider_id).map do |id, data|
             { title: data['name'] || id, key: id }

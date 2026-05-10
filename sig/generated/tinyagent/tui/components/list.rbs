@@ -1,0 +1,53 @@
+# Generated from lib/tinyagent/tui/components/list.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Selectable list component for palette and picker UIs.
+    class List
+      SELECTED_MARKER: ::String
+
+      DESELECTED_MARKER: ::String
+
+      attr_accessor width: Integer
+
+      attr_accessor height: Integer
+
+      attr_accessor show_title: bool
+
+      attr_accessor show_filter: bool
+
+      attr_accessor show_pagination: bool
+
+      attr_accessor show_status_bar: bool
+
+      attr_accessor fill_height: bool
+
+      attr_reader items: Array[untyped]
+
+      attr_reader selected_index: Integer
+
+      @pastel: untyped
+
+      # @rbs items: Array[untyped]
+      # @rbs width: Integer
+      # @rbs height: Integer
+      def initialize: (Array[untyped] items, width: Integer, height: Integer) -> void
+
+      # @rbs index: Integer
+      def select: (Integer index) -> Integer
+
+      def selected_item: () -> untyped
+
+      def select_prev: () -> Integer
+
+      def select_next: () -> Integer
+
+      def visible_items: () -> Array[untyped]
+
+      # @rbs new_items: Array[untyped]
+      def items=: (Array[untyped] new_items) -> Integer
+
+      def view: () -> String
+    end
+  end
+end

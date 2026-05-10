@@ -2,15 +2,15 @@
 
 module Tinyagent
   module Tui
-    # Interactive chat TUI built on Bubbletea Elm Architecture.
+    # Interactive chat TUI built on custom Elm Architecture.
     class Chat
-      include Bubbletea::Model
+      include Tinyagent::Tui::Model
 
-      class CompletionDoneMessage < Bubbletea::Message
+      class CompletionDoneMessage < Tinyagent::Tui::Message
       end
 
       # Error message sent when the LLM completion fails.
-      class CompletionErrorMessage < Bubbletea::Message
+      class CompletionErrorMessage < Tinyagent::Tui::Message
         attr_reader error: Exception
 
         # @rbs error: Exception
@@ -21,7 +21,7 @@ module Tinyagent
 
       attr_reader thread: Tinyagent::Thread
 
-      attr_reader viewport: Bubbles::Viewport
+      attr_reader viewport: Tinyagent::Tui::Viewport
 
       @status_bar_component: StatusBar
 
@@ -29,9 +29,9 @@ module Tinyagent
 
       @chat_viewport: ChatViewport
 
-      @spinner: Bubbles::Spinner
+      @spinner: Tinyagent::Tui::Spinner
 
-      @text_input: Bubbles::TextArea
+      @text_input: Tinyagent::Tui::TextInput
 
       @status_message: String
 
@@ -44,8 +44,8 @@ module Tinyagent
 
       def init: () -> Array[untyped]
 
-      # @rbs message: Bubbletea::Message
-      def update: (Bubbletea::Message message) -> Array[untyped]
+      # @rbs message: Tinyagent::Tui::Message
+      def update: (Tinyagent::Tui::Message message) -> Array[untyped]
 
       def view: () -> String
 
@@ -53,14 +53,14 @@ module Tinyagent
 
       private
 
-      # @rbs message: Bubbletea::WindowSizeMessage
-      def handle_resize: (Bubbletea::WindowSizeMessage message) -> Array[untyped]
+      # @rbs message: Tinyagent::Tui::WindowSizeMessage
+      def handle_resize: (Tinyagent::Tui::WindowSizeMessage message) -> Array[untyped]
 
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+      # @rbs message: Tinyagent::Tui::KeyMessage
+      def handle_key: (Tinyagent::Tui::KeyMessage message) -> Array[untyped]
 
-      # @rbs message: Bubbletea::KeyMessage
-      def handle_idle_key: (Bubbletea::KeyMessage message) -> Array[untyped]
+      # @rbs message: Tinyagent::Tui::KeyMessage
+      def handle_idle_key: (Tinyagent::Tui::KeyMessage message) -> Array[untyped]
 
       def open_palette: () -> Array[untyped]
 
@@ -69,25 +69,25 @@ module Tinyagent
       # @rbs key: Symbol
       def handle_palette_command: (Symbol key) -> void
 
-      def submit_message: () -> untyped
+      def submit_message: () -> Array[untyped]
 
       # @rbs text: String
       def handle_slash_command: (String text) -> void
 
-      def handle_usage_command: () -> void
+      def handle_usage_command: () -> String
 
       # @rbs text: String
       def send_user_message: (String text) -> Array[untyped]
 
-      # @rbs message: Bubbles::Spinner::TickMessage
-      def handle_spinner_tick: (Bubbles::Spinner::TickMessage message) -> Array[untyped]
+      # @rbs message: Tinyagent::Tui::Spinner::TickMessage
+      def handle_spinner_tick: (Tinyagent::Tui::Spinner::TickMessage message) -> Array[untyped]
 
       def handle_completion_done: () -> Array[untyped]
 
       # @rbs message: CompletionErrorMessage
       def handle_completion_error: (CompletionErrorMessage message) -> Array[untyped]
 
-      def update_text_input_prompt: () -> void
+      def update_text_input_prompt: () -> String
 
       def bottom_reserved_height: () -> Integer
 

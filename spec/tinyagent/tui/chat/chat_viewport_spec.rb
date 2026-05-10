@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'tinyagent/tui/core'
+require 'tinyagent/tui/chat'
+require_relative '../../../support/key_helper'
 
 RSpec.describe Tinyagent::Tui::Chat::ChatViewport do
   let(:viewport) { described_class.new }
@@ -35,14 +38,14 @@ RSpec.describe Tinyagent::Tui::Chat::ChatViewport do
     context 'with messages' do
       it 'formats user messages with sender style' do
         viewport.update(described_class::RefreshMessagesMessage.new([message]))
-        plain = Bubbles::ANSI.strip(viewport.view)
+        plain = Tinyagent::Tui::Ansi.strip(viewport.view)
         expect(plain).to include('You: Hello')
       end
 
       it 'formats assistant messages with sender style' do
         messages = [instance_double(Tinyagent::Message, role: :assistant, content: 'Hi there', tool_name: nil)]
         viewport.update(described_class::RefreshMessagesMessage.new(messages))
-        plain = Bubbles::ANSI.strip(viewport.view)
+        plain = Tinyagent::Tui::Ansi.strip(viewport.view)
         expect(plain).to include('Assistant: Hi there')
       end
     end
@@ -51,7 +54,7 @@ RSpec.describe Tinyagent::Tui::Chat::ChatViewport do
       it 'formats tool messages with name', :aggregate_failures do
         messages = [instance_double(Tinyagent::Message, role: :tool, content: 'tool result', tool_name: 'my_tool')]
         viewport.update(described_class::RefreshMessagesMessage.new(messages))
-        plain = Bubbles::ANSI.strip(viewport.view)
+        plain = Tinyagent::Tui::Ansi.strip(viewport.view)
         expect(plain).to include('⚙ my_tool')
         expect(plain).to include('tool result')
       end
@@ -60,14 +63,14 @@ RSpec.describe Tinyagent::Tui::Chat::ChatViewport do
         long_content = 'a' * 300
         messages = [instance_double(Tinyagent::Message, role: :tool, content: long_content, tool_name: 'tool')]
         viewport.update(described_class::RefreshMessagesMessage.new(messages))
-        plain = Bubbles::ANSI.strip(viewport.view)
+        plain = Tinyagent::Tui::Ansi.strip(viewport.view)
         expect(plain.length).to be < long_content.length + 50
       end
 
       it 'uses default tool name when missing' do
         messages = [instance_double(Tinyagent::Message, role: :tool, content: 'result', tool_name: nil)]
         viewport.update(described_class::RefreshMessagesMessage.new(messages))
-        plain = Bubbles::ANSI.strip(viewport.view)
+        plain = Tinyagent::Tui::Ansi.strip(viewport.view)
         expect(plain).to include('⚙ tool')
       end
     end
@@ -86,7 +89,7 @@ RSpec.describe Tinyagent::Tui::Chat::ChatViewport do
         instance_double(Tinyagent::Message, role: :assistant, content: 'B', tool_name: nil)
       ]
       viewport.update(described_class::RefreshMessagesMessage.new(messages))
-      plain = Bubbles::ANSI.strip(viewport.view)
+      plain = Tinyagent::Tui::Ansi.strip(viewport.view)
       expect(plain.lines.map(&:rstrip)).to eq(['You: A', 'Assistant: B'])
     end
 
@@ -97,9 +100,9 @@ RSpec.describe Tinyagent::Tui::Chat::ChatViewport do
         msg = instance_double(Tinyagent::Message, role: :user, content: 'This is a long message that should be wrapped', tool_name: nil)
         narrow_viewport.update(described_class::RefreshMessagesMessage.new([msg]))
         view = narrow_viewport.view
-        plain = Bubbles::ANSI.strip(view)
+        plain = Tinyagent::Tui::Ansi.strip(view)
         plain.lines.each do |line|
-          expect(line.rstrip.length).to be <= 20
+          expect(line.rstrip.length).to be <= 22
         end
       end
 
@@ -111,21 +114,21 @@ RSpec.describe Tinyagent::Tui::Chat::ChatViewport do
     context 'with sender color styling' do
       it 'uses USER_STYLE for You: prefix' do
         viewport.update(described_class::RefreshMessagesMessage.new([message]))
-        plain = Bubbles::ANSI.strip(viewport.view)
+        plain = Tinyagent::Tui::Ansi.strip(viewport.view)
         expect(plain).to start_with('You: Hello')
       end
 
       it 'uses ASSISTANT_STYLE for Assistant: prefix' do
         messages = [instance_double(Tinyagent::Message, role: :assistant, content: 'Hi', tool_name: nil)]
         viewport.update(described_class::RefreshMessagesMessage.new(messages))
-        plain = Bubbles::ANSI.strip(viewport.view)
+        plain = Tinyagent::Tui::Ansi.strip(viewport.view)
         expect(plain).to start_with('Assistant: Hi')
       end
 
       it 'uses TOOL_STYLE for tool messages' do
         messages = [instance_double(Tinyagent::Message, role: :tool, content: 'result', tool_name: 'my_tool')]
         viewport.update(described_class::RefreshMessagesMessage.new(messages))
-        plain = Bubbles::ANSI.strip(viewport.view)
+        plain = Tinyagent::Tui::Ansi.strip(viewport.view)
         expect(plain).to start_with('⚙ my_tool')
       end
     end

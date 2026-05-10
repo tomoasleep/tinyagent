@@ -1,0 +1,34 @@
+# Generated from lib/tinyagent/tui/core/commands.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Command values used by the custom TUI runtime.
+    module Commands
+      # Command for enabling the terminal alternate screen buffer.
+      class EnterAltScreenCommand
+        ANSI_ALT_SCREEN_ON: ::String
+
+        def ansi_sequence: () -> String
+      end
+
+      # Command for terminating the current TUI program.
+      class QuitCommand
+      end
+
+      # Command grouping multiple commands to be executed in order.
+      class BatchCommand
+        attr_reader commands: Array[untyped]
+
+        # @rbs commands: Array[untyped]
+        def initialize: (Array[untyped] commands) -> void
+      end
+
+      def self?.enter_alt_screen: () -> EnterAltScreenCommand
+
+      def self?.quit: () -> QuitCommand
+
+      # @rbs cmds: Array[untyped]
+      def self?.batch: (Array[untyped] cmds) -> BatchCommand
+    end
+  end
+end

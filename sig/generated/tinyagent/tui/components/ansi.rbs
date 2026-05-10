@@ -1,0 +1,19 @@
+# Generated from lib/tinyagent/tui/components/ansi.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Utility helpers for stripping ANSI codes and measuring terminal text.
+    module Ansi
+      PASTEL: untyped
+
+      # @rbs text: String
+      def self?.strip: (String text) -> String
+
+      # @rbs text: String
+      def self?.display_width: (String text) -> Integer
+
+      # @rbs text: String
+      def self?.display_height: (String text) -> Integer
+    end
+  end
+end

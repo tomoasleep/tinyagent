@@ -1,0 +1,29 @@
+# Generated from lib/tinyagent/tui/components/viewport.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Scrollable viewport for rendering a slice of terminal content.
+    class Viewport
+      attr_accessor width: Integer
+
+      attr_accessor height: Integer
+
+      attr_accessor scroll_offset: Integer
+
+      attr_reader content: String
+
+      # @rbs width: Integer
+      # @rbs height: Integer
+      def initialize: (?width: Integer, ?height: Integer) -> void
+
+      def view: () -> String
+
+      def goto_bottom: () -> Integer
+
+      def at_bottom?: () -> bool
+
+      # @rbs text: String
+      def content=: (String text) -> Integer
+    end
+  end
+end

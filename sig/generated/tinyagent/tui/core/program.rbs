@@ -1,0 +1,75 @@
+# Generated from lib/tinyagent/tui/core/program.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Terminal program loop for the custom TUI runtime.
+    class Program
+      @sigwinch_pending: bool
+
+      @sigwinch_handler: String?
+
+      @running: bool
+
+      @alt_screen: bool
+
+      @model: untyped
+
+      # @rbs model: untyped
+      # @rbs alt_screen: bool
+      def initialize: (model: untyped, ?alt_screen: bool) -> void
+
+      def start: () -> void
+
+      def stop: () -> void
+
+      private
+
+      def execute_loop: () -> void
+
+      def hide_cursor: () -> void
+
+      def show_cursor: () -> void
+
+      def render: () -> void
+
+      def read_and_process_input: () -> void
+
+      def read_key: () -> KeyMessage?
+
+      # @rbs char: String
+      def read_escape_sequence: (String char) -> KeyMessage?
+
+      def read_escaped_key: () -> KeyMessage?
+
+      # @rbs sequence: String
+      def parse_escape_sequence: (String sequence) -> KeyMessage?
+
+      # @rbs &: () -> void
+      def with_raw_input: () { () -> void } -> void
+
+      # @rbs timeout: Float
+      def input_ready?: (Float timeout) -> bool
+
+      def stdin: () -> untyped
+
+      def kernel: () -> untyped
+
+      # @rbs key_char: KeyMessage
+      def build_message: (KeyMessage key_char) -> KeyMessage
+
+      # @rbs cmd: untyped
+      def execute_command: (untyped cmd) -> void
+
+      # @rbs proc_cmd: Proc
+      def execute_proc_command: (Proc proc_cmd) -> void
+
+      def send_window_size: () -> void
+
+      def setup_sigwinch: () -> void
+
+      def restore_sigwinch: () -> void
+
+      def check_sigwinch: () -> void
+    end
+  end
+end

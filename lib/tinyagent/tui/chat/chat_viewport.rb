@@ -1,25 +1,25 @@
 # frozen_string_literal: true
 
-require 'bubbletea'
-require 'lipgloss'
+require 'tinyagent/tui/core'
+require 'tinyagent/tui/components'
 
 module Tinyagent
   module Tui
     class Chat
       # Renders chat messages into viewport content string.
-      # Manages message state via Bubbletea::Model.
+      # Manages message state via Tinyagent::Tui::Model.
       class ChatViewport
-        include Bubbletea::Model
+        include Tinyagent::Tui::Model
 
         # @rbs @messages: Array[untyped]
         # @rbs @width: Integer
 
-        USER_STYLE = Lipgloss::Style.new.foreground('5') #: Lipgloss::Style
-        ASSISTANT_STYLE = Lipgloss::Style.new.foreground('6') #: Lipgloss::Style
-        TOOL_STYLE = Lipgloss::Style.new.foreground('3') #: Lipgloss::Style
+        USER_STYLE = Tinyagent::Tui::Style.new.foreground('5')
+        ASSISTANT_STYLE = Tinyagent::Tui::Style.new.foreground('6')
+        TOOL_STYLE = Tinyagent::Tui::Style.new.foreground('3')
 
         # Message sent to refresh the viewport with new messages.
-        class RefreshMessagesMessage < Bubbletea::Message
+        class RefreshMessagesMessage < Tinyagent::Tui::Message
           attr_reader :messages #: Array[untyped]
 
           # @rbs messages: Array[untyped]
@@ -39,7 +39,7 @@ module Tinyagent
           [self, nil]
         end
 
-        # @rbs message: Bubbletea::Message
+        # @rbs message: Tinyagent::Tui::Message
         def update(message) #: Array[untyped]
           @messages = message.messages if message.is_a?(RefreshMessagesMessage)
           [self, nil]
@@ -58,11 +58,11 @@ module Tinyagent
         # @rbs lines: Array[String]
         def wrap_lines(lines) #: Array[String]
           lines.flat_map do |line|
-            stripped = Bubbles::ANSI.strip(line)
+            stripped = Tinyagent::Tui::Ansi.strip(line)
             if stripped.length <= @width
               line
             else
-              Lipgloss::Style.new.width(@width).render(line).split("\n")
+              Tinyagent::Tui::Style.new.width(@width).render(line).split("\n")
             end
           end
         end

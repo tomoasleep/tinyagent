@@ -1,0 +1,14 @@
+# Generated from lib/tinyagent/tui/core/model.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Minimal model protocol for the custom TUI runtime.
+    module Model
+      def init: () -> Array[untyped]
+
+      def update: (untyped _message) -> Array[untyped]
+
+      def view: () -> String
+    end
+  end
+end

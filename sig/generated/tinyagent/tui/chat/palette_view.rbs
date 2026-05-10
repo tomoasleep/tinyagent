@@ -10,25 +10,25 @@ module Tinyagent
         # @rbs viewport_content: String
         # @rbs width: Integer
         # @rbs height: Integer
-        # @rbs list: Bubbles::List
-        # @rbs filter_input: Bubbles::TextInput
-        def palette_overlay_view: (String viewport_content, Integer width, Integer height, Bubbles::List list, Bubbles::TextInput filter_input) -> String
+        # @rbs list: Tinyagent::Tui::List
+        # @rbs filter_input: Tinyagent::Tui::TextInput
+        def palette_overlay_view: (String viewport_content, Integer width, Integer height, Tinyagent::Tui::List list, Tinyagent::Tui::TextInput filter_input) -> String
 
         # @rbs viewport_content: String
         # @rbs width: Integer
         # @rbs height: Integer
-        # @rbs list: Bubbles::List
-        # @rbs filter_input: Bubbles::TextInput
-        def model_select_overlay_view: (String viewport_content, Integer width, Integer height, Bubbles::List list, Bubbles::TextInput filter_input) -> String
+        # @rbs list: Tinyagent::Tui::List
+        # @rbs filter_input: Tinyagent::Tui::TextInput
+        def model_select_overlay_view: (String viewport_content, Integer width, Integer height, Tinyagent::Tui::List list, Tinyagent::Tui::TextInput filter_input) -> String
 
         private
 
         # @rbs viewport_content: String
         # @rbs width: Integer
         # @rbs height: Integer
-        # @rbs list: Bubbles::List
-        # @rbs filter_input: Bubbles::TextInput
-        def generic_overlay_view: (String viewport_content, Integer width, Integer height, Bubbles::List list, Bubbles::TextInput filter_input) -> String
+        # @rbs list: Tinyagent::Tui::List
+        # @rbs filter_input: Tinyagent::Tui::TextInput
+        def generic_overlay_view: (String viewport_content, Integer width, Integer height, Tinyagent::Tui::List list, Tinyagent::Tui::TextInput filter_input) -> String
       end
     end
   end

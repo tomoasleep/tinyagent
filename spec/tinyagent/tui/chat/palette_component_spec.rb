@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'bubbles'
+require 'tinyagent/tui/core'
+require 'tinyagent/tui/components'
+require 'tinyagent/tui/chat'
 require_relative '../../../support/key_helper'
 
 RSpec.describe Tinyagent::Tui::Chat::PaletteComponent do
@@ -11,6 +13,27 @@ RSpec.describe Tinyagent::Tui::Chat::PaletteComponent do
   let(:viewport_content) { "line1\nline2\nline3" }
   let(:width) { 40 }
   let(:height) { 10 }
+
+  let(:catalog) { instance_double(Tinyagent::ModelsDev::Catalog) }
+  let(:provider_data) do
+    {
+      'openai' => {
+        'id' => 'openai',
+        'name' => 'OpenAI',
+        'env' => ['OPENAI_API_KEY'],
+        'api' => 'https://api.openai.com/v1',
+        'models' => {
+          'gpt-4o' => { 'id' => 'gpt-4o', 'name' => 'GPT-4o' }
+        }
+      }
+    }
+  end
+
+  before do
+    allow(Tinyagent::ModelsDev::Catalog).to receive(:new).and_return(catalog)
+    allow(catalog).to receive(:openai_compatible_providers).and_return(provider_data)
+    allow(catalog).to receive(:models_for).with('openai').and_return(provider_data['openai']['models'])
+  end
 
   describe '#init' do
     it 'returns model and no command', :aggregate_failures do
@@ -28,7 +51,6 @@ RSpec.describe Tinyagent::Tui::Chat::PaletteComponent do
 
     it 'resets filter input' do
       component.open
-      # Filter input should be focused after open
       expect(component.filter_input_focused?).to be true
     end
   end
@@ -69,7 +91,6 @@ RSpec.describe Tinyagent::Tui::Chat::PaletteComponent do
     end
 
     it 'transitions to provider_select on change_model command' do
-      # Navigate to change_model (last item)
       3.times { component.update(key('down')) }
       updated, _cmd = component.update(key('enter'))
       expect(updated.provider_select_state?).to be true
@@ -93,7 +114,6 @@ RSpec.describe Tinyagent::Tui::Chat::PaletteComponent do
   describe '#update in provider_select state' do
     before do
       component.open
-      # Navigate to change_model and select it
       3.times { component.update(key('down')) }
       component.update(key('enter'))
     end
@@ -109,7 +129,6 @@ RSpec.describe Tinyagent::Tui::Chat::PaletteComponent do
     end
 
     it 'filters providers with typing' do
-      # Type some characters to filter
       component.update(key('o'))
       expect(component.filtered_items.length).to be >= 1
     end
@@ -118,10 +137,8 @@ RSpec.describe Tinyagent::Tui::Chat::PaletteComponent do
   describe '#update in model_select state' do
     before do
       component.open
-      # Navigate to change_model and select it
       3.times { component.update(key('down')) }
       component.update(key('enter'))
-      # Select first provider
       component.update(key('enter'))
     end
 
@@ -181,7 +198,6 @@ RSpec.describe Tinyagent::Tui::Chat::PaletteComponent do
 
     it 'renders provider items' do
       result = component.view(viewport_content, width, height)
-      # Should include at least one provider name
       expect(result).not_to eq(viewport_content)
     end
   end

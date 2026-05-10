@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'dry/cli'
-require 'bubbletea'
+require 'tinyagent/tui/core'
 require 'tinyagent/tui/chat'
 
 module Tinyagent
@@ -13,7 +13,7 @@ module Tinyagent
 
         def call(*) #: void
           Migrations.run
-          Bubbletea.run(Tinyagent::Tui::Chat.new, alt_screen: true)
+          Tinyagent::Tui::Program.new(model: Tinyagent::Tui::Chat.new, alt_screen: true).start
         end
       end
     end

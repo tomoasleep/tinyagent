@@ -1,0 +1,27 @@
+# Generated from lib/tinyagent/tui/components/spinner.rb with RBS::Inline
+
+module Tinyagent
+  module Tui
+    # Spinner component for long-running operations.
+    class Spinner
+      FRAMES: untyped
+
+      @frame_index: Integer
+
+      @tick_interval: Float
+
+      class TickMessage < Message
+      end
+
+      # @rbs tick_interval: Float
+      def initialize: (?tick_interval: Float) -> void
+
+      def view: () -> String
+
+      # @rbs message: Message
+      def update: (Message message) -> Array[untyped]
+
+      def tick: () -> Commands::BatchCommand
+    end
+  end
+end

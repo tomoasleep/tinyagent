@@ -4,22 +4,22 @@ module Tinyagent
   module Tui
     class Chat
       # Renders chat messages into viewport content string.
-      # Manages message state via Bubbletea::Model.
+      # Manages message state via Tinyagent::Tui::Model.
       class ChatViewport
-        include Bubbletea::Model
+        include Tinyagent::Tui::Model
 
         @messages: Array[untyped]
 
         @width: Integer
 
-        USER_STYLE: Lipgloss::Style
+        USER_STYLE: untyped
 
-        ASSISTANT_STYLE: Lipgloss::Style
+        ASSISTANT_STYLE: untyped
 
-        TOOL_STYLE: Lipgloss::Style
+        TOOL_STYLE: untyped
 
         # Message sent to refresh the viewport with new messages.
-        class RefreshMessagesMessage < Bubbletea::Message
+        class RefreshMessagesMessage < Tinyagent::Tui::Message
           attr_reader messages: Array[untyped]
 
           # @rbs messages: Array[untyped]
@@ -31,8 +31,8 @@ module Tinyagent
 
         def init: () -> Array[untyped]
 
-        # @rbs message: Bubbletea::Message
-        def update: (Bubbletea::Message message) -> Array[untyped]
+        # @rbs message: Tinyagent::Tui::Message
+        def update: (Tinyagent::Tui::Message message) -> Array[untyped]
 
         def view: () -> String
 
